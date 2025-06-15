@@ -13,7 +13,9 @@ const CarouselPrevious = React.forwardRef<
 
   const handleClick = () => {
     console.log('Previous button clicked, canScrollPrev:', canScrollPrev)
-    scrollPrev()
+    if (canScrollPrev) {
+      scrollPrev()
+    }
   }
 
   return (
@@ -22,10 +24,7 @@ const CarouselPrevious = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-        "absolute h-8 w-8 rounded-full z-50",
-        orientation === "horizontal"
-          ? "-left-12 top-1/2 -translate-y-1/2"
-          : "top-4 left-1/2 -translate-x-1/2",
+        "h-8 w-8 rounded-full",
         className
       )}
       disabled={!canScrollPrev}
@@ -47,7 +46,9 @@ const CarouselNext = React.forwardRef<
 
   const handleClick = () => {
     console.log('Next button clicked, canScrollNext:', canScrollNext)
-    scrollNext()
+    if (canScrollNext) {
+      scrollNext()
+    }
   }
 
   return (
@@ -56,10 +57,7 @@ const CarouselNext = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-        "absolute h-8 w-8 rounded-full z-50",
-        orientation === "horizontal"
-          ? "-right-12 top-1/2 -translate-y-1/2"
-          : "bottom-4 left-1/2 -translate-x-1/2",
+        "h-8 w-8 rounded-full",
         className
       )}
       disabled={!canScrollNext}

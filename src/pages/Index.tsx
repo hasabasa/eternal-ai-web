@@ -152,9 +152,14 @@ const Index = () => {
           </CarouselItem>
         </CarouselContent>
         
-        {/* Кнопки навигации с исправленным позиционированием */}
-        <CarouselPrevious className="fixed top-8 right-8 w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white border-none shadow-xl hover:shadow-2xl transition-all hover:scale-110 z-[100]" />
-        <CarouselNext className="fixed bottom-8 right-8 w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white border-none shadow-xl hover:shadow-2xl transition-all hover:scale-110 z-[100]" />
+        {/* Исправленные кнопки навигации */}
+        <div className="fixed top-8 right-8 z-[9999]">
+          <CarouselPrevious className="w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white border-none shadow-xl hover:shadow-2xl transition-all hover:scale-110" />
+        </div>
+        
+        <div className="fixed bottom-8 right-8 z-[9999]">
+          <CarouselNext className="w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white border-none shadow-xl hover:shadow-2xl transition-all hover:scale-110" />
+        </div>
       </Carousel>
     </div>
   );

@@ -25,41 +25,55 @@ const Carousel = React.forwardRef<
       {
         ...opts,
         axis: orientation === "horizontal" ? "x" : "y",
+        skipSnaps: false,
+        dragFree: false,
       },
       plugins
     )
     const [canScrollPrev, setCanScrollPrev] = React.useState(false)
     const [canScrollNext, setCanScrollNext] = React.useState(false)
+    const containerRef = React.useRef<HTMLDivElement>(null)
 
     const onSelect = React.useCallback((api: CarouselApi) => {
       if (!api) {
+        console.log('API not available in onSelect')
         return
       }
 
       const canPrev = api.canScrollPrev()
       const canNext = api.canScrollNext()
-      console.log('Carousel state updated:', { canPrev, canNext, selectedIndex: api.selectedScrollSnap() })
+      const selectedIndex = api.selectedScrollSnap()
+      const slideCount = api.slideNodes().length
+      
+      console.log('Carousel state updated:', { 
+        canPrev, 
+        canNext, 
+        selectedIndex, 
+        slideCount,
+        scrollProgress: api.scrollProgress()
+      })
       
       setCanScrollPrev(canPrev)
       setCanScrollNext(canNext)
     }, [])
 
     const scrollPrev = React.useCallback(() => {
-      console.log('scrollPrev called, api exists:', !!api)
-      if (api) {
+      console.log('scrollPrev called, api exists:', !!api, 'canScrollPrev:', canScrollPrev)
+      if (api && canScrollPrev) {
         api.scrollPrev()
       }
-    }, [api])
+    }, [api, canScrollPrev])
 
     const scrollNext = React.useCallback(() => {
-      console.log('scrollNext called, api exists:', !!api)
-      if (api) {
+      console.log('scrollNext called, api exists:', !!api, 'canScrollNext:', canScrollNext)
+      if (api && canScrollNext) {
         api.scrollNext()
       }
-    }, [api])
+    }, [api, canScrollNext])
 
     const handleKeyDown = React.useCallback(
       (event: React.KeyboardEvent<HTMLDivElement>) => {
+        console.log('Key pressed:', event.key, 'orientation:', orientation)
         if (orientation === "vertical") {
           if (event.key === "ArrowUp") {
             event.preventDefault()
@@ -85,7 +99,6 @@ const Carousel = React.forwardRef<
       if (!api || !setApi) {
         return
       }
-
       setApi(api)
     }, [api, setApi])
 
@@ -95,18 +108,19 @@ const Carousel = React.forwardRef<
         return
       }
 
-      console.log('Setting up carousel listeners')
+      console.log('Setting up carousel listeners, slides count:', api.slideNodes().length)
       onSelect(api)
       api.on("reInit", onSelect)
       api.on("select", onSelect)
 
       return () => {
+        console.log('Cleaning up carousel listeners')
         api?.off("select", onSelect)
         api?.off("reInit", onSelect)
       }
     }, [api, onSelect])
 
-    // Улучшенный обработчик колеса мыши для вертикальной прокрутки
+    // Улучшенный обработчик колеса мыши
     React.useEffect(() => {
       if (!api || orientation !== "vertical") {
         return
@@ -116,47 +130,58 @@ const Carousel = React.forwardRef<
       let scrollTimeout: ReturnType<typeof setTimeout>
 
       const onWheel = (event: WheelEvent) => {
-        // Предотвращаем стандартную прокрутку страницы
-        event.preventDefault()
-        event.stopPropagation()
+        console.log('Wheel event detected:', {
+          deltaY: event.deltaY,
+          canScrollPrev: api.canScrollPrev(),
+          canScrollNext: api.canScrollNext(),
+          isScrolling
+        })
+
+        // Предотвращаем стандартную прокрутку только если можем прокрутить карусель
+        if ((event.deltaY < 0 && api.canScrollPrev()) || (event.deltaY > 0 && api.canScrollNext())) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
 
         if (isScrolling) {
           return
         }
 
         const delta = event.deltaY
-        console.log('Wheel event:', { delta, canScrollPrev: api.canScrollPrev(), canScrollNext: api.canScrollNext() })
+        const threshold = 30
 
-        if (delta < -50 && api.canScrollPrev()) {
-          console.log('Scrolling to previous slide')
-          api.scrollPrev()
-          isScrolling = true
-        } else if (delta > 50 && api.canScrollNext()) {
-          console.log('Scrolling to next slide')
-          api.scrollNext()
-          isScrolling = true
-        }
+        if (Math.abs(delta) > threshold) {
+          if (delta < 0 && api.canScrollPrev()) {
+            console.log('Scrolling to previous slide')
+            api.scrollPrev()
+            isScrolling = true
+          } else if (delta > 0 && api.canScrollNext()) {
+            console.log('Scrolling to next slide')
+            api.scrollNext()
+            isScrolling = true
+          }
 
-        if (isScrolling) {
-          scrollTimeout = setTimeout(() => {
-            isScrolling = false
-          }, 800)
+          if (isScrolling) {
+            clearTimeout(scrollTimeout)
+            scrollTimeout = setTimeout(() => {
+              isScrolling = false
+            }, 500)
+          }
         }
       }
 
-      // Получаем viewport элемент напрямую
-      const viewportElement = api.rootNode()
-      if (viewportElement) {
-        console.log('Adding wheel listener to viewport element')
-        viewportElement.addEventListener("wheel", onWheel, { passive: false })
+      const container = containerRef.current
+      if (container) {
+        console.log('Adding wheel listener to container')
+        container.addEventListener("wheel", onWheel, { passive: false })
         
         return () => {
           console.log('Removing wheel listener')
-          viewportElement.removeEventListener("wheel", onWheel)
+          container.removeEventListener("wheel", onWheel)
           clearTimeout(scrollTimeout)
         }
       } else {
-        console.warn('Could not find viewport element for wheel listener')
+        console.warn('Container ref not available for wheel listener')
       }
     }, [api, orientation])
 
@@ -175,9 +200,16 @@ const Carousel = React.forwardRef<
         }}
       >
         <div
-          ref={ref}
-          onKeyDownCapture={handleKeyDown}
-          className={cn("relative", className)}
+          ref={(node) => {
+            if (typeof ref === 'function') {
+              ref(node)
+            } else if (ref) {
+              ref.current = node
+            }
+            containerRef.current = node
+          }}
+          onKeyDown={handleKeyDown}
+          className={cn("relative focus:outline-none", className)}
           role="region"
           aria-roledescription="carousel"
           tabIndex={0}
