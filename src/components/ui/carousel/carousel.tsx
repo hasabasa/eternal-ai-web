@@ -35,34 +35,11 @@ const Carousel = React.forwardRef<
 
     const onSelect = React.useCallback((api: CarouselApi) => {
       if (!api) {
-        console.log('API not available in onSelect')
         return
       }
-
-      let canPrev, canNext;
-      if (opts?.loop) {
-        // According to embla-carousel docs, canScrollPrev/Next should be true with loop: true
-        canPrev = true;
-        canNext = true;
-      } else {
-        canPrev = api.canScrollPrev()
-        canNext = api.canScrollNext()
-      }
-
-      const selectedIndex = api.selectedScrollSnap()
-      const slideCount = api.slideNodes().length
-      
-      console.log('Carousel state updated:', { 
-        canPrev, 
-        canNext, 
-        selectedIndex, 
-        slideCount,
-        scrollProgress: api.scrollProgress()
-      })
-      
-      setCanScrollPrev(canPrev)
-      setCanScrollNext(canNext)
-    }, [opts])
+      setCanScrollPrev(api.canScrollPrev())
+      setCanScrollNext(api.canScrollNext())
+    }, [])
 
     const scrollPrev = React.useCallback(() => {
       api?.scrollPrev()
@@ -74,7 +51,6 @@ const Carousel = React.forwardRef<
 
     const handleKeyDown = React.useCallback(
       (event: React.KeyboardEvent<HTMLDivElement>) => {
-        console.log('Key pressed:', event.key, 'orientation:', orientation)
         if (orientation === "vertical") {
           if (event.key === "ArrowUp") {
             event.preventDefault()
@@ -105,21 +81,18 @@ const Carousel = React.forwardRef<
 
     React.useEffect(() => {
       if (!api) {
-        console.log('API not ready yet')
         return
       }
 
-      console.log('Setting up carousel listeners, slides count:', api.slideNodes().length)
       onSelect(api)
       api.on("reInit", onSelect)
       api.on("select", onSelect)
-      api.on("settle", onSelect) // Add listener for settle event
+      api.on("settle", onSelect)
 
       return () => {
-        console.log('Cleaning up carousel listeners')
-        api?.off("select", onSelect)
         api?.off("reInit", onSelect)
-        api?.off("settle", onSelect) // Cleanup settle listener
+        api?.off("select", onSelect)
+        api?.off("settle", onSelect)
       }
     }, [api, onSelect])
 
