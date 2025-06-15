@@ -42,7 +42,7 @@ const Index = () => {
       <BurgerMenu />
 
       {/* Навигационные стрелки */}
-      <div className="fixed left-8 top-1/2 transform -translate-y-1/2 z-50 flex flex-col gap-4">
+      <div className="fixed left-8 top-8 z-50">
         <button
           onClick={() => scrollToSection('up')}
           className="w-16 h-16 bg-brand-orange/90 hover:bg-brand-orange text-white rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-110"
@@ -51,7 +51,7 @@ const Index = () => {
         </button>
       </div>
       
-      <div className="fixed right-8 top-1/2 transform -translate-y-1/2 z-50 flex flex-col gap-4">
+      <div className="fixed right-8 bottom-8 z-50">
         <button
           onClick={() => scrollToSection('down')}
           className="w-16 h-16 bg-brand-orange/90 hover:bg-brand-orange text-white rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-110"
