@@ -3,13 +3,25 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Кастомный фон и плавный scroll */
-body {
-  @apply font-inter bg-background text-foreground scroll-smooth;
-  min-height: 100vh;
-  box-sizing: border-box;
+/* Кастомный фон и плавный Apple-like scroll */
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
 }
 
+body {
+  @apply font-inter bg-background text-foreground;
+  min-height: 100vh;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* Apple-like плавный скролл */
+* {
+  scroll-behavior: smooth;
+}
+
+/* Кастомный скроллбар */
 ::-webkit-scrollbar {
   width: 8px;
   background: transparent;
@@ -17,4 +29,25 @@ body {
 ::-webkit-scrollbar-thumb {
   background: rgba(180,180,200,0.15);
   border-radius: 4px;
+}
+
+/* Дополнительные плавные переходы для слайдов */
+section {
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Улучшенные анимации появления */
+@keyframes slide-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(60px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-slide-fade-in {
+  animation: slide-fade-in 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }

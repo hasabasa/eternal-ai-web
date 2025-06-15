@@ -25,26 +25,35 @@ const stats = [
 ];
 
 const Statistics: React.FC = () => (
-  <section className="max-w-6xl mx-auto px-4 py-16 animate-fade-in">
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+  <div className="max-w-6xl mx-auto px-4 animate-fade-in">
+    <div className="text-center mb-16">
+      <h2 className="text-4xl sm:text-5xl font-bold mb-6 text-primary">
+        Результаты внедрения в цифрах
+      </h2>
+      <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+        Конкретные показатели эффективности наших ИИ-решений
+      </p>
+    </div>
+    
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
       {stats.map((stat, i) => (
         <div
           key={i}
-          className="text-center p-4 bg-white/60 rounded-2xl backdrop-blur-sm border border-white/20 hover:bg-white/80 transition-all"
+          className="text-center p-8 bg-white/70 rounded-3xl backdrop-blur-sm border border-white/30 hover:bg-white/90 transition-all shadow-lg"
         >
-          <div className="text-2xl md:text-3xl font-bold text-aurora4 mb-1">
+          <div className="text-4xl md:text-5xl font-bold text-aurora4 mb-3">
             {stat.number}
           </div>
-          <div className="font-semibold text-sm md:text-base text-primary mb-1">
+          <div className="font-semibold text-lg md:text-xl text-primary mb-2">
             {stat.label}
           </div>
-          <div className="text-xs md:text-sm text-muted-foreground">
+          <div className="text-base md:text-lg text-muted-foreground">
             {stat.desc}
           </div>
         </div>
       ))}
     </div>
-  </section>
+  </div>
 );
 
 export default Statistics;
