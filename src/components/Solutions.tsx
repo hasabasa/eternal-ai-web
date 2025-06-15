@@ -1,4 +1,3 @@
-
 import React from "react";
 import { MessageCircle, ShoppingCart, Calendar, BarChart3 } from "lucide-react";
 
@@ -30,21 +29,21 @@ const solutions = [
 ];
 
 const Solutions: React.FC = () => (
-  <div className="max-w-6xl mx-auto px-8 animate-fade-in">
+  <div className="max-w-4xl mx-auto px-4 animate-fade-in">
     <div className="text-center mb-12">
       <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-brand-darkBlue">
         Комплексные ИИ-решения для бизнеса
       </h2>
-      <p className="text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto">
+      <p className="text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto">
         Мы не просто создаём чат-ботов. Мы строим целые экосистемы.
       </p>
     </div>
     
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
       {solutions.map((solution, i) => (
         <div
           key={i}
-          className="bg-white/80 rounded-3xl p-6 shadow-xl border border-white/40 hover:bg-white/95 transition-all backdrop-blur-sm flex flex-col"
+          className="bg-white/80 rounded-3xl p-4 shadow-xl border border-white/40 hover:bg-white/95 transition-all backdrop-blur-sm flex flex-col"
         >
           <div className="flex items-start gap-6 mb-8 flex-grow">
             <div className="p-4 bg-white rounded-2xl shadow-lg">
