@@ -45,18 +45,18 @@ const Index = () => {
       <div className="fixed left-8 top-8 z-50">
         <button
           onClick={() => scrollToSection('up')}
-          className="w-16 h-16 bg-brand-orange/90 hover:bg-brand-orange text-white rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-110"
+          className="w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-110"
         >
-          <ChevronUp className="w-8 h-8" />
+          <ChevronUp className="w-7 h-7" />
         </button>
       </div>
       
       <div className="fixed right-8 bottom-8 z-50">
         <button
           onClick={() => scrollToSection('down')}
-          className="w-16 h-16 bg-brand-orange/90 hover:bg-brand-orange text-white rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-110"
+          className="w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-110"
         >
-          <ChevronDown className="w-8 h-8" />
+          <ChevronDown className="w-7 h-7" />
         </button>
       </div>
 
@@ -102,48 +102,48 @@ const Index = () => {
         </section>
 
         {/* Статистика */}
-        <section className="min-h-screen flex items-center justify-center py-20 bg-gradient-to-br from-brand-purple/5 to-brand-orange/10">
+        <section className="py-24 bg-gradient-to-br from-brand-purple/5 to-brand-orange/10">
           <Statistics />
         </section>
 
         {/* Решения */}
-        <section className="min-h-screen flex items-center justify-center py-20 bg-gradient-to-br from-brand-orange/5 to-brand-darkBlue/10">
+        <section className="py-24 bg-gradient-to-br from-brand-orange/5 to-brand-darkBlue/10">
           <Solutions />
         </section>
 
         {/* Преимущества */}
-        <section className="min-h-screen flex items-center justify-center py-20 bg-gradient-to-br from-brand-darkBlue/5 to-brand-purple/10">
+        <section className="py-24 bg-gradient-to-br from-brand-darkBlue/5 to-brand-purple/10">
           <Advantages />
         </section>
 
         {/* Процесс работы */}
-        <section className="min-h-screen flex items-center justify-center py-20 bg-gradient-to-br from-brand-purple/5 to-brand-orange/10">
+        <section className="py-24 bg-gradient-to-br from-brand-purple/5 to-brand-orange/10">
           <Process />
         </section>
 
         {/* Кейс - Ритейл */}
-        <section className="min-h-screen flex items-center justify-center py-20 bg-gradient-to-br from-brand-orange/5 to-brand-darkBlue/10">
+        <section className="py-24 bg-gradient-to-br from-brand-orange/5 to-brand-darkBlue/10">
           <CaseRetail />
         </section>
 
         {/* Кейс - HoReCa */}
-        <section className="min-h-screen flex items-center justify-center py-20 bg-gradient-to-br from-brand-darkBlue/5 to-brand-purple/10">
+        <section className="py-24 bg-gradient-to-br from-brand-darkBlue/5 to-brand-purple/10">
           <CaseHoreca />
         </section>
 
         {/* Кейс - Услуги */}
-        <section className="min-h-screen flex items-center justify-center py-20 bg-gradient-to-br from-brand-purple/5 to-brand-orange/10">
+        <section className="py-24 bg-gradient-to-br from-brand-purple/5 to-brand-orange/10">
           <CaseServices />
         </section>
 
         {/* Финальная секция */}
-        <section className="min-h-screen flex items-center justify-center py-20 bg-gradient-to-br from-brand-darkBlue/5 to-brand-purple/10">
-          <div className="max-w-6xl mx-auto px-8 text-center">
-            <div className="bg-gradient-to-br from-white/95 to-white/80 rounded-2xl p-16 shadow-2xl border border-gray-200">
-              <h2 className="text-5xl lg:text-6xl font-bold mb-8 text-brand-darkBlue">
+        <section className="py-24 bg-gradient-to-br from-brand-darkBlue/5 to-brand-purple/10">
+          <div className="max-w-5xl mx-auto px-8 text-center">
+            <div className="bg-gradient-to-br from-white/95 to-white/80 rounded-2xl p-12 shadow-2xl border border-gray-200">
+              <h2 className="text-4xl lg:text-5xl font-bold mb-8 text-brand-darkBlue">
                 Будущее автоматизации — уже здесь
               </h2>
-              <p className="text-2xl lg:text-3xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed">
+              <p className="text-xl lg:text-2xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed">
                 Вечный ИИ трансформирует ваш бизнес, освобождая время для стратегических задач и обеспечивая стабильный рост без дополнительных затрат на персонал.
               </p>
               
