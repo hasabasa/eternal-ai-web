@@ -1,4 +1,3 @@
-
 import * as React from "react"
 import useEmblaCarousel from "embla-carousel-react"
 import { cn } from "@/lib/utils"
@@ -31,6 +30,7 @@ const Carousel = React.forwardRef<
     const [canScrollPrev, setCanScrollPrev] = React.useState(false)
     const [canScrollNext, setCanScrollNext] = React.useState(false)
     const containerRef = React.useRef<HTMLDivElement>(null)
+    const isWheeling = React.useRef(false);
 
     const onSelect = React.useCallback((currentApi: CarouselApi) => {
       if (!currentApi) {
@@ -112,42 +112,45 @@ const Carousel = React.forwardRef<
     React.useEffect(() => {
       const containerNode = containerRef.current;
       if (!api || !containerNode || orientation !== "vertical") {
-        return
+        return;
       }
 
-      console.log("Carousel: Attaching wheel listener for vertical orientation.");
-      let isWheeling = false;
+      console.log("Carousel: Attaching robust wheel listener.");
 
       const onWheel = (event: WheelEvent) => {
-        // Prevent default browser scroll if we can scroll the carousel
-        if ((event.deltaY < 0 && canScrollPrev) || (event.deltaY > 0 && canScrollNext)) {
-          event.preventDefault();
-        } else {
+        const canScrollUp = event.deltaY < 0 && api.canScrollPrev();
+        const canScrollDown = event.deltaY > 0 && api.canScrollNext();
+
+        if (!canScrollUp && !canScrollDown) {
           return;
         }
 
-        if (isWheeling) {
+        event.preventDefault();
+
+        if (isWheeling.current) {
+          console.log("Carousel: Wheel event ignored (debouncing).");
           return;
         }
-        isWheeling = true;
+        isWheeling.current = true;
+        console.log("Carousel: Wheel event processed.");
 
         if (event.deltaY < 0) {
-          scrollPrev();
+          api.scrollPrev();
         } else {
-          scrollNext();
+          api.scrollNext();
         }
 
         setTimeout(() => {
-          isWheeling = false;
-        }, 500); // Debounce time
-      }
+          isWheeling.current = false;
+        }, 600); // Increased debounce time for smoother feel
+      };
 
       containerNode.addEventListener("wheel", onWheel, { passive: false });
       return () => {
-        console.log("Carousel: Removing wheel listener.");
+        console.log("Carousel: Removing robust wheel listener.");
         containerNode.removeEventListener("wheel", onWheel);
-      }
-    }, [api, orientation, canScrollPrev, canScrollNext, scrollPrev, scrollNext]);
+      };
+    }, [api, orientation]);
 
     const combinedRef = React.useCallback(
       (node: HTMLDivElement | null) => {
