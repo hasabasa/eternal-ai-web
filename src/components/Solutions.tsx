@@ -30,7 +30,7 @@ const solutions = [
 ];
 
 const Solutions: React.FC = () => (
-  <div className="max-w-4xl mx-auto px-8 animate-fade-in">
+  <div className="max-w-7xl mx-auto px-8 animate-fade-in">
     <div className="text-center mb-12">
       <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-brand-darkBlue">
         Комплексные ИИ-решения для бизнеса
@@ -40,13 +40,13 @@ const Solutions: React.FC = () => (
       </p>
     </div>
     
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
       {solutions.map((solution, i) => (
         <div
           key={i}
-          className="bg-white/80 rounded-3xl p-8 shadow-xl border border-white/40 hover:bg-white/95 transition-all backdrop-blur-sm"
+          className="bg-white/80 rounded-3xl p-8 shadow-xl border border-white/40 hover:bg-white/95 transition-all backdrop-blur-sm flex flex-col"
         >
-          <div className="flex items-start gap-6 mb-8">
+          <div className="flex items-start gap-6 mb-8 flex-grow">
             <div className="p-4 bg-white rounded-2xl shadow-lg">
               {solution.icon}
             </div>
@@ -59,7 +59,7 @@ const Solutions: React.FC = () => (
               </p>
             </div>
           </div>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-3 mt-auto">
             {solution.features.map((feature, j) => (
               <span
                 key={j}

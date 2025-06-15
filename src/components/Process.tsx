@@ -30,7 +30,7 @@ const steps = [
 ];
 
 const Process: React.FC = () => (
-  <div className="max-w-5xl mx-auto px-8 animate-fade-in">
+  <div className="max-w-7xl mx-auto px-8 animate-fade-in">
     <div className="text-center mb-12">
       <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-brand-darkBlue">
         Как мы внедряем ИИ в ваш бизнес
