@@ -11,6 +11,11 @@ const CarouselPrevious = React.forwardRef<
 >(({ className, variant = "outline", size = "icon", ...props }, ref) => {
   const { orientation, scrollPrev, canScrollPrev } = useCarousel()
 
+  const handleClick = React.useCallback(() => {
+    console.log("Carousel: Previous button clicked.");
+    scrollPrev();
+  }, [scrollPrev]);
+
   return (
     <Button
       ref={ref}
@@ -21,7 +26,7 @@ const CarouselPrevious = React.forwardRef<
         className
       )}
       disabled={!canScrollPrev}
-      onClick={scrollPrev}
+      onClick={handleClick}
       {...props}
     >
       {orientation === "horizontal" ? <ArrowLeft className="h-4 w-4" /> : <ChevronUp className="h-5 w-5" />}
@@ -37,6 +42,11 @@ const CarouselNext = React.forwardRef<
 >(({ className, variant = "outline", size = "icon", ...props }, ref) => {
   const { orientation, scrollNext, canScrollNext } = useCarousel()
 
+  const handleClick = React.useCallback(() => {
+    console.log("Carousel: Next button clicked.");
+    scrollNext();
+  }, [scrollNext]);
+
   return (
     <Button
       ref={ref}
@@ -47,7 +57,7 @@ const CarouselNext = React.forwardRef<
         className
       )}
       disabled={!canScrollNext}
-      onClick={scrollNext}
+      onClick={handleClick}
       {...props}
     >
       {orientation === "horizontal" ? <ArrowRight className="h-4 w-4" /> : <ChevronDown className="h-5 w-5" />}

@@ -25,8 +25,6 @@ const Carousel = React.forwardRef<
       {
         ...opts,
         axis: orientation === "horizontal" ? "x" : "y",
-        skipSnaps: false,
-        dragFree: false,
       },
       plugins
     )
@@ -34,29 +32,38 @@ const Carousel = React.forwardRef<
     const [canScrollNext, setCanScrollNext] = React.useState(false)
     const containerRef = React.useRef<HTMLDivElement>(null)
 
-    const onSelect = React.useCallback((api: CarouselApi) => {
-      if (!api) {
+    const onSelect = React.useCallback((currentApi: CarouselApi) => {
+      if (!currentApi) {
+        console.log("Carousel: onSelect called without API.");
         return
       }
+      console.log("Carousel: onSelect triggered.");
+      // For loop mode, buttons should always be active once the carousel is initialized.
       if (opts?.loop) {
+        console.log("Carousel: Loop mode is ON. Enabling both buttons.");
         setCanScrollPrev(true)
         setCanScrollNext(true)
       } else {
-        setCanScrollPrev(api.canScrollPrev())
-        setCanScrollNext(api.canScrollNext())
+        console.log("Carousel: Loop mode is OFF. Checking scroll ability.");
+        setCanScrollPrev(currentApi.canScrollPrev())
+        setCanScrollNext(currentApi.canScrollNext())
       }
     }, [opts?.loop])
 
     const scrollPrev = React.useCallback(() => {
+      console.log("Carousel: scrollPrev called.");
       api?.scrollPrev()
     }, [api])
 
     const scrollNext = React.useCallback(() => {
+      console.log("Carousel: scrollNext called.");
       api?.scrollNext()
     }, [api])
 
     const handleKeyDown = React.useCallback(
       (event: React.KeyboardEvent<HTMLDivElement>) => {
+        if (!api) return;
+
         if (orientation === "vertical") {
           if (event.key === "ArrowUp") {
             event.preventDefault()
@@ -75,19 +82,18 @@ const Carousel = React.forwardRef<
           }
         }
       },
-      [scrollPrev, scrollNext, orientation]
+      [api, scrollPrev, scrollNext, orientation]
     )
 
     React.useEffect(() => {
-      if (!api || !setApi) {
+      if (!api) {
+        console.log("Carousel: API not available yet.");
         return
       }
-      setApi(api)
-    }, [api, setApi])
 
-    React.useEffect(() => {
-      if (!api) {
-        return
+      console.log("Carousel: API is now available. Setting up listeners.");
+      if (setApi) {
+        setApi(api)
       }
 
       onSelect(api)
@@ -96,62 +102,63 @@ const Carousel = React.forwardRef<
       api.on("settle", onSelect)
 
       return () => {
+        console.log("Carousel: Cleaning up API listeners.");
         api?.off("reInit", onSelect)
         api?.off("select", onSelect)
         api?.off("settle", onSelect)
       }
-    }, [api, onSelect])
+    }, [api, setApi, onSelect])
 
-    // Улучшенный обработчик колеса мыши
     React.useEffect(() => {
-      if (!api || orientation !== "vertical") {
+      const containerNode = containerRef.current;
+      if (!api || !containerNode || orientation !== "vertical") {
         return
       }
 
-      let isScrolling = false
-      let scrollTimeout: ReturnType<typeof setTimeout>
+      console.log("Carousel: Attaching wheel listener for vertical orientation.");
+      let isWheeling = false;
 
       const onWheel = (event: WheelEvent) => {
-        // Предотвращаем стандартную прокрутку только если можем прокрутить карусель
+        // Prevent default browser scroll if we can scroll the carousel
         if ((event.deltaY < 0 && canScrollPrev) || (event.deltaY > 0 && canScrollNext)) {
-          event.preventDefault()
-          event.stopPropagation()
+          event.preventDefault();
         } else {
-          return // Не можем скроллить, ничего не делаем
+          return;
         }
 
-        if (isScrolling) {
-          return
+        if (isWheeling) {
+          return;
+        }
+        isWheeling = true;
+
+        if (event.deltaY < 0) {
+          scrollPrev();
+        } else {
+          scrollNext();
         }
 
-        const delta = event.deltaY
-
-        if (delta < 0) {
-          scrollPrev()
-          isScrolling = true
-        } else if (delta > 0) {
-          scrollNext()
-          isScrolling = true
-        }
-
-        if (isScrolling) {
-          clearTimeout(scrollTimeout)
-          scrollTimeout = setTimeout(() => {
-            isScrolling = false
-          }, 500) // Задержка для предотвращения слишком частого скролла
-        }
+        setTimeout(() => {
+          isWheeling = false;
+        }, 500); // Debounce time
       }
 
-      const container = containerRef.current
-      if (container) {
-        container.addEventListener("wheel", onWheel, { passive: false })
-        
-        return () => {
-          container.removeEventListener("wheel", onWheel)
-          clearTimeout(scrollTimeout)
-        }
+      containerNode.addEventListener("wheel", onWheel, { passive: false });
+      return () => {
+        console.log("Carousel: Removing wheel listener.");
+        containerNode.removeEventListener("wheel", onWheel);
       }
-    }, [api, orientation, canScrollPrev, canScrollNext, scrollPrev, scrollNext])
+    }, [api, orientation, canScrollPrev, canScrollNext, scrollPrev, scrollNext]);
+
+    const combinedRef = React.useCallback(
+      (node: HTMLDivElement | null) => {
+        (containerRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+        if (typeof ref === 'function') {
+          ref(node);
+        } else if (ref) {
+          ref.current = node;
+        }
+      }, [ref]
+    );
 
     return (
       <CarouselContext.Provider
@@ -168,14 +175,7 @@ const Carousel = React.forwardRef<
         }}
       >
         <div
-          ref={(node) => {
-            if (typeof ref === 'function') {
-              ref(node)
-            } else if (ref) {
-              ref.current = node
-            }
-            containerRef.current = node
-          }}
+          ref={combinedRef}
           onKeyDown={handleKeyDown}
           className={cn("relative focus:outline-none", className)}
           role="region"
