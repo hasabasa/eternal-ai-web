@@ -39,15 +39,12 @@ const Process: React.FC = () => (
         Простой процесс от анализа до результата
       </p>
     </div>
-
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
       {steps.map((step, i) => (
         <div key={i} className="relative">
-          {/* Соединительная линия только для больших экранов */}
           {i < steps.length - 1 && (
             <div className="hidden lg:block absolute top-12 left-full w-full h-1 bg-gradient-to-r from-brand-orange/30 to-transparent" />
           )}
-
           <div className={`bg-white/80 rounded-3xl p-6 text-center hover:bg-white/95 transition-all shadow-xl border border-white/40 backdrop-blur-sm h-full flex flex-col justify-between hover-lift will-animate animate-card-wave stagger-${i + 1}`}>
             <div>
               <div className="mb-6 flex justify-center will-animate">

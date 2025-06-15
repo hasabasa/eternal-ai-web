@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Zap, TrendingUp, MessageSquare, Users, Clock, Shield } from "lucide-react";
 const advantages = [{
@@ -37,7 +38,6 @@ const Advantages: React.FC = () => <div className="max-w-6xl mx-auto px-8 animat
         Почему ИИ-ассистенты эффективнее людей
       </h2>
     </div>
-
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
       {advantages.map((item, i) => <div key={i} className={`bg-white/80 rounded-3xl p-6 shadow-xl border border-white/40 hover:bg-white/95 transition-all backdrop-blur-sm text-center hover-lift will-animate animate-card-wave stagger-${i + 1}`}>
           <div className="mb-6 flex justify-center will-animate">

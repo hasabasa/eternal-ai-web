@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { MessageCircle, ShoppingCart, Calendar, BarChart3 } from "lucide-react";
 
@@ -33,12 +34,10 @@ const Solutions: React.FC = () => {
   const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
-    // Показываем заголовок сразу
     const titleTimer = setTimeout(() => {
       setShowTitle(true);
     }, 100);
 
-    // Показываем контент через 800мс после заголовка
     const contentTimer = setTimeout(() => {
       setShowContent(true);
     }, 900);
@@ -61,8 +60,6 @@ const Solutions: React.FC = () => {
           Мы не просто создаём чат-ботов. Мы строим целые экосистемы.
         </p>
       </div>
-      
-      {/* Контент с анимацией */}
       <div className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 transition-all duration-1000 delay-200 ${
         showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
       }`}>
