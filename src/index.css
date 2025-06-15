@@ -3,28 +3,21 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Презентационный стиль с плавным Apple-like scroll */
+/* Презентационный стиль */
 html {
-  scroll-behavior: smooth;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 body {
   @apply font-inter bg-background text-foreground;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   box-sizing: border-box;
-  overflow-x: hidden;
 }
 
-/* Apple-like плавный скролл для презентации */
+/* Отключаем скролл для презентации */
 * {
   scroll-behavior: smooth;
-}
-
-/* Отключаем стандартный snap для более плавной работы */
-section {
-  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  position: relative;
 }
 
 /* Анимации появления для презентации */
@@ -58,17 +51,9 @@ section {
   animation: presentation-entrance 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
-/* Кастомный скроллбар */
+/* Кастомный скроллбар (скрыт) */
 ::-webkit-scrollbar {
-  width: 8px;
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(254, 156, 45, 0.3);
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(254, 156, 45, 0.5);
+  display: none;
 }
 
 /* Стили для навигационных элементов */
@@ -79,4 +64,11 @@ section {
 .slide-nav-button {
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+}
+
+/* Адаптивные стили для мобильных */
+@media (max-width: 640px) {
+  .animate-slide-fade-in {
+    animation-duration: 0.8s;
+  }
 }
