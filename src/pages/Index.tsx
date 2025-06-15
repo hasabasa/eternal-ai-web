@@ -7,9 +7,10 @@ import CaseServices from "@/components/CaseServices";
 import Solutions from "@/components/Solutions";
 import Process from "@/components/Process";
 import Statistics from "@/components/Statistics";
+import Calculator from "@/components/Calculator";
 import SimpleCarousel from "@/components/SimpleCarousel";
 import { Button } from "@/components/ui/button";
-import { Calculator } from "lucide-react";
+import { Calculator as CalculatorIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Index = () => {
@@ -83,14 +84,21 @@ const Index = () => {
       </div>
     </section>,
 
-    // Кейс - Услуги - страница 8
-    <section key="case-services" className="h-screen w-full flex items-center justify-center bg-gradient-to-br from-brand-purple/5 to-brand-orange/10 overflow-hidden">
+    // Калькулятор экономии - страница 8 (новая)
+    <section key="calculator" className="h-screen w-full flex items-center justify-center bg-gradient-to-br from-brand-purple/5 to-brand-orange/10 overflow-hidden">
+      <div className="animate-section-entrance">
+        <Calculator />
+      </div>
+    </section>,
+
+    // Кейс - Услуги - страница 9 (перенесена)
+    <section key="case-services" className="h-screen w-full flex items-center justify-center bg-gradient-to-br from-brand-orange/5 to-brand-darkBlue/10 overflow-hidden">
       <div className="animate-section-entrance">
         <CaseServices />
       </div>
     </section>,
 
-    // Финальная секция
+    // Финальная секция - страница 10
     <section key="final" className="h-screen w-full flex items-center justify-center bg-gradient-to-br from-brand-darkBlue/5 to-brand-purple/10 overflow-hidden">
       <div className="max-w-4xl mx-auto px-4 text-center animate-section-entrance">
         <div className="bg-gradient-to-br from-white/95 to-white/80 rounded-2xl p-6 sm:p-8 shadow-2xl border border-gray-200">
@@ -103,7 +111,7 @@ const Index = () => {
           
           <Link to="/client-calc" className="inline-block">
             <Button size="lg" className="bg-brand-orange hover:bg-brand-orange/90 text-white text-base sm:text-lg px-6 py-3 rounded-xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 mb-4">
-              <Calculator className="w-5 h-5 mr-2" />
+              <CalculatorIcon className="w-5 h-5 mr-2" />
               Сделать расчёт
             </Button>
           </Link>
