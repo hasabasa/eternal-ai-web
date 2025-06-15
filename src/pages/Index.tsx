@@ -41,44 +41,58 @@ const Index = () => {
       </div>
     </section>,
 
-    // Статистика
+    // Статистика - страница 2
     <section key="statistics" className="h-screen w-full flex items-center justify-center bg-gradient-to-br from-brand-purple/5 to-brand-orange/10 overflow-hidden">
-      <Statistics />
+      <div className="animate-section-entrance">
+        <Statistics />
+      </div>
     </section>,
 
-    // Решения
+    // Решения - страница 3
     <section key="solutions" className="h-screen w-full flex items-center justify-center bg-gradient-to-br from-brand-orange/5 to-brand-darkBlue/10 overflow-hidden">
-      <Solutions />
+      <div className="animate-section-entrance">
+        <Solutions />
+      </div>
     </section>,
 
-    // Преимущества
+    // Преимущества - страница 4
     <section key="advantages" className="h-screen w-full flex items-center justify-center bg-gradient-to-br from-brand-darkBlue/5 to-brand-purple/10 overflow-hidden">
-      <Advantages />
+      <div className="animate-section-entrance">
+        <Advantages />
+      </div>
     </section>,
 
-    // Процесс работы
+    // Процесс работы - страница 5
     <section key="process" className="h-screen w-full flex items-center justify-center bg-gradient-to-br from-brand-purple/5 to-brand-orange/10 overflow-hidden">
-      <Process />
+      <div className="animate-section-entrance">
+        <Process />
+      </div>
     </section>,
 
-    // Кейс - Ритейл
+    // Кейс - Ритейл - страница 6
     <section key="case-retail" className="h-screen w-full flex items-center justify-center bg-gradient-to-br from-brand-orange/5 to-brand-darkBlue/10 overflow-hidden">
-      <CaseRetail />
+      <div className="animate-section-entrance">
+        <CaseRetail />
+      </div>
     </section>,
 
-    // Кейс - HoReCa
+    // Кейс - HoReCa - страница 7
     <section key="case-horeca" className="h-screen w-full flex items-center justify-center bg-gradient-to-br from-brand-darkBlue/5 to-brand-purple/10 overflow-hidden">
-      <CaseHoreca />
+      <div className="animate-section-entrance">
+        <CaseHoreca />
+      </div>
     </section>,
 
-    // Кейс - Услуги
+    // Кейс - Услуги - страница 8
     <section key="case-services" className="h-screen w-full flex items-center justify-center bg-gradient-to-br from-brand-purple/5 to-brand-orange/10 overflow-hidden">
-      <CaseServices />
+      <div className="animate-section-entrance">
+        <CaseServices />
+      </div>
     </section>,
 
     // Финальная секция
     <section key="final" className="h-screen w-full flex items-center justify-center bg-gradient-to-br from-brand-darkBlue/5 to-brand-purple/10 overflow-hidden">
-      <div className="max-w-4xl mx-auto px-4 text-center">
+      <div className="max-w-4xl mx-auto px-4 text-center animate-section-entrance">
         <div className="bg-gradient-to-br from-white/95 to-white/80 rounded-2xl p-6 sm:p-8 shadow-2xl border border-gray-200">
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-4 text-brand-darkBlue">
             Будущее автоматизации — уже здесь
