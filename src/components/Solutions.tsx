@@ -1,7 +1,6 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { MessageCircle, ShoppingCart, Calendar, BarChart3 } from "lucide-react";
-import PageTransition from "./PageTransition";
 
 const solutions = [
   {
@@ -31,48 +30,77 @@ const solutions = [
 ];
 
 const Solutions: React.FC = () => {
+  const [showTitle, setShowTitle] = useState(false);
+  const [showContent, setShowContent] = useState(false);
+
+  useEffect(() => {
+    // Показываем заголовок сразу
+    const titleTimer = setTimeout(() => {
+      setShowTitle(true);
+    }, 100);
+
+    // Показываем контент через 800мс после заголовка
+    const contentTimer = setTimeout(() => {
+      setShowContent(true);
+    }, 900);
+
+    return () => {
+      clearTimeout(titleTimer);
+      clearTimeout(contentTimer);
+    };
+  }, []);
+
   return (
-    <PageTransition
-      title="Комплексные ИИ-решения для бизнеса"
-      subtitle="Мы не просто создаём чат-ботов. Мы строим целые экосистемы."
-      slideKey="solutions"
-    >
-      <div className="max-w-6xl mx-auto px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-          {solutions.map((solution, i) => (
-            <div
-              key={i}
-              className="bg-white/80 rounded-3xl p-4 shadow-xl border border-white/40 hover:bg-white/95 transition-all backdrop-blur-sm flex flex-col animate-stagger-in"
-              style={{ animationDelay: `${i * 150}ms` }}
-            >
-              <div className="flex items-start gap-4 mb-4 flex-grow">
-                <div className="p-3 bg-white rounded-2xl shadow-lg">
-                  {solution.icon}
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-xl lg:text-2xl font-bold mb-2 text-brand-darkBlue">
-                    {solution.title}
-                  </h3>
-                  <p className="text-base lg:text-lg text-gray-600 mb-3">
-                    {solution.desc}
-                  </p>
-                </div>
+    <div className="max-w-6xl mx-auto px-8">
+      {/* Заголовок с анимацией */}
+      <div className={`text-center mb-6 transition-all duration-800 ${
+        showTitle ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+      }`}>
+        <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-brand-darkBlue">
+          Комплексные ИИ-решения для бизнеса
+        </h2>
+        <p className="text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto">
+          Мы не просто создаём чат-ботов. Мы строим целые экосистемы.
+        </p>
+      </div>
+      
+      {/* Контент с анимацией */}
+      <div className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 transition-all duration-1000 delay-200 ${
+        showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+      }`}>
+        {solutions.map((solution, i) => (
+          <div
+            key={i}
+            className="bg-white/80 rounded-3xl p-4 shadow-xl border border-white/40 hover:bg-white/95 transition-all backdrop-blur-sm flex flex-col"
+            style={{ animationDelay: `${i * 150}ms` }}
+          >
+            <div className="flex items-start gap-4 mb-4 flex-grow">
+              <div className="p-3 bg-white rounded-2xl shadow-lg">
+                {solution.icon}
               </div>
-              <div className="flex flex-wrap gap-2 mt-auto">
-                {solution.features.map((feature, j) => (
-                  <span
-                    key={j}
-                    className="px-3 py-1 bg-brand-purple/10 text-brand-purple rounded-full text-sm lg:text-base font-medium"
-                  >
-                    {feature}
-                  </span>
-                ))}
+              <div className="flex-1">
+                <h3 className="text-xl lg:text-2xl font-bold mb-2 text-brand-darkBlue">
+                  {solution.title}
+                </h3>
+                <p className="text-base lg:text-lg text-gray-600 mb-3">
+                  {solution.desc}
+                </p>
               </div>
             </div>
-          ))}
-        </div>
+            <div className="flex flex-wrap gap-2 mt-auto">
+              {solution.features.map((feature, j) => (
+                <span
+                  key={j}
+                  className="px-3 py-1 bg-brand-purple/10 text-brand-purple rounded-full text-sm lg:text-base font-medium"
+                >
+                  {feature}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
-    </PageTransition>
+    </div>
   );
 };
 
