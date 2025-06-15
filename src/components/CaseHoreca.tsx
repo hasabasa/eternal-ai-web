@@ -3,7 +3,7 @@ import React from "react";
 import { Coffee, Calendar, CheckCircle } from "lucide-react";
 
 const CaseHoreca: React.FC = () => (
-  <div className="max-w-7xl mx-auto px-8 animate-fade-in">
+  <div className="max-w-6xl mx-auto px-8 animate-fade-in">
     <div className="text-center mb-12">
       <div className="flex items-center justify-center gap-6 mb-8">
         <Coffee className="w-12 h-12 text-brand-orange" />

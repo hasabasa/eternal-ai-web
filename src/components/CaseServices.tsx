@@ -3,7 +3,7 @@ import React from "react";
 import { Briefcase, Clock, TrendingUp } from "lucide-react";
 
 const CaseServices: React.FC = () => (
-  <div className="max-w-7xl mx-auto px-8 animate-fade-in">
+  <div className="max-w-6xl mx-auto px-8 animate-fade-in">
     <div className="text-center mb-12">
       <div className="flex items-center justify-center gap-6 mb-8">
         <Briefcase className="w-12 h-12 text-brand-orange" />
