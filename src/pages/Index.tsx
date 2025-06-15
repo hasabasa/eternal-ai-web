@@ -6,6 +6,9 @@ import Cases from "@/components/Cases";
 import Solutions from "@/components/Solutions";
 import Process from "@/components/Process";
 import Statistics from "@/components/Statistics";
+import { Button } from "@/components/ui/button";
+import { Calculator } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   return (
@@ -36,41 +39,52 @@ const Index = () => {
           </h2>
           
           {/* Описание */}
-          <p className="text-xl sm:text-2xl text-gray-600 text-center max-w-4xl mx-auto leading-relaxed">
+          <p className="text-xl sm:text-2xl text-gray-600 text-center max-w-4xl mx-auto leading-relaxed mb-12">
             Вечный ИИ — это цифровая экосистема интеллектуальных помощников, созданных под задачи реального бизнеса.<br />
             Мы внедряем ИИ в мессенджеры (Telegram, WhatsApp, Instagram, Threads), автоматизируем общение, продажи, бронирования, рассылки.<br />
             <span className="font-semibold text-brand-darkBlue">Наши решения масштабируемы, настраиваются без кода и адаптируются под любой бизнес — от общепита до промышленности.</span>
           </p>
+
+          {/* Кнопка расчёта */}
+          <Link to="/client-calc">
+            <Button 
+              size="lg" 
+              className="bg-brand-orange hover:bg-brand-orange/90 text-white text-xl px-8 py-6 rounded-2xl shadow-lg hover:shadow-xl transition-all"
+            >
+              <Calculator className="w-6 h-6 mr-3" />
+              Сделать расчёт
+            </Button>
+          </Link>
         </div>
       </section>
 
       {/* Слайд 2: Статистика */}
-      <section className="min-h-screen flex items-center justify-center snap-start">
+      <section className="min-h-screen flex items-center justify-center snap-start bg-gradient-to-br from-brand-purple/5 to-brand-orange/5">
         <Statistics />
       </section>
 
       {/* Слайд 3: Решения */}
-      <section className="min-h-screen flex items-center justify-center snap-start">
+      <section className="min-h-screen flex items-center justify-center snap-start bg-gradient-to-br from-brand-orange/5 to-brand-darkBlue/5">
         <Solutions />
       </section>
 
       {/* Слайд 4: Преимущества */}
-      <section className="min-h-screen flex items-center justify-center snap-start">
+      <section className="min-h-screen flex items-center justify-center snap-start bg-gradient-to-br from-brand-darkBlue/5 to-brand-purple/5">
         <Advantages />
       </section>
 
       {/* Слайд 5: Процесс работы */}
-      <section className="min-h-screen flex items-center justify-center snap-start">
+      <section className="min-h-screen flex items-center justify-center snap-start bg-gradient-to-br from-brand-purple/5 to-brand-orange/5">
         <Process />
       </section>
 
       {/* Слайд 6: Кейсы */}
-      <section className="min-h-screen flex items-center justify-center snap-start">
+      <section className="min-h-screen flex items-center justify-center snap-start bg-gradient-to-br from-brand-orange/5 to-brand-darkBlue/5">
         <Cases />
       </section>
 
       {/* Слайд 7: Финальный слайд */}
-      <section className="min-h-screen flex items-center justify-center snap-start">
+      <section className="min-h-screen flex items-center justify-center snap-start bg-gradient-to-br from-brand-darkBlue/5 to-brand-purple/5">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <div className="bg-gradient-to-br from-white/90 to-white/70 rounded-3xl p-12 md:p-16 shadow-xl border border-gray-200">
             <h2 className="text-4xl sm:text-5xl font-bold mb-6 text-brand-darkBlue">
