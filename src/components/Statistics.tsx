@@ -25,29 +25,29 @@ const stats = [
 ];
 
 const Statistics: React.FC = () => (
-  <div className="max-w-6xl mx-auto px-4 animate-fade-in">
-    <div className="text-center mb-16">
-      <h2 className="text-4xl sm:text-5xl font-bold mb-6 text-brand-darkBlue">
+  <div className="max-w-5xl mx-auto px-8 sm:px-12 animate-fade-in">
+    <div className="text-center mb-8">
+      <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-brand-darkBlue">
         Результаты внедрения в цифрах
       </h2>
-      <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+      <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto">
         Конкретные показатели эффективности наших ИИ-решений
       </p>
     </div>
     
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
       {stats.map((stat, i) => (
         <div
           key={i}
-          className="text-center p-8 bg-white/70 rounded-3xl backdrop-blur-sm border border-white/30 hover:bg-white/90 transition-all shadow-lg"
+          className="text-center p-6 bg-white/80 rounded-xl backdrop-blur-sm border border-white/40 hover:bg-white/95 transition-all shadow-lg"
         >
-          <div className="text-4xl md:text-5xl font-bold text-brand-orange mb-3">
+          <div className="text-3xl md:text-4xl font-bold text-brand-orange mb-3">
             {stat.number}
           </div>
-          <div className="font-semibold text-lg md:text-xl text-brand-darkBlue mb-2">
+          <div className="font-semibold text-base text-brand-darkBlue mb-2">
             {stat.label}
           </div>
-          <div className="text-base md:text-lg text-gray-600">
+          <div className="text-sm text-gray-600">
             {stat.desc}
           </div>
         </div>
