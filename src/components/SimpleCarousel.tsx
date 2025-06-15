@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -97,7 +96,7 @@ const SimpleCarousel: React.FC<SimpleCarouselProps> = ({ children, className }) 
       </div>
 
       {/* Navigation buttons - moved further left */}
-      <div className="fixed top-8 left-4 z-[9999]">
+      <div className="fixed top-8 left-2 z-[9999]">
         <Button
           onClick={goToPrev}
           className="w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white border-none shadow-xl hover:shadow-2xl transition-all hover:scale-110"
@@ -107,7 +106,7 @@ const SimpleCarousel: React.FC<SimpleCarouselProps> = ({ children, className }) 
         </Button>
       </div>
       
-      <div className="fixed bottom-8 left-4 z-[9999]">
+      <div className="fixed bottom-8 left-2 z-[9999]">
         <Button
           onClick={goToNext}
           className="w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white border-none shadow-xl hover:shadow-2xl transition-all hover:scale-110"
@@ -117,8 +116,8 @@ const SimpleCarousel: React.FC<SimpleCarouselProps> = ({ children, className }) 
         </Button>
       </div>
 
-      {/* Slide indicators - moved further left */}
-      <div className="fixed left-16 top-1/2 transform -translate-y-1/2 z-[9999] flex flex-col space-y-2">
+      {/* Slide indicators - moved to far left edge */}
+      <div className="fixed left-6 top-1/2 transform -translate-y-1/2 z-[9999] flex flex-col space-y-2">
         {children.map((_, index) => (
           <button
             key={index}
