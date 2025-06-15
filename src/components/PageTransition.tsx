@@ -7,6 +7,7 @@ interface PageTransitionProps {
   children: React.ReactNode;
   titleDelay?: number;
   contentDelay?: number;
+  slideKey?: string | number; // Add key for animation reset
 }
 
 const PageTransition: React.FC<PageTransitionProps> = ({
@@ -14,12 +15,17 @@ const PageTransition: React.FC<PageTransitionProps> = ({
   subtitle,
   children,
   titleDelay = 100,
-  contentDelay = 800
+  contentDelay = 800,
+  slideKey
 }) => {
   const [showTitle, setShowTitle] = useState(false);
   const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
+    // Reset animation states when slideKey changes
+    setShowTitle(false);
+    setShowContent(false);
+
     const titleTimer = setTimeout(() => {
       setShowTitle(true);
     }, titleDelay);
@@ -32,12 +38,12 @@ const PageTransition: React.FC<PageTransitionProps> = ({
       clearTimeout(titleTimer);
       clearTimeout(contentTimer);
     };
-  }, [titleDelay, contentDelay]);
+  }, [titleDelay, contentDelay, slideKey]); // Add slideKey dependency
 
   return (
     <div className="relative w-full h-full">
-      {/* Full-screen title overlay */}
-      <div className={`fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-white/95 to-brand-orange/5 backdrop-blur-sm transition-all duration-1000 ${
+      {/* Full-screen title overlay - changed from fixed to absolute */}
+      <div className={`absolute inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-white/95 to-brand-orange/5 backdrop-blur-sm transition-all duration-1000 ${
         showContent ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}>
         <div className={`text-center transition-all duration-800 ${

@@ -47,22 +47,22 @@ const Index = () => {
 
     // Статистика
     <section key="statistics" className="h-full flex items-center justify-center py-12 bg-gradient-to-br from-brand-purple/5 to-brand-orange/10">
-      <Statistics />
+      <Statistics key="statistics-content" />
     </section>,
 
     // Решения
     <section key="solutions" className="h-full flex items-center justify-center py-12 bg-gradient-to-br from-brand-orange/5 to-brand-darkBlue/10">
-      <Solutions />
+      <Solutions key="solutions-content" />
     </section>,
 
     // Преимущества
     <section key="advantages" className="h-full flex items-center justify-center py-12 bg-gradient-to-br from-brand-darkBlue/5 to-brand-purple/10">
-      <Advantages />
+      <Advantages key="advantages-content" />
     </section>,
 
     // Процесс работы
     <section key="process" className="h-full flex items-center justify-center py-12 bg-gradient-to-br from-brand-purple/5 to-brand-orange/10">
-      <Process />
+      <Process key="process-content" />
     </section>,
 
     // Кейс - Ритейл

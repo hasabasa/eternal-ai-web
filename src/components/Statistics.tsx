@@ -29,6 +29,7 @@ const Statistics: React.FC = () => (
   <PageTransition
     title="Результаты внедрения в цифрах"
     subtitle="Конкретные показатели эффективности наших ИИ-решений"
+    slideKey="statistics"
   >
     <div className="max-w-6xl mx-auto px-8">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

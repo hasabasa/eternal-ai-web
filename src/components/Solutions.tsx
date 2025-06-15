@@ -35,6 +35,7 @@ const Solutions: React.FC = () => {
     <PageTransition
       title="Комплексные ИИ-решения для бизнеса"
       subtitle="Мы не просто создаём чат-ботов. Мы строим целые экосистемы."
+      slideKey="solutions"
     >
       <div className="max-w-6xl mx-auto px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">

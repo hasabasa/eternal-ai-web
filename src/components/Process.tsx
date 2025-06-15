@@ -34,6 +34,7 @@ const Process: React.FC = () => (
   <PageTransition
     title="Как мы внедряем ИИ в ваш бизнес"
     subtitle="Простой процесс от анализа до результата"
+    slideKey="process"
   >
     <div className="max-w-6xl mx-auto px-8">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
