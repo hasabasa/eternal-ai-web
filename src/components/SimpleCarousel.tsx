@@ -138,35 +138,35 @@ const SimpleCarousel: React.FC<SimpleCarouselProps> = ({ children, className }) 
         ))}
       </div>
 
-      {/* Navigation buttons */}
-      <div className="fixed top-4 left-2 z-[9999]">
+      {/* Navigation buttons - возвращены на прежнее место */}
+      <div className="fixed top-8 left-2 z-[9999]">
         <Button
           onClick={goToPrev}
-          className="w-10 h-10 sm:w-12 sm:h-12 bg-brand-orange/90 hover:bg-brand-orange text-white border-none shadow-xl hover:shadow-2xl transition-all hover:scale-110"
+          className="w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white border-none shadow-xl hover:shadow-2xl transition-all hover:scale-110"
           size="icon"
         >
-          <ChevronUp className="h-4 w-4 sm:h-5 sm:w-5" />
+          <ChevronUp className="h-5 w-5" />
         </Button>
       </div>
       
-      <div className="fixed bottom-4 left-2 z-[9999]">
+      <div className="fixed bottom-8 left-2 z-[9999]">
         <Button
           onClick={goToNext}
-          className="w-10 h-10 sm:w-12 sm:h-12 bg-brand-orange/90 hover:bg-brand-orange text-white border-none shadow-xl hover:shadow-2xl transition-all hover:scale-110"
+          className="w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white border-none shadow-xl hover:shadow-2xl transition-all hover:scale-110"
           size="icon"
         >
-          <ChevronDown className="h-4 w-4 sm:h-5 sm:w-5" />
+          <ChevronDown className="h-5 w-5" />
         </Button>
       </div>
 
-      {/* Slide indicators */}
-      <div className="fixed left-16 sm:left-20 top-1/2 transform -translate-y-1/2 z-[9999] flex flex-col space-y-2">
+      {/* Slide indicators - возвращены на прежнее место */}
+      <div className="fixed left-6 top-1/2 transform -translate-y-1/2 z-[9999] flex flex-col space-y-2">
         {children.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentIndex(index)}
             className={cn(
-              "w-2 h-6 sm:w-2 sm:h-8 rounded-full transition-all duration-300",
+              "w-2 h-8 rounded-full transition-all duration-300",
               index === currentIndex 
                 ? "bg-brand-orange" 
                 : "bg-white/50 hover:bg-white/70"
