@@ -1,6 +1,7 @@
 
 import React from "react";
 import { Search, Settings, Rocket, TrendingUp } from "lucide-react";
+import PageTransition from "./PageTransition";
 
 const steps = [
   {
@@ -30,47 +31,44 @@ const steps = [
 ];
 
 const Process: React.FC = () => (
-  <div className="max-w-6xl mx-auto px-8 animate-fade-in">
-    <div className="text-center mb-12">
-      <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-brand-darkBlue">
-        Как мы внедряем ИИ в ваш бизнес
-      </h2>
-      <p className="text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto">
-        Простой процесс от анализа до результата
-      </p>
-    </div>
-    
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-      {steps.map((step, i) => (
-        <div key={i} className="relative">
-          {/* Соединительная линия только для больших экранов */}
-          {i < steps.length - 1 && (
-            <div className="hidden lg:block absolute top-12 left-full w-full h-1 bg-gradient-to-r from-brand-orange/30 to-transparent" />
-          )}
-          
-          <div className="bg-white/80 rounded-3xl p-6 text-center hover:bg-white/95 transition-all shadow-xl border border-white/40 backdrop-blur-sm h-full flex flex-col justify-between">
-            <div>
-              <div className="mb-6 flex justify-center">
-                {step.icon}
+  <PageTransition
+    title="Как мы внедряем ИИ в ваш бизнес"
+    subtitle="Простой процесс от анализа до результата"
+  >
+    <div className="max-w-6xl mx-auto px-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {steps.map((step, i) => (
+          <div key={i} className="relative">
+            {/* Соединительная линия только для больших экранов */}
+            {i < steps.length - 1 && (
+              <div className="hidden lg:block absolute top-12 left-full w-full h-1 bg-gradient-to-r from-brand-orange/30 to-transparent" />
+            )}
+            
+            <div className="bg-white/80 rounded-3xl p-6 text-center hover:bg-white/95 transition-all shadow-xl border border-white/40 backdrop-blur-sm h-full flex flex-col justify-between animate-stagger-in"
+                 style={{ animationDelay: `${i * 150}ms` }}>
+              <div>
+                <div className="mb-6 flex justify-center">
+                  {step.icon}
+                </div>
+                <div className="text-base font-semibold text-brand-orange mb-4">
+                  Шаг {i + 1}
+                </div>
+                <h3 className="font-bold text-xl lg:text-2xl mb-4 text-brand-darkBlue">
+                  {step.title}
+                </h3>
+                <p className="text-base lg:text-lg text-gray-600 mb-6">
+                  {step.desc}
+                </p>
               </div>
-              <div className="text-base font-semibold text-brand-orange mb-4">
-                Шаг {i + 1}
+              <div className="text-base lg:text-lg bg-brand-purple/10 text-brand-purple px-5 py-3 rounded-full mt-auto">
+                {step.duration}
               </div>
-              <h3 className="font-bold text-xl lg:text-2xl mb-4 text-brand-darkBlue">
-                {step.title}
-              </h3>
-              <p className="text-base lg:text-lg text-gray-600 mb-6">
-                {step.desc}
-              </p>
-            </div>
-            <div className="text-base lg:text-lg bg-brand-purple/10 text-brand-purple px-5 py-3 rounded-full mt-auto">
-              {step.duration}
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
-  </div>
+  </PageTransition>
 );
 
 export default Process;
