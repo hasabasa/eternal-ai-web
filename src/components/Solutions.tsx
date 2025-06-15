@@ -1,4 +1,3 @@
-
 import React from "react";
 import { MessageCircle, ShoppingCart, Calendar, BarChart3 } from "lucide-react";
 
@@ -30,7 +29,7 @@ const solutions = [
 ];
 
 const Solutions: React.FC = () => (
-  <div className="max-w-4xl mx-auto px-4 animate-fade-in">
+  <div className="max-w-6xl mx-auto px-16 sm:px-20 animate-fade-in">
     <div className="text-center mb-6">
       <h2 className="text-2xl sm:text-3xl font-bold mb-3 text-brand-darkBlue">
         Комплексные ИИ-решения для бизнеса
