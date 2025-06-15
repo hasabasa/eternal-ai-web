@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useCounterAnimation } from "@/hooks/useCounterAnimation";
 
@@ -38,15 +37,15 @@ const StatCard: React.FC<{ stat: typeof stats[0], index: number }> = ({ stat, in
 
   return (
     <div
-      className={`text-center p-6 bg-white/80 rounded-2xl backdrop-blur-sm border border-white/40 hover:bg-white/95 transition-all shadow-lg animate-card-wave hover-lift will-animate stagger-${index + 1}`}
+      className={`text-center p-4 sm:p-6 bg-white/80 rounded-2xl backdrop-blur-sm border border-white/40 hover:bg-white/95 transition-all shadow-lg animate-section-entrance hover-lift will-animate stagger-${index + 1}`}
     >
-      <div className="text-4xl lg:text-6xl font-bold text-brand-orange mb-4 animate-counter-count will-animate">
+      <div className="text-3xl sm:text-4xl lg:text-6xl font-bold text-brand-orange mb-2 sm:mb-4 animate-number-pop will-animate">
         {count}{stat.suffix}
       </div>
-      <div className="font-semibold text-lg lg:text-xl text-brand-darkBlue mb-3">
+      <div className="font-semibold text-base sm:text-lg lg:text-xl text-brand-darkBlue mb-2 sm:mb-3 animate-text-reveal stagger-2 will-animate">
         {stat.label}
       </div>
-      <div className="text-base lg:text-lg text-gray-600">
+      <div className="text-sm sm:text-base lg:text-lg text-gray-600 animate-text-reveal stagger-3 will-animate">
         {stat.desc}
       </div>
     </div>
@@ -54,16 +53,16 @@ const StatCard: React.FC<{ stat: typeof stats[0], index: number }> = ({ stat, in
 };
 
 const Statistics: React.FC = () => (
-  <div className="max-w-6xl mx-auto px-8 animate-curtain-reveal">
-    <div className="text-center mb-12">
-      <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-brand-darkBlue animate-title-wave stagger-1 will-animate">
+  <div className="max-w-6xl mx-auto responsive-padding animate-section-entrance">
+    <div className="text-center mb-8 sm:mb-12">
+      <h2 className="responsive-title font-bold mb-4 sm:mb-6 text-brand-darkBlue animate-title-wave stagger-1 will-animate">
         Результаты внедрения в цифрах
       </h2>
-      <p className="text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto animate-description-fade-up stagger-2 will-animate">
+      <p className="responsive-text text-gray-600 max-w-4xl mx-auto animate-description-fade-up stagger-2 will-animate">
         Конкретные показатели эффективности наших ИИ-решений
       </p>
     </div>
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
       {stats.map((stat, i) => (
         <StatCard key={i} stat={stat} index={i} />
       ))}

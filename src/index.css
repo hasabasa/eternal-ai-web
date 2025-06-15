@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -126,6 +125,70 @@ body {
   }
 }
 
+@keyframes section-entrance {
+  0% {
+    transform: translateY(60px) scale(0.95);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes icon-bounce {
+  0% {
+    transform: scale(0.5) rotate(-15deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1) rotate(5deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes text-reveal {
+  0% {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes number-pop {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 /* Анимационные классы */
 .animate-curtain-reveal {
   animation: curtain-reveal 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
@@ -163,6 +226,31 @@ body {
   animation: slide-transition 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
+.animate-section-entrance {
+  animation: section-entrance 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  opacity: 0;
+}
+
+.animate-icon-bounce {
+  animation: icon-bounce 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  opacity: 0;
+}
+
+.animate-text-reveal {
+  animation: text-reveal 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  opacity: 0;
+}
+
+.animate-number-pop {
+  animation: number-pop 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  opacity: 0;
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
 /* Stagger delays для волновых эффектов */
 .stagger-1 { animation-delay: 0.1s; }
 .stagger-2 { animation-delay: 0.2s; }
@@ -172,6 +260,8 @@ body {
 .stagger-6 { animation-delay: 0.6s; }
 .stagger-7 { animation-delay: 0.7s; }
 .stagger-8 { animation-delay: 0.8s; }
+.stagger-9 { animation-delay: 0.9s; }
+.stagger-10 { animation-delay: 1.0s; }
 
 /* Оптимизация производительности */
 .will-animate {
@@ -185,6 +275,75 @@ body {
 
 .hover-lift:hover {
   transform: translateY(-5px) scale(1.02);
+}
+
+/* Адаптивные размеры текста */
+@media (max-width: 640px) {
+  .responsive-title {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+  
+  .responsive-subtitle {
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
+  
+  .responsive-text {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  .responsive-title {
+    font-size: 2.5rem;
+    line-height: 1.2;
+  }
+  
+  .responsive-subtitle {
+    font-size: 1.75rem;
+    line-height: 1.3;
+  }
+  
+  .responsive-text {
+    font-size: 1.125rem;
+    line-height: 1.5;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .responsive-title {
+    font-size: 3rem;
+    line-height: 1.2;
+  }
+  
+  .responsive-subtitle {
+    font-size: 2rem;
+    line-height: 1.3;
+  }
+  
+  .responsive-text {
+    font-size: 1.25rem;
+    line-height: 1.5;
+  }
+}
+
+@media (min-width: 1025px) {
+  .responsive-title {
+    font-size: 4rem;
+    line-height: 1.1;
+  }
+  
+  .responsive-subtitle {
+    font-size: 2.5rem;
+    line-height: 1.2;
+  }
+  
+  .responsive-text {
+    font-size: 1.5rem;
+    line-height: 1.4;
+  }
 }
 
 /* Кастомный скроллбар */
@@ -208,4 +367,13 @@ body {
 /* Плавные переходы между секциями */
 section {
   scroll-margin-top: 0;
+}
+
+/* Адаптивные отступы */
+.responsive-padding {
+  @apply px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16;
+}
+
+.responsive-margin {
+  @apply my-4 sm:my-6 md:my-8 lg:my-12 xl:my-16;
 }
