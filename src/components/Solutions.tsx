@@ -1,96 +1,67 @@
+import React from "react";
+import { Zap, MessageSquare, Users, CheckCheck } from "lucide-react";
 
-import React, { useState, useEffect } from "react";
-import { MessageCircle, ShoppingCart, Calendar, BarChart3 } from "lucide-react";
-
-const solutions = [
+const solutionsData = [
   {
-    icon: <MessageCircle className="w-12 h-12 text-brand-purple" />,
-    title: "Чат-боты",
-    desc: "Telegram, WhatsApp, Instagram",
-    features: ["Обработка заявок", "Консультации 24/7"]
-  },
-  {
-    icon: <ShoppingCart className="w-12 h-12 text-brand-orange" />,
+    icon: <Zap className="w-8 h-8 text-brand-orange" />,
     title: "Автоматизация продаж",
-    desc: "От лида до закрытия сделки",
-    features: ["Квалификация лидов", "Презентация товаров"]
+    description: "Автоматизируйте ответы на часто задаваемые вопросы, обработку заказов и консультации, чтобы увеличить конверсию и снизить нагрузку на менеджеров.",
   },
   {
-    icon: <Calendar className="w-12 h-12 text-brand-purple" />,
-    title: "Система бронирований",
-    desc: "Управление записями и услугами",
-    features: ["Онлайн-запись", "Напоминания"]
+    icon: <MessageSquare className="w-8 h-8 text-brand-purple" />,
+    title: "Поддержка клиентов 24/7",
+    description: "Обеспечьте круглосуточную поддержку клиентов, отвечая на вопросы, решая проблемы и предоставляя информацию в любое время.",
   },
   {
-    icon: <BarChart3 className="w-12 h-12 text-brand-orange" />,
-    title: "Аналитика",
-    desc: "Глубокая аналитика в реальном времени",
-    features: ["Метрики эффективности", "Прогнозы продаж"]
-  }
+    icon: <Users className="w-8 h-8 text-brand-orange" />,
+    title: "Привлечение лидов",
+    description: "Собирайте контактные данные потенциальных клиентов, квалифицируйте лидов и назначайте встречи, чтобы расширить базу клиентов.",
+  },
+  {
+    icon: <CheckCheck className="w-8 h-8 text-brand-purple" />,
+    title: "Персонализированные предложения",
+    description: "Анализируйте данные о клиентах, чтобы предлагать персонализированные продукты, услуги и акции, повышая лояльность и продажи.",
+  },
+  {
+    icon: <Zap className="w-8 h-8 text-brand-orange" />,
+    title: "Оптимизация маркетинга",
+    description: "Автоматизируйте email-маркетинг, рассылки в мессенджерах и таргетированную рекламу, чтобы повысить эффективность маркетинговых кампаний.",
+  },
+  {
+    icon: <MessageSquare className="w-8 h-8 text-brand-purple" />,
+    title: "Аналитика и отчетность",
+    description: "Собирайте данные о взаимодействии с клиентами, анализируйте тренды и создавайте отчеты, чтобы принимать обоснованные решения и улучшать бизнес-процессы.",
+  },
 ];
 
-const Solutions: React.FC = () => {
-  const [showTitle, setShowTitle] = useState(false);
-  const [showContent, setShowContent] = useState(false);
-
-  useEffect(() => {
-    const titleTimer = setTimeout(() => {
-      setShowTitle(true);
-    }, 100);
-
-    const contentTimer = setTimeout(() => {
-      setShowContent(true);
-    }, 900);
-
-    return () => {
-      clearTimeout(titleTimer);
-      clearTimeout(contentTimer);
-    };
-  }, []);
-
+const Solutions = () => {
   return (
-    <div className="max-w-6xl mx-auto px-8 animate-curtain-reveal">
-      <div className={`text-center mb-6 transition-all duration-800 ${
-        showTitle ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-      }`}>
-        <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-brand-darkBlue animate-title-wave stagger-1 will-animate">
-          Комплексные ИИ-решения для бизнеса
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 animate-curtain-reveal">
+      <div className="text-center mb-12">
+        <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-brand-darkBlue animate-title-wave stagger-1 will-animate">
+          Наши решения
         </h2>
         <p className="text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto animate-description-fade-up stagger-2 will-animate">
-          Мы не просто создаём чат-ботов. Мы строим целые экосистемы.
+          Идеальные сценарии под ваш бизнес
         </p>
       </div>
-      <div className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 transition-all duration-1000 delay-200 ${
-        showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-      }`}>
-        {solutions.map((solution, i) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {solutionsData.map((solution, index) => (
           <div
-            key={i}
-            className={`bg-white/80 rounded-3xl p-4 shadow-xl border border-white/40 hover:bg-white/95 transition-all backdrop-blur-sm flex flex-col hover-lift will-animate animate-card-wave stagger-${i + 1}`}
+            key={index}
+            className={`bg-white/80 rounded-3xl border border-white/40 shadow-xl p-6 hover:bg-white/95 transition-all backdrop-blur-sm hover-lift will-animate animate-card-wave stagger-${
+              index + 1
+            } flex flex-col`}
           >
-            <div className="flex items-start gap-4 mb-4 flex-grow">
-              <div className="p-3 bg-white rounded-2xl shadow-lg will-animate">
-                {solution.icon}
-              </div>
-              <div className="flex-1">
-                <h3 className="text-xl lg:text-2xl font-bold mb-2 text-brand-darkBlue animate-title-wave stagger-1 will-animate">
-                  {solution.title}
-                </h3>
-                <p className="text-base lg:text-lg text-gray-600 mb-3 animate-description-fade-up stagger-2 will-animate">
-                  {solution.desc}
-                </p>
-              </div>
+            <div className="flex items-center justify-center h-16 mb-4">
+              {solution.icon}
             </div>
-            <div className="flex flex-wrap gap-2 mt-auto">
-              {solution.features.map((feature, j) => (
-                <span
-                  key={j}
-                  className="px-3 py-1 bg-brand-purple/10 text-brand-purple rounded-full text-sm lg:text-base font-medium"
-                >
-                  {feature}
-                </span>
-              ))}
-            </div>
+            <h3 className="font-bold text-xl lg:text-2xl mb-4 text-brand-darkBlue animate-title-wave stagger-1 will-animate">
+              {solution.title}
+            </h3>
+            <p className="text-base lg:text-lg text-gray-600 mb-6 animate-description-fade-up stagger-2 will-animate">
+              {solution.description}
+            </p>
           </div>
         ))}
       </div>
