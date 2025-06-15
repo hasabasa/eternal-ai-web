@@ -42,55 +42,55 @@ const cases = [
 
 const Cases: React.FC = () => (
   <div className="max-w-6xl mx-auto px-4 animate-fade-in">
-    <div className="text-center mb-8 md:mb-16">
-      <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 md:mb-6 text-brand-darkBlue">
+    <div className="text-center mb-8 md:mb-12">
+      <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-6 text-brand-darkBlue">
         Реальные истории трансформации бизнеса
       </h2>
-      <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+      <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
         Кейсы наших клиентов с конкретными цифрами и результатами
       </p>
     </div>
     
-    <div className="space-y-6 md:space-y-8">
+    <div className="space-y-4 md:space-y-6">
       {cases.map((caseItem, i) => (
-        <div key={i} className="bg-white/70 rounded-3xl border border-white/30 shadow-lg p-6 md:p-8 hover:bg-white/90 transition-all backdrop-blur-sm">
-          <div className="grid md:grid-cols-2 gap-6">
+        <div key={i} className="bg-white/70 rounded-2xl md:rounded-3xl border border-white/30 shadow-lg p-4 md:p-6 lg:p-8 hover:bg-white/90 transition-all backdrop-blur-sm">
+          <div className="grid md:grid-cols-2 gap-4 md:gap-6">
             <div>
-              <div className="flex items-center gap-3 mb-4">
-                <span className="px-3 py-1 bg-brand-orange/20 text-brand-orange rounded-full text-sm font-semibold">
+              <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
+                <span className="px-2 md:px-3 py-1 bg-brand-orange/20 text-brand-orange rounded-full text-xs md:text-sm font-semibold">
                   {caseItem.category}
                 </span>
-                <h3 className="font-bold text-lg md:text-xl text-brand-darkBlue">
+                <h3 className="font-bold text-sm md:text-lg lg:text-xl text-brand-darkBlue">
                   {caseItem.name}
                 </h3>
               </div>
               
-              <div className="space-y-3">
+              <div className="space-y-2 md:space-y-3">
                 <div>
-                  <h4 className="font-semibold text-red-600 mb-1">Проблема:</h4>
-                  <p className="text-gray-600 text-sm md:text-base">{caseItem.challenge}</p>
+                  <h4 className="font-semibold text-red-600 mb-1 text-xs md:text-sm">Проблема:</h4>
+                  <p className="text-gray-600 text-xs md:text-sm lg:text-base">{caseItem.challenge}</p>
                 </div>
                 
                 <div>
-                  <h4 className="font-semibold text-blue-600 mb-1">Решение:</h4>
-                  <p className="text-gray-600 text-sm md:text-base">{caseItem.solution}</p>
+                  <h4 className="font-semibold text-blue-600 mb-1 text-xs md:text-sm">Решение:</h4>
+                  <p className="text-gray-600 text-xs md:text-sm lg:text-base">{caseItem.solution}</p>
                 </div>
               </div>
             </div>
             
             <div>
-              <h4 className="font-semibold text-green-600 mb-3">Результаты:</h4>
-              <div className="space-y-2 mb-4">
+              <h4 className="font-semibold text-green-600 mb-2 md:mb-3 text-xs md:text-sm">Результаты:</h4>
+              <div className="space-y-1 md:space-y-2 mb-3 md:mb-4">
                 {caseItem.results.map((result, j) => (
                   <div key={j} className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span className="font-medium text-green-700 text-sm md:text-base">{result}</span>
+                    <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                    <span className="font-medium text-green-700 text-xs md:text-sm lg:text-base">{result}</span>
                   </div>
                 ))}
               </div>
               
-              <div className="bg-brand-purple/10 rounded-2xl p-4 border-l-4 border-brand-purple">
-                <p className="text-brand-darkBlue italic text-sm md:text-base">"{caseItem.testimonial}"</p>
+              <div className="bg-brand-purple/10 rounded-xl md:rounded-2xl p-3 md:p-4 border-l-2 md:border-l-4 border-brand-purple">
+                <p className="text-brand-darkBlue italic text-xs md:text-sm lg:text-base">"{caseItem.testimonial}"</p>
               </div>
             </div>
           </div>
