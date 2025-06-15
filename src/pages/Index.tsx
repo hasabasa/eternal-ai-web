@@ -1,4 +1,3 @@
-
 import AuroraBackground from "@/components/AuroraBackground";
 import BurgerMenu from "@/components/BurgerMenu";
 import Advantages from "@/components/Advantages";
@@ -28,7 +27,7 @@ const Index = () => {
       <Carousel
         opts={{
           align: "start",
-          loop: false,
+          loop: true,
         }}
         orientation="vertical"
         className="w-full h-full"
@@ -152,8 +151,10 @@ const Index = () => {
             </section>
           </CarouselItem>
         </CarouselContent>
-        <CarouselPrevious className="w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-110 absolute left-8 top-8 border-none" />
-        <CarouselNext className="w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-110 absolute right-8 bottom-8 border-none" />
+        <div className="absolute bottom-8 right-8 flex flex-col gap-2 z-10">
+            <CarouselPrevious className="static w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-110 border-none" />
+            <CarouselNext className="static w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-110 border-none" />
+        </div>
       </Carousel>
     </div>
   );
