@@ -22,7 +22,7 @@ const ClientCalc = () => {
         <Check className="w-12 h-12 mb-2 text-brand-orange" />
         <h2 className="font-bold text-2xl mb-6 text-center">Расчёт с клиентом</h2>
         <div className="w-full flex flex-col gap-3">
-          <label className="text-md font-medium">Сумма продажи (₽)
+          <label className="text-md font-medium">Сумма продажи (₸)
             <input
               type="number"
               className="w-full mt-1 px-3 py-2 rounded-lg border border-muted bg-muted/40 focus:outline-none focus:ring-2 focus:ring-brand-darkBlue transition"
@@ -51,7 +51,7 @@ const ClientCalc = () => {
           </button>
           {result !== null && (
             <div className="mt-3 p-3 rounded-lg bg-brand-orange/15 border border-brand-orange text-primary text-lg text-center">
-              Клиенту: <span className="font-bold">{result.toLocaleString('ru-RU')} ₽</span>
+              Клиенту: <span className="font-bold">{result.toLocaleString('ru-RU')} ₸</span>
             </div>
           )}
         </div>

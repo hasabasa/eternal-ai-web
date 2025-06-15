@@ -20,12 +20,12 @@ const Profile = () => (
       <Users className="w-12 h-12 mb-2 text-brand-darkBlue" />
       <h2 className="font-bold text-2xl mb-4">Мой профиль</h2>
       <div className="w-full flex flex-col gap-2 text-md">
-        <div className="flex justify-between"><span>KPI за месяц</span><span>{kpi.sales.toLocaleString('ru-RU')} ₽</span></div>
-        <div className="flex justify-between"><span>Базовый оклад</span><span>{kpi.base.toLocaleString('ru-RU')} ₽</span></div>
+        <div className="flex justify-between"><span>KPI за месяц</span><span>{kpi.sales.toLocaleString('ru-RU')} ₸</span></div>
+        <div className="flex justify-between"><span>Базовый оклад</span><span>{kpi.base.toLocaleString('ru-RU')} ₸</span></div>
         <div className="flex justify-between"><span>Процент от продаж</span><span>{kpi.percent}%</span></div>
         <div className="flex justify-between font-semibold">
           <span>Сумма заработанных денег</span>
-          <span>{calcIncome().toLocaleString('ru-RU')} ₽</span>
+          <span>{calcIncome().toLocaleString('ru-RU')} ₸</span>
         </div>
         <div className="mt-2 text-muted-foreground text-sm">Общий расчёт ЗП: Оклад + процент от продаж</div>
       </div>
