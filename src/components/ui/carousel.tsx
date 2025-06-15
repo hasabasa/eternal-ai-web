@@ -1,4 +1,3 @@
-
 import * as React from "react"
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
@@ -152,7 +151,7 @@ const Carousel = React.forwardRef<
         }
       }
 
-      const viewportNode = api.viewportNode()
+      const viewportNode = carouselRef.current
       if (viewportNode) {
         viewportNode.addEventListener("wheel", onWheel, { passive: false })
       }
@@ -163,7 +162,7 @@ const Carousel = React.forwardRef<
         }
         clearTimeout(timeout)
       }
-    }, [api, orientation])
+    }, [api, orientation, carouselRef])
 
     return (
       <CarouselContext.Provider
