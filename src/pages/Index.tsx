@@ -93,7 +93,10 @@ const Index = () => {
 
             {/* Кнопка расчёта */}
             <Link to="/client-calc">
-              
+              <Button size="lg" className="bg-brand-orange hover:bg-brand-orange/90 text-white text-2xl px-12 py-8 rounded-xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
+                <Calculator className="w-7 h-7 mr-3" />
+                Сделать расчёт
+              </Button>
             </Link>
           </div>
         </section>
