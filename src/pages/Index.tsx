@@ -54,7 +54,7 @@ const Index = () => {
         transform: `translateX(-${currentSlide * 100}%)`
       }}>
         {/* Слайд 1: Главная секция */}
-        <div className="w-full h-full flex-shrink-0 flex items-center justify-center px-6 sm:px-8 lg:px-12 bg-gradient-to-br from-white to-brand-orange/5">
+        <div className="w-full h-full flex-shrink-0 flex items-center justify-center px-8 sm:px-12 lg:px-16 bg-gradient-to-br from-white to-brand-orange/5">
           <div className="max-w-5xl mx-auto text-center">
             {/* Логотип */}
             <div className="font-extrabold text-3xl sm:text-5xl lg:text-6xl text-brand-darkBlue tracking-tight mb-4 sm:mb-6 select-none drop-shadow-lg leading-none">
@@ -154,26 +154,26 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Навигационные стрелки */}
-      <div className="fixed left-4 sm:left-6 top-1/2 transform -translate-y-1/2 z-[100]">
-        <Button onClick={prevSlide} variant="outline" size="icon" className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white/90 backdrop-blur-sm border-brand-orange/50 hover:bg-brand-orange hover:text-white shadow-lg transition-all">
-          <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" />
+      {/* Навигационные стрелки - увеличены и улучшены */}
+      <div className="fixed left-6 sm:left-8 top-1/2 transform -translate-y-1/2 z-[100]">
+        <Button onClick={prevSlide} variant="outline" size="icon" className="w-14 h-14 sm:w-18 sm:h-18 rounded-full bg-white/95 backdrop-blur-sm border-brand-orange/50 hover:bg-brand-orange hover:text-white shadow-xl transition-all">
+          <ChevronLeft className="w-7 h-7 sm:w-9 sm:h-9" />
         </Button>
       </div>
 
-      <div className="fixed right-4 sm:right-6 top-1/2 transform -translate-y-1/2 z-[100]">
-        <Button onClick={nextSlide} variant="outline" size="icon" className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white/90 backdrop-blur-sm border-brand-orange/50 hover:bg-brand-orange hover:text-white shadow-lg transition-all">
-          <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8" />
+      <div className="fixed right-6 sm:right-8 top-1/2 transform -translate-y-1/2 z-[100]">
+        <Button onClick={nextSlide} variant="outline" size="icon" className="w-14 h-14 sm:w-18 sm:h-18 rounded-full bg-white/95 backdrop-blur-sm border-brand-orange/50 hover:bg-brand-orange hover:text-white shadow-xl transition-all">
+          <ChevronRight className="w-7 h-7 sm:w-9 sm:h-9" />
         </Button>
       </div>
 
-      {/* Индикатор слайдов */}
-      <div className="fixed bottom-6 sm:bottom-8 left-1/2 transform -translate-x-1/2 z-[100] flex space-x-3">
+      {/* Индикатор слайдов - увеличен */}
+      <div className="fixed bottom-8 sm:bottom-10 left-1/2 transform -translate-x-1/2 z-[100] flex space-x-4">
         {Array.from({ length: totalSlides }).map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all shadow-lg ${
+            className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full transition-all shadow-lg ${
               index === currentSlide 
                 ? 'bg-brand-orange scale-125 shadow-brand-orange/50' 
                 : 'bg-white/70 hover:bg-white/90'
