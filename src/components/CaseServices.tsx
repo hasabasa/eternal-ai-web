@@ -2,7 +2,7 @@ import React from "react";
 import { Briefcase, Clock, TrendingUp } from "lucide-react";
 
 const CaseServices: React.FC = () => (
-  <div className="max-w-6xl mx-auto px-8 animate-fade-in">
+  <div className="max-w-6xl mx-auto px-8 animate-curtain-reveal">
     <div className="text-center mb-12">
       <div className="flex items-center justify-center gap-6 mb-8">
         <Briefcase className="w-12 h-12 text-brand-orange" />
@@ -10,10 +10,10 @@ const CaseServices: React.FC = () => (
           Услуги
         </span>
       </div>
-      <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-brand-darkBlue">
+      <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-brand-darkBlue animate-title-wave stagger-1 will-animate">
         Личный ассистент
       </h2>
-      <p className="text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto">
+      <p className="text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto animate-description-fade-up stagger-2 will-animate">
         ИИ-помощник освободил 20 часов в неделю для стратегических задач
       </p>
     </div>
@@ -70,10 +70,10 @@ const CaseServices: React.FC = () => (
     {/* Отзыв */}
     <div className="bg-brand-purple/10 rounded-3xl p-6 border-l-8 border-brand-purple">
       <div className="text-center">
-        <p className="text-brand-darkBlue italic mb-6 leading-relaxed text-xl lg:text-2xl">
+        <p className="text-brand-darkBlue italic mb-6 leading-relaxed text-xl lg:text-2xl animate-description-fade-up stagger-3 will-animate">
           "ИИ стал моей правой рукой. Теперь я занимаюсь стратегией, а не рутиной."
         </p>
-        <div className="text-lg text-brand-purple font-semibold">
+        <div className="text-lg text-brand-purple font-semibold animate-title-wave stagger-4 will-animate">
           — Руководитель компании
         </div>
       </div>

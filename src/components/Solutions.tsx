@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { MessageCircle, ShoppingCart, Calendar, BarChart3 } from "lucide-react";
 
@@ -51,7 +50,7 @@ const Solutions: React.FC = () => {
   }, []);
 
   return (
-    <div className="max-w-6xl mx-auto px-8 animate-slide-transition">
+    <div className="max-w-6xl mx-auto px-8 animate-curtain-reveal">
       <div className={`text-center mb-6 transition-all duration-800 ${
         showTitle ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
       }`}>
@@ -77,10 +76,10 @@ const Solutions: React.FC = () => {
                 {solution.icon}
               </div>
               <div className="flex-1">
-                <h3 className="text-xl lg:text-2xl font-bold mb-2 text-brand-darkBlue">
+                <h3 className="text-xl lg:text-2xl font-bold mb-2 text-brand-darkBlue animate-title-wave stagger-1 will-animate">
                   {solution.title}
                 </h3>
-                <p className="text-base lg:text-lg text-gray-600 mb-3">
+                <p className="text-base lg:text-lg text-gray-600 mb-3 animate-description-fade-up stagger-2 will-animate">
                   {solution.desc}
                 </p>
               </div>

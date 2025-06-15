@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useCounterAnimation } from "@/hooks/useCounterAnimation";
 
@@ -54,7 +53,7 @@ const StatCard: React.FC<{ stat: typeof stats[0], index: number }> = ({ stat, in
 };
 
 const Statistics: React.FC = () => (
-  <div className="max-w-6xl mx-auto px-8 animate-slide-transition">
+  <div className="max-w-6xl mx-auto px-8 animate-curtain-reveal">
     <div className="text-center mb-12">
       <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-brand-darkBlue animate-title-wave stagger-1 will-animate">
         Результаты внедрения в цифрах
@@ -63,7 +62,6 @@ const Statistics: React.FC = () => (
         Конкретные показатели эффективности наших ИИ-решений
       </p>
     </div>
-    
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {stats.map((stat, i) => (
         <StatCard key={i} stat={stat} index={i} />

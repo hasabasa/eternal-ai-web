@@ -2,7 +2,7 @@ import React from "react";
 import { Flower, TrendingUp, Clock } from "lucide-react";
 
 const CaseRetail: React.FC = () => (
-  <div className="max-w-6xl mx-auto px-8 animate-fade-in">
+  <div className="max-w-6xl mx-auto px-8 animate-curtain-reveal">
     <div className="text-center mb-12">
       <div className="flex items-center justify-center gap-6 mb-8">
         <Flower className="w-12 h-12 text-brand-orange" />
@@ -10,10 +10,10 @@ const CaseRetail: React.FC = () => (
           Ритейл
         </span>
       </div>
-      <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-brand-darkBlue">
+      <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-brand-darkBlue animate-title-wave stagger-1 will-animate">
         Цветочный бизнес
       </h2>
-      <p className="text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto">
+      <p className="text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto animate-description-fade-up stagger-2 will-animate">
         Как ИИ-ассистент увеличил продажи на 150%
       </p>
     </div>
@@ -70,10 +70,10 @@ const CaseRetail: React.FC = () => (
     {/* Отзыв */}
     <div className="bg-brand-purple/10 rounded-3xl p-6 border-l-8 border-brand-purple">
       <div className="text-center">
-        <p className="text-brand-darkBlue italic mb-6 leading-relaxed text-xl lg:text-2xl">
+        <p className="text-brand-darkBlue italic mb-6 leading-relaxed text-xl lg:text-2xl animate-description-fade-up stagger-3 will-animate">
           "ИИ работает лучше менеджера. Клиенты довольны скоростью и точностью."
         </p>
-        <div className="text-lg text-brand-purple font-semibold">
+        <div className="text-lg text-brand-purple font-semibold animate-title-wave stagger-4 will-animate">
           — Владелец цветочного магазина
         </div>
       </div>

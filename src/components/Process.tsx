@@ -30,7 +30,7 @@ const steps = [
 ];
 
 const Process: React.FC = () => (
-  <div className="max-w-6xl mx-auto px-8 animate-slide-transition">
+  <div className="max-w-6xl mx-auto px-8 animate-curtain-reveal">
     <div className="text-center mb-12">
       <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-brand-darkBlue animate-title-wave stagger-1 will-animate">
         Как мы внедряем ИИ в ваш бизнес
@@ -39,7 +39,7 @@ const Process: React.FC = () => (
         Простой процесс от анализа до результата
       </p>
     </div>
-    
+
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
       {steps.map((step, i) => (
         <div key={i} className="relative">
@@ -47,19 +47,19 @@ const Process: React.FC = () => (
           {i < steps.length - 1 && (
             <div className="hidden lg:block absolute top-12 left-full w-full h-1 bg-gradient-to-r from-brand-orange/30 to-transparent" />
           )}
-          
+
           <div className={`bg-white/80 rounded-3xl p-6 text-center hover:bg-white/95 transition-all shadow-xl border border-white/40 backdrop-blur-sm h-full flex flex-col justify-between hover-lift will-animate animate-card-wave stagger-${i + 1}`}>
             <div>
               <div className="mb-6 flex justify-center will-animate">
                 {step.icon}
               </div>
-              <div className="text-base font-semibold text-brand-orange mb-4">
+              <div className="text-base font-semibold text-brand-orange mb-4 animate-title-wave stagger-1 will-animate">
                 Шаг {i + 1}
               </div>
-              <h3 className="font-bold text-xl lg:text-2xl mb-4 text-brand-darkBlue">
+              <h3 className="font-bold text-xl lg:text-2xl mb-4 text-brand-darkBlue animate-title-wave stagger-1 will-animate">
                 {step.title}
               </h3>
-              <p className="text-base lg:text-lg text-gray-600 mb-6">
+              <p className="text-base lg:text-lg text-gray-600 mb-6 animate-description-fade-up stagger-2 will-animate">
                 {step.desc}
               </p>
             </div>
