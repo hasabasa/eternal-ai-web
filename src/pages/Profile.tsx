@@ -15,9 +15,9 @@ const calcIncome = () => {
 };
 
 const Profile = () => (
-  <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-aurora2/30 to-aurora4/30 px-4 py-10 animate-fade-in">
+  <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-brand-orange/20 to-brand-purple/20 px-4 py-10 animate-fade-in">
     <div className="max-w-md w-full bg-white/90 rounded-2xl shadow-xl border border-muted p-8 flex flex-col items-center">
-      <Users className="w-12 h-12 mb-2 text-aurora5" />
+      <Users className="w-12 h-12 mb-2 text-brand-darkBlue" />
       <h2 className="font-bold text-2xl mb-4">Мой профиль</h2>
       <div className="w-full flex flex-col gap-2 text-md">
         <div className="flex justify-between"><span>KPI за месяц</span><span>{kpi.sales.toLocaleString('ru-RU')} ₽</span></div>
@@ -29,7 +29,7 @@ const Profile = () => (
         </div>
         <div className="mt-2 text-muted-foreground text-sm">Общий расчёт ЗП: Оклад + процент от продаж</div>
       </div>
-      <Link to="/" className="mt-6 px-5 py-2 font-medium rounded-lg bg-primary text-primary-foreground hover:bg-aurora4 transition">
+      <Link to="/" className="mt-6 px-5 py-2 font-medium rounded-lg bg-primary text-primary-foreground hover:bg-brand-orange/90 transition">
         На главную
       </Link>
     </div>

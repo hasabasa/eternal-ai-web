@@ -40,8 +40,16 @@ const Carousel = React.forwardRef<
         return
       }
 
-      const canPrev = api.canScrollPrev()
-      const canNext = api.canScrollNext()
+      let canPrev, canNext;
+      if (opts?.loop) {
+        // According to embla-carousel docs, canScrollPrev/Next should be true with loop: true
+        canPrev = true;
+        canNext = true;
+      } else {
+        canPrev = api.canScrollPrev()
+        canNext = api.canScrollNext()
+      }
+
       const selectedIndex = api.selectedScrollSnap()
       const slideCount = api.slideNodes().length
       
@@ -55,7 +63,7 @@ const Carousel = React.forwardRef<
       
       setCanScrollPrev(canPrev)
       setCanScrollNext(canNext)
-    }, [])
+    }, [opts])
 
     const scrollPrev = React.useCallback(() => {
       console.log('scrollPrev called, api exists:', !!api, 'canScrollPrev:', canScrollPrev)
@@ -112,11 +120,13 @@ const Carousel = React.forwardRef<
       onSelect(api)
       api.on("reInit", onSelect)
       api.on("select", onSelect)
+      api.on("settle", onSelect) // Add listener for settle event
 
       return () => {
         console.log('Cleaning up carousel listeners')
         api?.off("select", onSelect)
         api?.off("reInit", onSelect)
+        api?.off("settle", onSelect) // Cleanup settle listener
       }
     }, [api, onSelect])
 
