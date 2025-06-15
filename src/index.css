@@ -3,24 +3,23 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Презентационный стиль */
+/* Стили для десктоп-презентации */
 html {
-  overflow: hidden;
+  scroll-behavior: smooth;
 }
 
 body {
   @apply font-inter bg-background text-foreground;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
   box-sizing: border-box;
 }
 
-/* Отключаем скролл для презентации */
+/* Плавный скролл */
 * {
   scroll-behavior: smooth;
 }
 
-/* Анимации появления для презентации */
+/* Анимации появления */
 @keyframes slide-fade-in {
   0% {
     opacity: 0;
@@ -51,24 +50,25 @@ body {
   animation: presentation-entrance 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
-/* Кастомный скроллбар (скрыт) */
+/* Кастомный скроллбар */
 ::-webkit-scrollbar {
-  display: none;
+  width: 8px;
 }
 
-/* Стили для навигационных элементов */
-.slide-indicator {
-  transition: all 0.3s ease;
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.slide-nav-button {
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+::-webkit-scrollbar-thumb {
+  background: #FE9C2D;
+  border-radius: 4px;
 }
 
-/* Адаптивные стили для мобильных */
-@media (max-width: 640px) {
-  .animate-slide-fade-in {
-    animation-duration: 0.8s;
-  }
+::-webkit-scrollbar-thumb:hover {
+  background: #e88a26;
+}
+
+/* Плавные переходы между секциями */
+section {
+  scroll-margin-top: 0;
 }

@@ -9,177 +9,116 @@ import Solutions from "@/components/Solutions";
 import Process from "@/components/Process";
 import Statistics from "@/components/Statistics";
 import { Button } from "@/components/ui/button";
-import { Calculator, ChevronLeft, ChevronRight } from "lucide-react";
+import { Calculator } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
 
 const Index = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const totalSlides = 9;
-  
-  const nextSlide = () => {
-    setCurrentSlide(prev => (prev + 1) % totalSlides);
-  };
-  
-  const prevSlide = () => {
-    setCurrentSlide(prev => (prev - 1 + totalSlides) % totalSlides);
-  };
-  
-  const goToSlide = (slideIndex: number) => {
-    setCurrentSlide(slideIndex);
-  };
-
-  // Обработка клавиш
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'ArrowRight' || event.key === ' ') {
-        event.preventDefault();
-        nextSlide();
-      } else if (event.key === 'ArrowLeft') {
-        event.preventDefault();
-        prevSlide();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div className="relative w-full min-h-screen overflow-y-auto">
       <AuroraBackground />
       <BurgerMenu />
 
-      {/* Контейнер слайдов */}
-      <div className="flex w-full h-full transition-transform duration-700 ease-in-out" style={{
-        transform: `translateX(-${currentSlide * 100}%)`
-      }}>
-        {/* Слайд 1: Главная секция */}
-        <div className="w-full h-full flex-shrink-0 flex items-center justify-center px-8 sm:px-12 lg:px-16 bg-gradient-to-br from-white to-brand-orange/5">
-          <div className="max-w-5xl mx-auto text-center">
+      {/* Основной контейнер с вертикальным скроллингом */}
+      <div className="relative z-10">
+        {/* Главная секция */}
+        <section className="min-h-screen flex items-center justify-center px-8 lg:px-16 bg-gradient-to-br from-white to-brand-orange/5">
+          <div className="max-w-7xl mx-auto text-center">
             {/* Логотип */}
-            <div className="font-extrabold text-3xl sm:text-5xl lg:text-6xl text-brand-darkBlue tracking-tight mb-4 sm:mb-6 select-none drop-shadow-lg leading-none">
+            <div className="font-extrabold text-6xl lg:text-8xl text-brand-darkBlue tracking-tight mb-8 select-none drop-shadow-lg leading-none">
               Вечный ИИ
             </div>
             
             {/* Тэглайн */}
-            <div className="text-sm sm:text-base bg-gradient-to-r from-brand-orange to-brand-purple text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full font-medium mb-6 sm:mb-8 inline-block shadow-lg">
+            <div className="text-lg bg-gradient-to-r from-brand-orange to-brand-purple text-white px-8 py-4 rounded-full font-medium mb-12 inline-block shadow-lg">
               🚀 Революция в автоматизации бизнеса
             </div>
 
             {/* Заголовок */}
-            <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold text-brand-darkBlue text-center leading-tight mb-4 sm:mb-6">
-              Рост эффективности бизнеса —<br className="hidden sm:block" /> без затрат на сотрудников
+            <h1 className="text-4xl lg:text-6xl font-bold text-brand-darkBlue text-center leading-tight mb-8">
+              Рост эффективности бизнеса —<br /> без затрат на сотрудников
             </h1>
             
-            <h2 className="text-lg sm:text-xl lg:text-3xl font-bold text-brand-orange mb-6 sm:mb-8">
+            <h2 className="text-3xl lg:text-5xl font-bold text-brand-orange mb-12">
               ИИ, который работает за людей
             </h2>
             
             {/* Описание */}
-            <p className="text-sm sm:text-base lg:text-lg text-gray-600 text-center max-w-4xl mx-auto leading-relaxed mb-6 sm:mb-8">
+            <p className="text-xl lg:text-2xl text-gray-600 text-center max-w-6xl mx-auto leading-relaxed mb-12">
               Вечный ИИ — это цифровая экосистема интеллектуальных помощников, созданных под задачи реального бизнеса.<br />
               Мы внедряем ИИ в мессенджеры (Telegram, WhatsApp, Instagram), автоматизируем общение, продажи, бронирования, рассылки.<br />
               <span className="font-semibold text-brand-darkBlue">Наши решения масштабируемы, настраиваются без кода и адаптируются под любой бизнес — от общепита до промышленности.</span>
             </p>
 
-            {/* Кнопка расчёта на главном слайде */}
+            {/* Кнопка расчёта */}
             <Link to="/client-calc">
-              <Button size="lg" className="bg-brand-orange hover:bg-brand-orange/90 text-white text-base px-6 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
-                <Calculator className="w-5 h-5 mr-2" />
+              <Button size="lg" className="bg-brand-orange hover:bg-brand-orange/90 text-white text-xl px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
+                <Calculator className="w-6 h-6 mr-3" />
                 Сделать расчёт
               </Button>
             </Link>
           </div>
-        </div>
+        </section>
 
-        {/* Слайд 2: Статистика */}
-        <div className="w-full h-full flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-brand-purple/5 to-brand-orange/10">
+        {/* Статистика */}
+        <section className="min-h-screen flex items-center justify-center py-20 bg-gradient-to-br from-brand-purple/5 to-brand-orange/10">
           <Statistics />
-        </div>
+        </section>
 
-        {/* Слайд 3: Решения */}
-        <div className="w-full h-full flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-brand-orange/5 to-brand-darkBlue/10">
+        {/* Решения */}
+        <section className="min-h-screen flex items-center justify-center py-20 bg-gradient-to-br from-brand-orange/5 to-brand-darkBlue/10">
           <Solutions />
-        </div>
+        </section>
 
-        {/* Слайд 4: Преимущества */}
-        <div className="w-full h-full flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-brand-darkBlue/5 to-brand-purple/10">
+        {/* Преимущества */}
+        <section className="min-h-screen flex items-center justify-center py-20 bg-gradient-to-br from-brand-darkBlue/5 to-brand-purple/10">
           <Advantages />
-        </div>
+        </section>
 
-        {/* Слайд 5: Процесс работы */}
-        <div className="w-full h-full flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-brand-purple/5 to-brand-orange/10">
+        {/* Процесс работы */}
+        <section className="min-h-screen flex items-center justify-center py-20 bg-gradient-to-br from-brand-purple/5 to-brand-orange/10">
           <Process />
-        </div>
+        </section>
 
-        {/* Слайд 6: Кейс - Ритейл */}
-        <div className="w-full h-full flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-brand-orange/5 to-brand-darkBlue/10">
+        {/* Кейс - Ритейл */}
+        <section className="min-h-screen flex items-center justify-center py-20 bg-gradient-to-br from-brand-orange/5 to-brand-darkBlue/10">
           <CaseRetail />
-        </div>
+        </section>
 
-        {/* Слайд 7: Кейс - HoReCa */}
-        <div className="w-full h-full flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-brand-darkBlue/5 to-brand-purple/10">
+        {/* Кейс - HoReCa */}
+        <section className="min-h-screen flex items-center justify-center py-20 bg-gradient-to-br from-brand-darkBlue/5 to-brand-purple/10">
           <CaseHoreca />
-        </div>
+        </section>
 
-        {/* Слайд 8: Кейс - Услуги */}
-        <div className="w-full h-full flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-brand-purple/5 to-brand-orange/10">
+        {/* Кейс - Услуги */}
+        <section className="min-h-screen flex items-center justify-center py-20 bg-gradient-to-br from-brand-purple/5 to-brand-orange/10">
           <CaseServices />
-        </div>
+        </section>
 
-        {/* Слайд 9: Финальный слайд */}
-        <div className="w-full h-full flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-brand-darkBlue/5 to-brand-purple/10">
-          <div className="max-w-4xl mx-auto px-6 sm:px-8 text-center">
-            <div className="bg-gradient-to-br from-white/95 to-white/80 rounded-2xl p-8 sm:p-12 shadow-2xl border border-gray-200">
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6 text-brand-darkBlue">
+        {/* Финальная секция */}
+        <section className="min-h-screen flex items-center justify-center py-20 bg-gradient-to-br from-brand-darkBlue/5 to-brand-purple/10">
+          <div className="max-w-6xl mx-auto px-8 text-center">
+            <div className="bg-gradient-to-br from-white/95 to-white/80 rounded-2xl p-16 shadow-2xl border border-gray-200">
+              <h2 className="text-5xl lg:text-6xl font-bold mb-8 text-brand-darkBlue">
                 Будущее автоматизации — уже здесь
               </h2>
-              <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-6 sm:mb-8 max-w-3xl mx-auto leading-relaxed">
+              <p className="text-2xl lg:text-3xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed">
                 Вечный ИИ трансформирует ваш бизнес, освобождая время для стратегических задач и обеспечивая стабильный рост без дополнительных затрат на персонал.
               </p>
               
               {/* Кнопка расчёта */}
               <Link to="/client-calc">
-                <Button size="lg" className="bg-brand-orange hover:bg-brand-orange/90 text-white text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-5 rounded-xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 mb-4 sm:mb-6">
-                  <Calculator className="w-5 h-5 mr-2" />
+                <Button size="lg" className="bg-brand-orange hover:bg-brand-orange/90 text-white text-2xl px-12 py-8 rounded-xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 mb-8">
+                  <Calculator className="w-7 h-7 mr-3" />
                   Сделать расчёт
                 </Button>
               </Link>
               
-              <div className="text-sm sm:text-base text-gray-500 opacity-80">
+              <div className="text-lg text-gray-500 opacity-80">
                 © 2025 Вечный ИИ. Будущее автоматизации уже здесь.
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Навигационные стрелки - увеличены и улучшены */}
-      <div className="fixed left-6 sm:left-8 top-1/2 transform -translate-y-1/2 z-[100]">
-        <Button onClick={prevSlide} variant="outline" size="icon" className="w-14 h-14 sm:w-18 sm:h-18 rounded-full bg-white/95 backdrop-blur-sm border-brand-orange/50 hover:bg-brand-orange hover:text-white shadow-xl transition-all">
-          <ChevronLeft className="w-7 h-7 sm:w-9 sm:h-9" />
-        </Button>
-      </div>
-
-      <div className="fixed right-6 sm:right-8 top-1/2 transform -translate-y-1/2 z-[100]">
-        <Button onClick={nextSlide} variant="outline" size="icon" className="w-14 h-14 sm:w-18 sm:h-18 rounded-full bg-white/95 backdrop-blur-sm border-brand-orange/50 hover:bg-brand-orange hover:text-white shadow-xl transition-all">
-          <ChevronRight className="w-7 h-7 sm:w-9 sm:h-9" />
-        </Button>
-      </div>
-
-      {/* Индикатор слайдов - увеличен */}
-      <div className="fixed bottom-8 sm:bottom-10 left-1/2 transform -translate-x-1/2 z-[100] flex space-x-4">
-        {Array.from({ length: totalSlides }).map((_, index) => (
-          <button
-            key={index}
-            onClick={() => goToSlide(index)}
-            className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full transition-all shadow-lg ${
-              index === currentSlide 
-                ? 'bg-brand-orange scale-125 shadow-brand-orange/50' 
-                : 'bg-white/70 hover:bg-white/90'
-            }`}
-          />
-        ))}
+        </section>
       </div>
     </div>
   );
