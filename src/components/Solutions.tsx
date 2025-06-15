@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { MessageCircle, ShoppingCart, Calendar, BarChart3 } from "lucide-react";
 
@@ -51,14 +52,13 @@ const Solutions: React.FC = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-8 animate-slide-transition">
-      {/* Заголовок с анимацией */}
       <div className={`text-center mb-6 transition-all duration-800 ${
         showTitle ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
       }`}>
-        <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-brand-darkBlue">
+        <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-brand-darkBlue animate-title-wave stagger-1 will-animate">
           Комплексные ИИ-решения для бизнеса
         </h2>
-        <p className="text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto">
+        <p className="text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto animate-description-fade-up stagger-2 will-animate">
           Мы не просто создаём чат-ботов. Мы строим целые экосистемы.
         </p>
       </div>

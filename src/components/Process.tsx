@@ -31,11 +31,11 @@ const steps = [
 
 const Process: React.FC = () => (
   <div className="max-w-6xl mx-auto px-8 animate-slide-transition">
-    <div className="text-center mb-12 animate-description-fade-up">
-      <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-brand-darkBlue">
+    <div className="text-center mb-12">
+      <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-brand-darkBlue animate-title-wave stagger-1 will-animate">
         Как мы внедряем ИИ в ваш бизнес
       </h2>
-      <p className="text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto">
+      <p className="text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto animate-description-fade-up stagger-2 will-animate">
         Простой процесс от анализа до результата
       </p>
     </div>
