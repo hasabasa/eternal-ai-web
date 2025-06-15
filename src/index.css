@@ -6,7 +6,7 @@
 /* Презентационный стиль с плавным Apple-like scroll */
 html {
   scroll-behavior: smooth;
-  scroll-snap-type: y mandatory;
+  overflow-x: hidden;
 }
 
 body {
@@ -21,23 +21,10 @@ body {
   scroll-behavior: smooth;
 }
 
-/* Кастомный скроллбар в стиле презентации */
-::-webkit-scrollbar {
-  width: 8px;
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(254, 156, 45, 0.3);
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(254, 156, 45, 0.5);
-}
-
-/* Презентационные переходы между слайдами */
+/* Отключаем стандартный snap для более плавной работы */
 section {
   transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  scroll-snap-align: start;
+  position: relative;
 }
 
 /* Анимации появления для презентации */
@@ -71,11 +58,25 @@ section {
   animation: presentation-entrance 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
-/* Улучшенный стиль для слайдов */
-section:nth-child(even) {
-  background: linear-gradient(135deg, rgba(254, 156, 45, 0.02) 0%, rgba(166, 120, 255, 0.02) 100%);
+/* Кастомный скроллбар */
+::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(254, 156, 45, 0.3);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(254, 156, 45, 0.5);
 }
 
-section:nth-child(odd) {
-  background: linear-gradient(135deg, rgba(166, 120, 255, 0.02) 0%, rgba(38, 38, 48, 0.02) 100%);
+/* Стили для навигационных элементов */
+.slide-indicator {
+  transition: all 0.3s ease;
+}
+
+.slide-nav-button {
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
 }
