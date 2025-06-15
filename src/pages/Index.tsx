@@ -1,4 +1,3 @@
-
 import AuroraBackground from "@/components/AuroraBackground";
 import BurgerMenu from "@/components/BurgerMenu";
 import Advantages from "@/components/Advantages";
@@ -10,19 +9,15 @@ import { Button } from "@/components/ui/button";
 import { Calculator, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-
 const Index = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const totalSlides = 7;
-
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % totalSlides);
+    setCurrentSlide(prev => (prev + 1) % totalSlides);
   };
-
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
+    setCurrentSlide(prev => (prev - 1 + totalSlides) % totalSlides);
   };
-
   const goToSlide = (slideIndex: number) => {
     setCurrentSlide(slideIndex);
   };
@@ -38,21 +33,17 @@ const Index = () => {
         prevSlide();
       }
     };
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
-
-  return (
-    <div className="relative w-full h-screen overflow-hidden">
+  return <div className="relative w-full h-screen overflow-hidden">
       <AuroraBackground />
       <BurgerMenu />
 
       {/* Контейнер слайдов */}
-      <div 
-        className="flex w-full h-full transition-transform duration-700 ease-in-out"
-        style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-      >
+      <div className="flex w-full h-full transition-transform duration-700 ease-in-out" style={{
+      transform: `translateX(-${currentSlide * 100}%)`
+    }}>
         {/* Слайд 1: Главная секция */}
         <div className="w-full h-full flex-shrink-0 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-white to-brand-orange/5">
           <div className="max-w-5xl mx-auto text-center">
@@ -68,7 +59,7 @@ const Index = () => {
 
             {/* Заголовок */}
             <h1 className="text-xl sm:text-3xl lg:text-5xl font-bold text-brand-darkBlue text-center leading-tight mb-4 sm:mb-8">
-              Рост эффективности бизнеса —<br className="hidden sm:block"/> без затрат на сотрудников
+              Рост эффективности бизнеса —<br className="hidden sm:block" /> без затрат на сотрудников
             </h1>
             
             <h2 className="text-lg sm:text-2xl lg:text-4xl font-bold text-brand-orange mb-6 sm:mb-12">
@@ -84,13 +75,7 @@ const Index = () => {
 
             {/* Кнопка расчёта на главном слайде */}
             <Link to="/client-calc">
-              <Button 
-                size="lg" 
-                className="bg-brand-orange hover:bg-brand-orange/90 text-white text-base sm:text-xl px-6 sm:px-10 py-4 sm:py-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105"
-              >
-                <Calculator className="w-4 h-4 sm:w-6 sm:h-6 mr-2 sm:mr-3" />
-                Сделать расчёт
-              </Button>
+              
             </Link>
           </div>
         </div>
@@ -133,10 +118,7 @@ const Index = () => {
               
               {/* Кнопка расчёта */}
               <Link to="/client-calc">
-                <Button 
-                  size="lg" 
-                  className="bg-brand-orange hover:bg-brand-orange/90 text-white text-base sm:text-xl px-6 sm:px-10 py-4 sm:py-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 mb-6 sm:mb-8"
-                >
+                <Button size="lg" className="bg-brand-orange hover:bg-brand-orange/90 text-white text-base sm:text-xl px-6 sm:px-10 py-4 sm:py-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 mb-6 sm:mb-8">
                   <Calculator className="w-4 h-4 sm:w-6 sm:h-6 mr-2 sm:mr-3" />
                   Сделать расчёт
                 </Button>
@@ -152,43 +134,23 @@ const Index = () => {
 
       {/* Навигационные стрелки */}
       <div className="fixed left-2 sm:left-4 top-1/2 transform -translate-y-1/2 z-[100]">
-        <Button
-          onClick={prevSlide}
-          variant="outline"
-          size="icon"
-          className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-white/90 backdrop-blur-sm border-brand-orange/50 hover:bg-brand-orange hover:text-white shadow-lg transition-all"
-        >
+        <Button onClick={prevSlide} variant="outline" size="icon" className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-white/90 backdrop-blur-sm border-brand-orange/50 hover:bg-brand-orange hover:text-white shadow-lg transition-all">
           <ChevronLeft className="w-5 h-5 sm:w-7 sm:h-7" />
         </Button>
       </div>
 
       <div className="fixed right-2 sm:right-4 top-1/2 transform -translate-y-1/2 z-[100]">
-        <Button
-          onClick={nextSlide}
-          variant="outline"
-          size="icon"
-          className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-white/90 backdrop-blur-sm border-brand-orange/50 hover:bg-brand-orange hover:text-white shadow-lg transition-all"
-        >
+        <Button onClick={nextSlide} variant="outline" size="icon" className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-white/90 backdrop-blur-sm border-brand-orange/50 hover:bg-brand-orange hover:text-white shadow-lg transition-all">
           <ChevronRight className="w-5 h-5 sm:w-7 sm:h-7" />
         </Button>
       </div>
 
       {/* Индикатор слайдов */}
       <div className="fixed bottom-4 sm:bottom-6 left-1/2 transform -translate-x-1/2 z-[100] flex space-x-2 sm:space-x-3">
-        {Array.from({ length: totalSlides }).map((_, index) => (
-          <button
-            key={index}
-            onClick={() => goToSlide(index)}
-            className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all shadow-lg ${
-              index === currentSlide 
-                ? 'bg-brand-orange scale-125 shadow-brand-orange/50' 
-                : 'bg-white/70 hover:bg-white/90'
-            }`}
-          />
-        ))}
+        {Array.from({
+        length: totalSlides
+      }).map((_, index) => <button key={index} onClick={() => goToSlide(index)} className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all shadow-lg ${index === currentSlide ? 'bg-brand-orange scale-125 shadow-brand-orange/50' : 'bg-white/70 hover:bg-white/90'}`} />)}
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
