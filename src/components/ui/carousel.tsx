@@ -116,8 +116,54 @@ const Carousel = React.forwardRef<
 
       return () => {
         api?.off("select", onSelect)
+        api?.off("reInit", onSelect)
       }
     }, [api, onSelect])
+
+    React.useEffect(() => {
+      if (!api || orientation !== "vertical") {
+        return
+      }
+
+      let isWheeling = false
+      let timeout: ReturnType<typeof setTimeout>
+
+      const onWheel = (event: WheelEvent) => {
+        event.preventDefault()
+
+        if (isWheeling) {
+          return
+        }
+
+        let scrolled = false
+        if (event.deltaY < 0) {
+          api.scrollPrev()
+          scrolled = true
+        } else if (event.deltaY > 0) {
+          api.scrollNext()
+          scrolled = true
+        }
+
+        if (scrolled) {
+          isWheeling = true
+          timeout = setTimeout(() => {
+            isWheeling = false
+          }, 500) // Throttle wheel events
+        }
+      }
+
+      const viewportNode = api.viewportNode()
+      if (viewportNode) {
+        viewportNode.addEventListener("wheel", onWheel, { passive: false })
+      }
+
+      return () => {
+        if (viewportNode) {
+          viewportNode.removeEventListener("wheel", onWheel)
+        }
+        clearTimeout(timeout)
+      }
+    }, [api, orientation])
 
     return (
       <CarouselContext.Provider

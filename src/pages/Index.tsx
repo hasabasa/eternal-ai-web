@@ -152,7 +152,7 @@ const Index = () => {
             </section>
           </CarouselItem>
         </CarouselContent>
-        <div className="absolute bottom-8 right-8 flex flex-col gap-2 z-10">
+        <div className="absolute bottom-8 right-8 flex flex-col gap-2 z-50">
             <CarouselPrevious className="relative w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-110 border-none" />
             <CarouselNext className="relative w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-110 border-none" />
         </div>
