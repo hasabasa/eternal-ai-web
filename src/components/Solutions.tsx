@@ -35,7 +35,7 @@ const Solutions: React.FC = () => (
       <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-brand-darkBlue">
         Комплексные ИИ-решения для бизнеса
       </h2>
-      <p className="text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto">
+      <p className="text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto">
         Мы не просто создаём чат-ботов. Мы строим целые экосистемы.
       </p>
     </div>
