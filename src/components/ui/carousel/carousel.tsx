@@ -1,4 +1,3 @@
-
 import * as React from "react"
 import useEmblaCarousel from "embla-carousel-react"
 import { cn } from "@/lib/utils"
@@ -66,18 +65,12 @@ const Carousel = React.forwardRef<
     }, [opts])
 
     const scrollPrev = React.useCallback(() => {
-      console.log('scrollPrev called, api exists:', !!api, 'canScrollPrev:', canScrollPrev)
-      if (api && canScrollPrev) {
-        api.scrollPrev()
-      }
-    }, [api, canScrollPrev])
+      api?.scrollPrev()
+    }, [api])
 
     const scrollNext = React.useCallback(() => {
-      console.log('scrollNext called, api exists:', !!api, 'canScrollNext:', canScrollNext)
-      if (api && canScrollNext) {
-        api.scrollNext()
-      }
-    }, [api, canScrollNext])
+      api?.scrollNext()
+    }, [api])
 
     const handleKeyDown = React.useCallback(
       (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -140,17 +133,12 @@ const Carousel = React.forwardRef<
       let scrollTimeout: ReturnType<typeof setTimeout>
 
       const onWheel = (event: WheelEvent) => {
-        console.log('Wheel event detected:', {
-          deltaY: event.deltaY,
-          canScrollPrev: api.canScrollPrev(),
-          canScrollNext: api.canScrollNext(),
-          isScrolling
-        })
-
         // Предотвращаем стандартную прокрутку только если можем прокрутить карусель
-        if ((event.deltaY < 0 && api.canScrollPrev()) || (event.deltaY > 0 && api.canScrollNext())) {
+        if ((event.deltaY < 0 && canScrollPrev) || (event.deltaY > 0 && canScrollNext)) {
           event.preventDefault()
           event.stopPropagation()
+        } else {
+          return // Не можем скроллить, ничего не делаем
         }
 
         if (isScrolling) {
@@ -158,42 +146,33 @@ const Carousel = React.forwardRef<
         }
 
         const delta = event.deltaY
-        const threshold = 30
 
-        if (Math.abs(delta) > threshold) {
-          if (delta < 0 && api.canScrollPrev()) {
-            console.log('Scrolling to previous slide')
-            api.scrollPrev()
-            isScrolling = true
-          } else if (delta > 0 && api.canScrollNext()) {
-            console.log('Scrolling to next slide')
-            api.scrollNext()
-            isScrolling = true
-          }
+        if (delta < 0) {
+          scrollPrev()
+          isScrolling = true
+        } else if (delta > 0) {
+          scrollNext()
+          isScrolling = true
+        }
 
-          if (isScrolling) {
-            clearTimeout(scrollTimeout)
-            scrollTimeout = setTimeout(() => {
-              isScrolling = false
-            }, 500)
-          }
+        if (isScrolling) {
+          clearTimeout(scrollTimeout)
+          scrollTimeout = setTimeout(() => {
+            isScrolling = false
+          }, 500) // Задержка для предотвращения слишком частого скролла
         }
       }
 
       const container = containerRef.current
       if (container) {
-        console.log('Adding wheel listener to container')
         container.addEventListener("wheel", onWheel, { passive: false })
         
         return () => {
-          console.log('Removing wheel listener')
           container.removeEventListener("wheel", onWheel)
           clearTimeout(scrollTimeout)
         }
-      } else {
-        console.warn('Container ref not available for wheel listener')
       }
-    }, [api, orientation])
+    }, [api, orientation, canScrollPrev, canScrollNext, scrollPrev, scrollNext])
 
     return (
       <CarouselContext.Provider

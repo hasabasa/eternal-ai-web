@@ -12,10 +12,8 @@ const CarouselPrevious = React.forwardRef<
   const { orientation, scrollPrev, canScrollPrev } = useCarousel()
 
   const handleClick = () => {
-    console.log('Previous button clicked, canScrollPrev:', canScrollPrev)
-    if (canScrollPrev) {
-      scrollPrev()
-    }
+    // Кнопка отключена через `disabled`, поэтому дополнительная проверка не нужна
+    scrollPrev()
   }
 
   return (
@@ -45,10 +43,8 @@ const CarouselNext = React.forwardRef<
   const { orientation, scrollNext, canScrollNext } = useCarousel()
 
   const handleClick = () => {
-    console.log('Next button clicked, canScrollNext:', canScrollNext)
-    if (canScrollNext) {
-      scrollNext()
-    }
+    // Кнопка отключена через `disabled`, поэтому дополнительная проверка не нужна
+    scrollNext()
   }
 
   return (
