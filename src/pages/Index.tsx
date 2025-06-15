@@ -1,3 +1,4 @@
+
 import AuroraBackground from "@/components/AuroraBackground";
 import BurgerMenu from "@/components/BurgerMenu";
 import Advantages from "@/components/Advantages";
@@ -41,7 +42,7 @@ const Index = () => {
       <BurgerMenu />
 
       {/* Навигационные стрелки */}
-      <div className="absolute left-8 top-8 z-50">
+      <div className="fixed left-8 top-8 z-50">
         <button
           onClick={() => scrollToSection('up')}
           className="w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-110"
@@ -50,7 +51,7 @@ const Index = () => {
         </button>
       </div>
       
-      <div className="absolute right-8 bottom-8 z-50">
+      <div className="fixed right-8 bottom-8 z-50">
         <button
           onClick={() => scrollToSection('down')}
           className="w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-110"
