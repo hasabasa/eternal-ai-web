@@ -1,3 +1,4 @@
+
 import AuroraBackground from "@/components/AuroraBackground";
 import BurgerMenu from "@/components/BurgerMenu";
 import Advantages from "@/components/Advantages";
@@ -8,12 +9,56 @@ import Solutions from "@/components/Solutions";
 import Process from "@/components/Process";
 import Statistics from "@/components/Statistics";
 import { Button } from "@/components/ui/button";
-import { Calculator } from "lucide-react";
+import { Calculator, ChevronUp, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
+
 const Index = () => {
-  return <div className="relative w-full min-h-screen overflow-y-auto">
+  const scrollToSection = (direction: 'up' | 'down') => {
+    const sections = document.querySelectorAll('section');
+    const currentSection = Array.from(sections).find(section => {
+      const rect = section.getBoundingClientRect();
+      return rect.top >= -100 && rect.top <= 100;
+    });
+    
+    if (currentSection) {
+      const currentIndex = Array.from(sections).indexOf(currentSection);
+      let targetIndex;
+      
+      if (direction === 'up' && currentIndex > 0) {
+        targetIndex = currentIndex - 1;
+      } else if (direction === 'down' && currentIndex < sections.length - 1) {
+        targetIndex = currentIndex + 1;
+      }
+      
+      if (targetIndex !== undefined) {
+        sections[targetIndex].scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
+  return (
+    <div className="relative w-full min-h-screen overflow-y-auto">
       <AuroraBackground />
       <BurgerMenu />
+
+      {/* Навигационные стрелки */}
+      <div className="fixed left-8 top-1/2 transform -translate-y-1/2 z-50 flex flex-col gap-4">
+        <button
+          onClick={() => scrollToSection('up')}
+          className="w-16 h-16 bg-brand-orange/90 hover:bg-brand-orange text-white rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-110"
+        >
+          <ChevronUp className="w-8 h-8" />
+        </button>
+      </div>
+      
+      <div className="fixed right-8 top-1/2 transform -translate-y-1/2 z-50 flex flex-col gap-4">
+        <button
+          onClick={() => scrollToSection('down')}
+          className="w-16 h-16 bg-brand-orange/90 hover:bg-brand-orange text-white rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-110"
+        >
+          <ChevronDown className="w-8 h-8" />
+        </button>
+      </div>
 
       {/* Основной контейнер с вертикальным скроллингом */}
       <div className="relative z-10">
@@ -114,6 +159,8 @@ const Index = () => {
           </div>
         </section>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default Index;
