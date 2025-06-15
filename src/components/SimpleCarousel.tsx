@@ -12,8 +12,20 @@ const SimpleCarousel: React.FC<SimpleCarouselProps> = ({ children, className }) 
   const [currentIndex, setCurrentIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const isScrolling = useRef(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const totalSlides = children.length;
+
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const goToNext = () => {
     console.log('SimpleCarousel: Going to next slide');
@@ -41,10 +53,10 @@ const SimpleCarousel: React.FC<SimpleCarouselProps> = ({ children, className }) 
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Mouse wheel navigation
+  // Desktop mouse wheel navigation
   useEffect(() => {
     const container = containerRef.current;
-    if (!container) return;
+    if (!container || isMobile) return;
 
     const handleWheel = (event: WheelEvent) => {
       event.preventDefault();
@@ -67,29 +79,42 @@ const SimpleCarousel: React.FC<SimpleCarouselProps> = ({ children, className }) 
 
     container.addEventListener('wheel', handleWheel, { passive: false });
     return () => container.removeEventListener('wheel', handleWheel);
-  }, []);
+  }, [isMobile]);
 
-  // Touch navigation for mobile
+  // Touch navigation for mobile with swipe gestures
   useEffect(() => {
     const container = containerRef.current;
-    if (!container) return;
+    if (!container || !isMobile) return;
 
     let startY = 0;
     let endY = 0;
+    let startTime = 0;
 
     const handleTouchStart = (event: TouchEvent) => {
       startY = event.touches[0].clientY;
+      startTime = Date.now();
     };
 
     const handleTouchMove = (event: TouchEvent) => {
+      // Allow normal scrolling within sections on mobile
+      const target = event.target as HTMLElement;
+      const section = target.closest('.carousel-section');
+      if (section) {
+        const isScrollable = section.scrollHeight > section.clientHeight;
+        if (isScrollable) {
+          return; // Allow normal scroll
+        }
+      }
       event.preventDefault();
     };
 
     const handleTouchEnd = (event: TouchEvent) => {
       endY = event.changedTouches[0].clientY;
       const deltaY = startY - endY;
+      const deltaTime = Date.now() - startTime;
 
-      if (Math.abs(deltaY) > 50) { // Minimum swipe distance
+      // Require minimum swipe distance and reasonable speed
+      if (Math.abs(deltaY) > 80 && deltaTime < 500) {
         if (deltaY > 0) {
           goToNext();
         } else {
@@ -107,7 +132,7 @@ const SimpleCarousel: React.FC<SimpleCarouselProps> = ({ children, className }) 
       container.removeEventListener('touchmove', handleTouchMove);
       container.removeEventListener('touchend', handleTouchEnd);
     };
-  }, []);
+  }, [isMobile]);
 
   return (
     <div 
@@ -115,9 +140,9 @@ const SimpleCarousel: React.FC<SimpleCarouselProps> = ({ children, className }) 
       className={cn("relative w-full h-full overflow-hidden", className)}
       tabIndex={0}
     >
-      {/* Slides container */}
+      {/* Slides container with smooth transitions */}
       <div 
-        className="h-full transition-transform duration-500 ease-in-out"
+        className="h-full transition-transform duration-700 ease-in-out"
         style={{
           transform: `translateY(-${currentIndex * 100}%)`,
           display: 'flex',
@@ -127,10 +152,15 @@ const SimpleCarousel: React.FC<SimpleCarouselProps> = ({ children, className }) 
         {children.map((child, index) => (
           <div
             key={index}
-            className="flex-shrink-0 w-full h-full overflow-y-auto"
+            className={cn(
+              "flex-shrink-0 w-full h-full carousel-section",
+              isMobile ? "overflow-y-auto" : "overflow-hidden"
+            )}
             style={{ minHeight: '100vh' }}
           >
-            {child}
+            <div className="animate-section-entrance">
+              {child}
+            </div>
           </div>
         ))}
       </div>
@@ -139,7 +169,7 @@ const SimpleCarousel: React.FC<SimpleCarouselProps> = ({ children, className }) 
       <div className="fixed top-4 sm:top-6 md:top-8 left-1 sm:left-2 z-[9999]">
         <Button
           onClick={goToPrev}
-          className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 bg-brand-orange/90 hover:bg-brand-orange text-white border-none shadow-xl hover:shadow-2xl transition-all hover:scale-110"
+          className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 bg-brand-orange/90 hover:bg-brand-orange text-white border-none shadow-xl hover:shadow-2xl transition-all hover:scale-110 animate-icon-bounce"
           size="icon"
         >
           <ChevronUp className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5" />
@@ -149,7 +179,7 @@ const SimpleCarousel: React.FC<SimpleCarouselProps> = ({ children, className }) 
       <div className="fixed bottom-4 sm:bottom-6 md:bottom-8 left-1 sm:left-2 z-[9999]">
         <Button
           onClick={goToNext}
-          className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 bg-brand-orange/90 hover:bg-brand-orange text-white border-none shadow-xl hover:shadow-2xl transition-all hover:scale-110"
+          className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 bg-brand-orange/90 hover:bg-brand-orange text-white border-none shadow-xl hover:shadow-2xl transition-all hover:scale-110 animate-icon-bounce"
           size="icon"
         >
           <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5" />
@@ -163,14 +193,24 @@ const SimpleCarousel: React.FC<SimpleCarouselProps> = ({ children, className }) 
             key={index}
             onClick={() => setCurrentIndex(index)}
             className={cn(
-              "w-1 h-4 sm:w-1.5 sm:h-6 md:w-2 md:h-8 rounded-full transition-all duration-300",
+              "w-1 h-4 sm:w-1.5 sm:h-6 md:w-2 md:h-8 rounded-full transition-all duration-500 animate-icon-bounce",
               index === currentIndex 
-                ? "bg-brand-orange" 
+                ? "bg-brand-orange scale-110" 
                 : "bg-white/50 hover:bg-white/70"
             )}
+            style={{ animationDelay: `${index * 0.1}s` }}
           />
         ))}
       </div>
+
+      {/* Mobile swipe hint */}
+      {isMobile && (
+        <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-[9999] text-white/70 text-xs text-center animate-text-reveal">
+          <div className="bg-black/30 px-3 py-1 rounded-full backdrop-blur-sm">
+            Свайп вверх/вниз для навигации
+          </div>
+        </div>
+      )}
     </div>
   );
 };
