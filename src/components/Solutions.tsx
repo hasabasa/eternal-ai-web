@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { MessageCircle, ShoppingCart, Calendar, BarChart3 } from "lucide-react";
 
@@ -51,7 +50,7 @@ const Solutions: React.FC = () => {
   }, []);
 
   return (
-    <div className="max-w-6xl mx-auto px-8">
+    <div className="max-w-6xl mx-auto px-8 animate-slide-transition">
       {/* Заголовок с анимацией */}
       <div className={`text-center mb-6 transition-all duration-800 ${
         showTitle ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
@@ -71,11 +70,10 @@ const Solutions: React.FC = () => {
         {solutions.map((solution, i) => (
           <div
             key={i}
-            className="bg-white/80 rounded-3xl p-4 shadow-xl border border-white/40 hover:bg-white/95 transition-all backdrop-blur-sm flex flex-col"
-            style={{ animationDelay: `${i * 150}ms` }}
+            className={`bg-white/80 rounded-3xl p-4 shadow-xl border border-white/40 hover:bg-white/95 transition-all backdrop-blur-sm flex flex-col hover-lift will-animate animate-card-wave stagger-${i + 1}`}
           >
             <div className="flex items-start gap-4 mb-4 flex-grow">
-              <div className="p-3 bg-white rounded-2xl shadow-lg">
+              <div className="p-3 bg-white rounded-2xl shadow-lg will-animate">
                 {solution.icon}
               </div>
               <div className="flex-1">

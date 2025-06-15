@@ -14,30 +14,30 @@ import { Link } from "react-router-dom";
 
 const Index = () => {
   const slides = [
-    // Главная секция
-    <section key="main" className="h-full flex items-center justify-center px-8 lg:px-16 bg-gradient-to-br from-white to-brand-orange/5">
-      <div className="max-w-7xl mx-auto text-center">
-        {/* Логотип */}
-        <div className="font-extrabold text-6xl lg:text-8xl text-brand-darkBlue tracking-tight mb-8 select-none drop-shadow-lg leading-none">
+    // Главная секция с театральными анимациями
+    <section key="main" className="h-full flex items-center justify-center px-8 lg:px-16 bg-gradient-to-br from-white to-brand-orange/5 animate-slide-transition">
+      <div className="max-w-7xl mx-auto text-center will-animate">
+        {/* Логотип с драматичным появлением */}
+        <div className="font-extrabold text-6xl lg:text-8xl text-brand-darkBlue tracking-tight mb-8 select-none drop-shadow-lg leading-none animate-logo-entrance will-animate">
           Вечный ИИ
         </div>
         
-        {/* Тэглайн */}
-        <div className="text-lg bg-gradient-to-r from-brand-orange to-brand-purple text-white px-8 py-4 rounded-full font-medium mb-12 inline-block shadow-lg">
+        {/* Тэглайн с slide-in эффектом */}
+        <div className="text-lg bg-gradient-to-r from-brand-orange to-brand-purple text-white px-8 py-4 rounded-full font-medium mb-12 inline-block shadow-lg animate-tagline-slide will-animate">
           🚀 Революция в автоматизации бизнеса
         </div>
 
-        {/* Заголовок */}
-        <h1 className="text-4xl lg:text-6xl font-bold text-brand-darkBlue text-center leading-tight mb-8">
+        {/* Заголовки с волновым появлением */}
+        <h1 className="text-4xl lg:text-6xl font-bold text-brand-darkBlue text-center leading-tight mb-8 animate-title-wave stagger-1 will-animate">
           Рост эффективности бизнеса —<br /> без затрат на сотрудников
         </h1>
         
-        <h2 className="text-3xl lg:text-5xl font-bold text-brand-orange mb-12">
+        <h2 className="text-3xl lg:text-5xl font-bold text-brand-orange mb-12 animate-title-wave stagger-2 will-animate">
           ИИ, который работает за людей
         </h2>
         
-        {/* Описание */}
-        <p className="text-xl lg:text-2xl text-gray-600 text-center max-w-6xl mx-auto leading-relaxed mb-12">
+        {/* Описание с fade-up эффектом */}
+        <p className="text-xl lg:text-2xl text-gray-600 text-center max-w-6xl mx-auto leading-relaxed mb-12 animate-description-fade-up stagger-3 will-animate">
           Вечный ИИ — это цифровая экосистема интеллектуальных помощников, созданных под задачи реального бизнеса.<br />
           Мы внедряем ИИ в мессенджеры (Telegram, WhatsApp, Instagram), автоматизируем общение, продажи, бронирования, рассылки.<br />
           <span className="font-semibold text-brand-darkBlue">Наши решения масштабируемы, настраиваются без кода и адаптируются под любой бизнес — от общепита до промышленности.</span>

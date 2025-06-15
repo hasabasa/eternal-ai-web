@@ -30,8 +30,8 @@ const steps = [
 ];
 
 const Process: React.FC = () => (
-  <div className="max-w-6xl mx-auto px-8 animate-fade-in">
-    <div className="text-center mb-12">
+  <div className="max-w-6xl mx-auto px-8 animate-slide-transition">
+    <div className="text-center mb-12 animate-description-fade-up">
       <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-brand-darkBlue">
         Как мы внедряем ИИ в ваш бизнес
       </h2>
@@ -48,9 +48,9 @@ const Process: React.FC = () => (
             <div className="hidden lg:block absolute top-12 left-full w-full h-1 bg-gradient-to-r from-brand-orange/30 to-transparent" />
           )}
           
-          <div className="bg-white/80 rounded-3xl p-6 text-center hover:bg-white/95 transition-all shadow-xl border border-white/40 backdrop-blur-sm h-full flex flex-col justify-between">
+          <div className={`bg-white/80 rounded-3xl p-6 text-center hover:bg-white/95 transition-all shadow-xl border border-white/40 backdrop-blur-sm h-full flex flex-col justify-between hover-lift will-animate animate-card-wave stagger-${i + 1}`}>
             <div>
-              <div className="mb-6 flex justify-center">
+              <div className="mb-6 flex justify-center will-animate">
                 {step.icon}
               </div>
               <div className="text-base font-semibold text-brand-orange mb-4">

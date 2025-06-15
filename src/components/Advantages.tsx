@@ -42,8 +42,8 @@ const advantages = [
 ];
 
 const Advantages: React.FC = () => (
-  <div className="max-w-6xl mx-auto px-8 animate-fade-in">
-    <div className="text-center mb-12">
+  <div className="max-w-6xl mx-auto px-8 animate-slide-transition">
+    <div className="text-center mb-12 animate-description-fade-up">
       <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-brand-darkBlue">
         Почему ИИ-ассистенты эффективнее людей
       </h2>
@@ -56,9 +56,9 @@ const Advantages: React.FC = () => (
       {advantages.map((item, i) => (
         <div
           key={i}
-          className="bg-white/80 rounded-3xl p-6 shadow-xl border border-white/40 hover:bg-white/95 transition-all backdrop-blur-sm text-center"
+          className={`bg-white/80 rounded-3xl p-6 shadow-xl border border-white/40 hover:bg-white/95 transition-all backdrop-blur-sm text-center hover-lift will-animate animate-card-wave stagger-${i + 1}`}
         >
-          <div className="mb-6 flex justify-center">
+          <div className="mb-6 flex justify-center will-animate">
             {item.icon}
           </div>
           <h3 className="font-bold text-xl lg:text-2xl mb-4 text-brand-darkBlue">
