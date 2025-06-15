@@ -44,7 +44,7 @@ const Solutions: React.FC = () => (
       {solutions.map((solution, i) => (
         <div
           key={i}
-          className="bg-white/80 rounded-3xl p-8 shadow-xl border border-white/40 hover:bg-white/95 transition-all backdrop-blur-sm flex flex-col"
+          className="bg-white/80 rounded-3xl p-6 shadow-xl border border-white/40 hover:bg-white/95 transition-all backdrop-blur-sm flex flex-col"
         >
           <div className="flex items-start gap-6 mb-8 flex-grow">
             <div className="p-4 bg-white rounded-2xl shadow-lg">

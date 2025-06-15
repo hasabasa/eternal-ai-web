@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Flower, TrendingUp, Clock } from "lucide-react";
 
@@ -21,7 +20,7 @@ const CaseRetail: React.FC = () => (
     
     <div className="grid md:grid-cols-3 gap-8 mb-12">
       {/* Проблема */}
-      <div className="bg-red-50/70 rounded-3xl border border-red-200/50 p-8 backdrop-blur-sm">
+      <div className="bg-red-50/70 rounded-3xl border border-red-200/50 p-6 backdrop-blur-sm">
         <div className="flex items-center gap-4 mb-6">
           <div className="w-5 h-5 bg-red-500 rounded-full"></div>
           <h3 className="font-bold text-xl text-red-700">Проблема</h3>
@@ -36,7 +35,7 @@ const CaseRetail: React.FC = () => (
       </div>
 
       {/* Решение */}
-      <div className="bg-blue-50/70 rounded-3xl border border-blue-200/50 p-8 backdrop-blur-sm">
+      <div className="bg-blue-50/70 rounded-3xl border border-blue-200/50 p-6 backdrop-blur-sm">
         <div className="flex items-center gap-4 mb-6">
           <div className="w-5 h-5 bg-blue-500 rounded-full"></div>
           <h3 className="font-bold text-xl text-blue-700">Решение</h3>
@@ -50,7 +49,7 @@ const CaseRetail: React.FC = () => (
       </div>
 
       {/* Результат */}
-      <div className="bg-green-50/70 rounded-3xl border border-green-200/50 p-8 backdrop-blur-sm">
+      <div className="bg-green-50/70 rounded-3xl border border-green-200/50 p-6 backdrop-blur-sm">
         <div className="flex items-center gap-4 mb-6">
           <TrendingUp className="w-7 h-7 text-green-600" />
           <h3 className="font-bold text-xl text-green-700">Результат</h3>
@@ -69,7 +68,7 @@ const CaseRetail: React.FC = () => (
     </div>
 
     {/* Отзыв */}
-    <div className="bg-brand-purple/10 rounded-3xl p-8 border-l-8 border-brand-purple">
+    <div className="bg-brand-purple/10 rounded-3xl p-6 border-l-8 border-brand-purple">
       <div className="text-center">
         <p className="text-brand-darkBlue italic mb-6 leading-relaxed text-xl lg:text-2xl">
           "ИИ работает лучше менеджера. Клиенты довольны скоростью и точностью."
