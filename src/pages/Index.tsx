@@ -1,7 +1,9 @@
 import AuroraBackground from "@/components/AuroraBackground";
 import BurgerMenu from "@/components/BurgerMenu";
 import Advantages from "@/components/Advantages";
-import Cases from "@/components/Cases";
+import CaseRetail from "@/components/CaseRetail";
+import CaseHoreca from "@/components/CaseHoreca";
+import CaseServices from "@/components/CaseServices";
 import Solutions from "@/components/Solutions";
 import Process from "@/components/Process";
 import Statistics from "@/components/Statistics";
@@ -9,15 +11,19 @@ import { Button } from "@/components/ui/button";
 import { Calculator, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+
 const Index = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const totalSlides = 7;
+  const totalSlides = 9; // Увеличено с 7 до 9
+  
   const nextSlide = () => {
     setCurrentSlide(prev => (prev + 1) % totalSlides);
   };
+  
   const prevSlide = () => {
     setCurrentSlide(prev => (prev - 1 + totalSlides) % totalSlides);
   };
+  
   const goToSlide = (slideIndex: number) => {
     setCurrentSlide(slideIndex);
   };
@@ -36,14 +42,16 @@ const Index = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
-  return <div className="relative w-full h-screen overflow-hidden">
+
+  return (
+    <div className="relative w-full h-screen overflow-hidden">
       <AuroraBackground />
       <BurgerMenu />
 
       {/* Контейнер слайдов */}
       <div className="flex w-full h-full transition-transform duration-700 ease-in-out" style={{
-      transform: `translateX(-${currentSlide * 100}%)`
-    }}>
+        transform: `translateX(-${currentSlide * 100}%)`
+      }}>
         {/* Слайд 1: Главная секция */}
         <div className="w-full h-full flex-shrink-0 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-white to-brand-orange/5">
           <div className="max-w-5xl mx-auto text-center">
@@ -100,12 +108,22 @@ const Index = () => {
           <Process />
         </div>
 
-        {/* Слайд 6: Кейсы */}
+        {/* Слайд 6: Кейс - Ритейл */}
         <div className="w-full h-full flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-brand-orange/5 to-brand-darkBlue/10">
-          <Cases />
+          <CaseRetail />
         </div>
 
-        {/* Слайд 7: Финальный слайд */}
+        {/* Слайд 7: Кейс - HoReCa */}
+        <div className="w-full h-full flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-brand-darkBlue/5 to-brand-purple/10">
+          <CaseHoreca />
+        </div>
+
+        {/* Слайд 8: Кейс - Услуги */}
+        <div className="w-full h-full flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-brand-purple/5 to-brand-orange/10">
+          <CaseServices />
+        </div>
+
+        {/* Слайд 9: Финальный слайд */}
         <div className="w-full h-full flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-brand-darkBlue/5 to-brand-purple/10">
           <div className="max-w-4xl mx-auto px-4 text-center">
             <div className="bg-gradient-to-br from-white/95 to-white/80 rounded-3xl p-8 sm:p-12 lg:p-16 shadow-2xl border border-gray-200">
@@ -147,10 +165,20 @@ const Index = () => {
 
       {/* Индикатор слайдов */}
       <div className="fixed bottom-4 sm:bottom-6 left-1/2 transform -translate-x-1/2 z-[100] flex space-x-2 sm:space-x-3">
-        {Array.from({
-        length: totalSlides
-      }).map((_, index) => <button key={index} onClick={() => goToSlide(index)} className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all shadow-lg ${index === currentSlide ? 'bg-brand-orange scale-125 shadow-brand-orange/50' : 'bg-white/70 hover:bg-white/90'}`} />)}
+        {Array.from({ length: totalSlides }).map((_, index) => (
+          <button
+            key={index}
+            onClick={() => goToSlide(index)}
+            className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all shadow-lg ${
+              index === currentSlide 
+                ? 'bg-brand-orange scale-125 shadow-brand-orange/50' 
+                : 'bg-white/70 hover:bg-white/90'
+            }`}
+          />
+        ))}
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default Index;
