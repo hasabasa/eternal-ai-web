@@ -1,4 +1,3 @@
-
 import AuroraBackground from "@/components/AuroraBackground";
 import BurgerMenu from "@/components/BurgerMenu";
 import Advantages from "@/components/Advantages";
@@ -11,10 +10,8 @@ import Statistics from "@/components/Statistics";
 import { Button } from "@/components/ui/button";
 import { Calculator } from "lucide-react";
 import { Link } from "react-router-dom";
-
 const Index = () => {
-  return (
-    <div className="relative w-full min-h-screen overflow-y-auto">
+  return <div className="relative w-full min-h-screen overflow-y-auto">
       <AuroraBackground />
       <BurgerMenu />
 
@@ -51,10 +48,7 @@ const Index = () => {
 
             {/* Кнопка расчёта */}
             <Link to="/client-calc">
-              <Button size="lg" className="bg-brand-orange hover:bg-brand-orange/90 text-white text-xl px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
-                <Calculator className="w-6 h-6 mr-3" />
-                Сделать расчёт
-              </Button>
+              
             </Link>
           </div>
         </section>
@@ -120,8 +114,6 @@ const Index = () => {
           </div>
         </section>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
