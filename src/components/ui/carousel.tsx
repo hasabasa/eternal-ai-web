@@ -1,3 +1,4 @@
+
 import * as React from "react"
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
@@ -26,9 +27,7 @@ type CarouselContextProps = {
   scrollNext: () => void
   canScrollPrev: boolean
   canScrollNext: boolean
-} & CarouselProps & {
-  setViewportElement?: (node: HTMLDivElement | null) => void
-}
+} & CarouselProps
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null)
 
@@ -64,10 +63,7 @@ const Carousel = React.forwardRef<
         axis: orientation === "horizontal" ? "x" : "y",
       },
       plugins
-    );
-    // 1. Ref для viewport (будет проброшен через context)
-    const [viewportElement, setViewportElement] = React.useState<HTMLDivElement | null>(null);
-
+    )
     const [canScrollPrev, setCanScrollPrev] = React.useState(false)
     const [canScrollNext, setCanScrollNext] = React.useState(false)
 
@@ -124,9 +120,9 @@ const Carousel = React.forwardRef<
       }
     }, [api, onSelect])
 
-    // 2. Исправленный wheel-обработчик для вертикальной прокрутки
+    // Wheel handler для вертикальной прокрутки
     React.useEffect(() => {
-      if (!api || orientation !== "vertical" || !viewportElement) {
+      if (!api || orientation !== "vertical") {
         return
       }
 
@@ -153,17 +149,21 @@ const Carousel = React.forwardRef<
           isWheeling = true
           timeout = setTimeout(() => {
             isWheeling = false
-          }, 500) // Throttle wheel events
+          }, 500)
         }
       }
 
-      viewportElement.addEventListener("wheel", onWheel, { passive: false })
-
-      return () => {
-        viewportElement.removeEventListener("wheel", onWheel)
-        clearTimeout(timeout)
+      // Получаем контейнер напрямую через DOM
+      const containerElement = api.containerNode()
+      if (containerElement) {
+        containerElement.addEventListener("wheel", onWheel, { passive: false })
+        
+        return () => {
+          containerElement.removeEventListener("wheel", onWheel)
+          clearTimeout(timeout)
+        }
       }
-    }, [api, orientation, viewportElement])
+    }, [api, orientation])
 
     return (
       <CarouselContext.Provider
@@ -177,8 +177,6 @@ const Carousel = React.forwardRef<
           scrollNext,
           canScrollPrev,
           canScrollNext,
-          // Прокидываем ref вниз для CarouselContent
-          setViewportElement,
         }}
       >
         <div
@@ -197,23 +195,14 @@ const Carousel = React.forwardRef<
 )
 Carousel.displayName = "Carousel"
 
-// 3. Прокидываем ref и устанавливаем его через setViewportElement из контекста
 const CarouselContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
-  const { carouselRef, orientation, setViewportElement } = useCarousel()
+  const { carouselRef, orientation } = useCarousel()
 
   return (
-    <div
-      ref={node => {
-        // ref из embla
-        carouselRef(node);
-        // локальный ref для доступа к DOM-элементу
-        if (setViewportElement) setViewportElement(node);
-      }}
-      className="overflow-hidden"
-    >
+    <div ref={carouselRef} className="overflow-hidden">
       <div
         ref={ref}
         className={cn(
