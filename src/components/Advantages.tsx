@@ -42,21 +42,21 @@ const advantages = [
 ];
 
 const Advantages: React.FC = () => (
-  <div className="max-w-4xl mx-auto px-4 animate-fade-in">
+  <div className="max-w-6xl mx-auto px-8 animate-fade-in">
     <div className="text-center mb-12">
       <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-brand-darkBlue">
         Почему ИИ-ассистенты эффективнее людей
       </h2>
-      <p className="text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto">
+      <p className="text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto">
         Мы освобождаем людей от рутины для творческих задач.
       </p>
     </div>
     
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
       {advantages.map((item, i) => (
         <div
           key={i}
-          className="bg-white/80 rounded-3xl p-4 shadow-xl border border-white/40 hover:bg-white/95 transition-all backdrop-blur-sm text-center"
+          className="bg-white/80 rounded-3xl p-6 shadow-xl border border-white/40 hover:bg-white/95 transition-all backdrop-blur-sm text-center"
         >
           <div className="mb-6 flex justify-center">
             {item.icon}

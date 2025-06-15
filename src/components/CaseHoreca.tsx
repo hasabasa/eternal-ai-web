@@ -2,7 +2,7 @@ import React from "react";
 import { Coffee, Calendar, CheckCircle } from "lucide-react";
 
 const CaseHoreca: React.FC = () => (
-  <div className="max-w-4xl mx-auto px-4 animate-fade-in">
+  <div className="max-w-6xl mx-auto px-8 animate-fade-in">
     <div className="text-center mb-12">
       <div className="flex items-center justify-center gap-6 mb-8">
         <Coffee className="w-12 h-12 text-brand-orange" />
@@ -13,14 +13,14 @@ const CaseHoreca: React.FC = () => (
       <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-brand-darkBlue">
         Сеть кафе
       </h2>
-      <p className="text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto">
+      <p className="text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto">
         Автоматизация бронирований и экономия 180 000₽ в месяц
       </p>
     </div>
     
-    <div className="grid md:grid-cols-3 gap-6 mb-12">
+    <div className="grid md:grid-cols-3 gap-8 mb-12">
       {/* Проблема */}
-      <div className="bg-red-50/70 rounded-3xl border border-red-200/50 p-4 backdrop-blur-sm">
+      <div className="bg-red-50/70 rounded-3xl border border-red-200/50 p-6 backdrop-blur-sm">
         <div className="flex items-center gap-4 mb-6">
           <div className="w-5 h-5 bg-red-500 rounded-full"></div>
           <h3 className="font-bold text-xl text-red-700">Проблема</h3>
@@ -35,7 +35,7 @@ const CaseHoreca: React.FC = () => (
       </div>
 
       {/* Решение */}
-      <div className="bg-blue-50/70 rounded-3xl border border-blue-200/50 p-4 backdrop-blur-sm">
+      <div className="bg-blue-50/70 rounded-3xl border border-blue-200/50 p-6 backdrop-blur-sm">
         <div className="flex items-center gap-4 mb-6">
           <div className="w-5 h-5 bg-blue-500 rounded-full"></div>
           <h3 className="font-bold text-xl text-blue-700">Решение</h3>
@@ -49,7 +49,7 @@ const CaseHoreca: React.FC = () => (
       </div>
 
       {/* Результат */}
-      <div className="bg-green-50/70 rounded-3xl border border-green-200/50 p-4 backdrop-blur-sm">
+      <div className="bg-green-50/70 rounded-3xl border border-green-200/50 p-6 backdrop-blur-sm">
         <div className="flex items-center gap-4 mb-6">
           <CheckCircle className="w-7 h-7 text-green-600" />
           <h3 className="font-bold text-xl text-green-700">Результат</h3>

@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Search, Settings, Rocket, TrendingUp } from "lucide-react";
 
@@ -29,17 +30,17 @@ const steps = [
 ];
 
 const Process: React.FC = () => (
-  <div className="max-w-4xl mx-auto px-4 animate-fade-in">
+  <div className="max-w-6xl mx-auto px-8 animate-fade-in">
     <div className="text-center mb-12">
       <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-brand-darkBlue">
         Как мы внедряем ИИ в ваш бизнес
       </h2>
-      <p className="text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto">
+      <p className="text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto">
         Простой процесс от анализа до результата
       </p>
     </div>
     
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
       {steps.map((step, i) => (
         <div key={i} className="relative">
           {/* Соединительная линия только для больших экранов */}
@@ -47,7 +48,7 @@ const Process: React.FC = () => (
             <div className="hidden lg:block absolute top-12 left-full w-full h-1 bg-gradient-to-r from-brand-orange/30 to-transparent" />
           )}
           
-          <div className="bg-white/80 rounded-3xl p-4 text-center hover:bg-white/95 transition-all shadow-xl border border-white/40 backdrop-blur-sm h-full flex flex-col justify-between">
+          <div className="bg-white/80 rounded-3xl p-6 text-center hover:bg-white/95 transition-all shadow-xl border border-white/40 backdrop-blur-sm h-full flex flex-col justify-between">
             <div>
               <div className="mb-6 flex justify-center">
                 {step.icon}

@@ -1,3 +1,4 @@
+
 import React from "react";
 
 const stats = [
@@ -24,12 +25,12 @@ const stats = [
 ];
 
 const Statistics: React.FC = () => (
-  <div className="max-w-4xl mx-auto px-4 animate-fade-in">
+  <div className="max-w-6xl mx-auto px-8 animate-fade-in">
     <div className="text-center mb-12">
       <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-brand-darkBlue">
         Результаты внедрения в цифрах
       </h2>
-      <p className="text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto">
+      <p className="text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto">
         Конкретные показатели эффективности наших ИИ-решений
       </p>
     </div>
