@@ -1,6 +1,13 @@
 
 import React from "react";
 import { MessageCircle, ShoppingCart, Calendar, BarChart3 } from "lucide-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const solutions = [
   {
@@ -40,38 +47,43 @@ const Solutions: React.FC = () => (
       </p>
     </div>
     
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      {solutions.map((solution, i) => (
-        <div
-          key={i}
-          className="bg-white/80 rounded-3xl p-8 shadow-xl border border-white/40 hover:bg-white/95 transition-all backdrop-blur-sm"
-        >
-          <div className="flex items-start gap-6 mb-8">
-            <div className="p-4 bg-white rounded-2xl shadow-lg">
-              {solution.icon}
+    <Carousel opts={{ align: "start" }} className="w-full">
+      <CarouselContent className="-ml-8">
+        {solutions.map((solution, i) => (
+          <CarouselItem key={i} className="pl-8 lg:basis-1/2">
+            <div
+              className="bg-white/80 rounded-3xl p-8 shadow-xl hover:bg-white/95 transition-all backdrop-blur-sm h-full"
+            >
+              <div className="flex items-start gap-6 mb-8">
+                <div className="p-4 bg-white rounded-2xl shadow-lg">
+                  {solution.icon}
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl lg:text-2xl font-bold mb-3 text-brand-darkBlue">
+                    {solution.title}
+                  </h3>
+                  <p className="text-base lg:text-lg text-gray-600 mb-4">
+                    {solution.desc}
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                {solution.features.map((feature, j) => (
+                  <span
+                    key={j}
+                    className="px-4 py-2 bg-brand-purple/10 text-brand-purple rounded-full text-sm lg:text-base font-medium"
+                  >
+                    {feature}
+                  </span>
+                ))}
+              </div>
             </div>
-            <div className="flex-1">
-              <h3 className="text-xl lg:text-2xl font-bold mb-3 text-brand-darkBlue">
-                {solution.title}
-              </h3>
-              <p className="text-base lg:text-lg text-gray-600 mb-4">
-                {solution.desc}
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            {solution.features.map((feature, j) => (
-              <span
-                key={j}
-                className="px-4 py-2 bg-brand-purple/10 text-brand-purple rounded-full text-sm lg:text-base font-medium"
-              >
-                {feature}
-              </span>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious className="hidden lg:inline-flex" />
+      <CarouselNext className="hidden lg:inline-flex" />
+    </Carousel>
   </div>
 );
 

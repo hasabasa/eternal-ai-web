@@ -39,7 +39,7 @@ const Statistics: React.FC = () => (
       {stats.map((stat, i) => (
         <div
           key={i}
-          className="text-center p-6 bg-white/80 rounded-2xl backdrop-blur-sm border border-white/40 hover:bg-white/95 transition-all shadow-lg"
+          className="text-center p-6 bg-white/80 rounded-2xl backdrop-blur-sm hover:bg-white/95 transition-all shadow-lg"
         >
           <div className="text-4xl lg:text-6xl font-bold text-brand-orange mb-4">
             {stat.number}
