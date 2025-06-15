@@ -56,7 +56,7 @@ const Advantages: React.FC = () => (
       {advantages.map((item, i) => (
         <div
           key={i}
-          className="bg-white/80 rounded-3xl p-8 shadow-xl hover:bg-white/95 transition-all backdrop-blur-sm text-center"
+          className="bg-white/80 rounded-3xl p-8 shadow-xl border border-white/40 hover:bg-white/95 transition-all backdrop-blur-sm text-center"
         >
           <div className="mb-6 flex justify-center">
             {item.icon}

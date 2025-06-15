@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Search, Settings, Rocket, TrendingUp } from "lucide-react";
 
@@ -47,7 +48,7 @@ const Process: React.FC = () => (
             <div className="hidden lg:block absolute top-12 left-full w-full h-1 bg-gradient-to-r from-brand-orange/30 to-transparent" />
           )}
           
-          <div className="bg-white/80 rounded-3xl p-8 text-center hover:bg-white/95 transition-all shadow-xl backdrop-blur-sm h-full flex flex-col justify-between">
+          <div className="bg-white/80 rounded-3xl p-8 text-center hover:bg-white/95 transition-all shadow-xl border border-white/40 backdrop-blur-sm h-full flex flex-col justify-between">
             <div>
               <div className="mb-6 flex justify-center">
                 {step.icon}

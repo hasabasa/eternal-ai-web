@@ -1,3 +1,4 @@
+
 import AuroraBackground from "@/components/AuroraBackground";
 import BurgerMenu from "@/components/BurgerMenu";
 import Advantages from "@/components/Advantages";
@@ -138,7 +139,7 @@ const Index = () => {
         {/* Финальная секция */}
         <section className="py-12 bg-gradient-to-br from-brand-darkBlue/5 to-brand-purple/10">
           <div className="max-w-5xl mx-auto px-8 text-center">
-            <div className="bg-gradient-to-br from-white/95 to-white/80 rounded-2xl p-12 shadow-2xl">
+            <div className="bg-gradient-to-br from-white/95 to-white/80 rounded-2xl p-12 shadow-2xl border border-gray-200">
               <h2 className="text-4xl lg:text-5xl font-bold mb-8 text-brand-darkBlue">
                 Будущее автоматизации — уже здесь
               </h2>
