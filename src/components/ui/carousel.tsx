@@ -62,7 +62,10 @@ const Carousel = React.forwardRef<
         axis: orientation === "horizontal" ? "x" : "y",
       },
       plugins
-    )
+    );
+    // 1. Ref для viewport (будет проброшен через context)
+    const [viewportElement, setViewportElement] = React.useState<HTMLDivElement | null>(null);
+
     const [canScrollPrev, setCanScrollPrev] = React.useState(false)
     const [canScrollNext, setCanScrollNext] = React.useState(false)
 
@@ -119,8 +122,9 @@ const Carousel = React.forwardRef<
       }
     }, [api, onSelect])
 
+    // 2. Исправленный wheel-обработчик для вертикальной прокрутки
     React.useEffect(() => {
-      if (!api || orientation !== "vertical") {
+      if (!api || orientation !== "vertical" || !viewportElement) {
         return
       }
 
@@ -151,18 +155,13 @@ const Carousel = React.forwardRef<
         }
       }
 
-      const viewportNode = carouselRef.current
-      if (viewportNode) {
-        viewportNode.addEventListener("wheel", onWheel, { passive: false })
-      }
+      viewportElement.addEventListener("wheel", onWheel, { passive: false })
 
       return () => {
-        if (viewportNode) {
-          viewportNode.removeEventListener("wheel", onWheel)
-        }
+        viewportElement.removeEventListener("wheel", onWheel)
         clearTimeout(timeout)
       }
-    }, [api, orientation, carouselRef])
+    }, [api, orientation, viewportElement])
 
     return (
       <CarouselContext.Provider
@@ -176,6 +175,8 @@ const Carousel = React.forwardRef<
           scrollNext,
           canScrollPrev,
           canScrollNext,
+          // Прокидываем ref вниз для CarouselContent
+          setViewportElement,
         }}
       >
         <div
@@ -194,14 +195,23 @@ const Carousel = React.forwardRef<
 )
 Carousel.displayName = "Carousel"
 
+// 3. Прокидываем ref и устанавливаем его через setViewportElement из контекста
 const CarouselContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
-  const { carouselRef, orientation } = useCarousel()
+  const { carouselRef, orientation, setViewportElement } = useCarousel()
 
   return (
-    <div ref={carouselRef} className="overflow-hidden">
+    <div
+      ref={node => {
+        // ref из embla
+        carouselRef(node);
+        // локальный ref для доступа к DOM-элементу
+        if (setViewportElement) setViewportElement(node);
+      }}
+      className="overflow-hidden"
+    >
       <div
         ref={ref}
         className={cn(
