@@ -27,10 +27,10 @@ const stats = [
 const Statistics: React.FC = () => (
   <div className="max-w-6xl mx-auto px-4 animate-fade-in">
     <div className="text-center mb-16">
-      <h2 className="text-4xl sm:text-5xl font-bold mb-6 text-primary">
+      <h2 className="text-4xl sm:text-5xl font-bold mb-6 text-brand-darkBlue">
         Результаты внедрения в цифрах
       </h2>
-      <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+      <p className="text-xl text-gray-600 max-w-3xl mx-auto">
         Конкретные показатели эффективности наших ИИ-решений
       </p>
     </div>
@@ -41,13 +41,13 @@ const Statistics: React.FC = () => (
           key={i}
           className="text-center p-8 bg-white/70 rounded-3xl backdrop-blur-sm border border-white/30 hover:bg-white/90 transition-all shadow-lg"
         >
-          <div className="text-4xl md:text-5xl font-bold text-aurora4 mb-3">
+          <div className="text-4xl md:text-5xl font-bold text-brand-orange mb-3">
             {stat.number}
           </div>
-          <div className="font-semibold text-lg md:text-xl text-primary mb-2">
+          <div className="font-semibold text-lg md:text-xl text-brand-darkBlue mb-2">
             {stat.label}
           </div>
-          <div className="text-base md:text-lg text-muted-foreground">
+          <div className="text-base md:text-lg text-gray-600">
             {stat.desc}
           </div>
         </div>

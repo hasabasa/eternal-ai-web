@@ -27,11 +27,34 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        aurora1: "#B9AFFF",
-        aurora2: "#91FFE3",
-        aurora3: "#FFD6EC",
-        aurora4: "#F6D365",
-        aurora5: "#5FA8FF",
+        primary: {
+          DEFAULT: "#262630", // Тёмно-серо-синий
+          foreground: "#ffffff",
+        },
+        secondary: {
+          DEFAULT: "#f1f5f9",
+          foreground: "#262630",
+        },
+        muted: {
+          DEFAULT: "#f1f5f9",
+          foreground: "#64748b",
+        },
+        accent: {
+          DEFAULT: "#f1f5f9",
+          foreground: "#262630",
+        },
+        // Фирменные цвета
+        brand: {
+          orange: "#FE9C2D", // Янтарно-оранжевый
+          darkBlue: "#262630", // Тёмно-серо-синий  
+          purple: "#A678FF", // Светло-фиолетовый
+        },
+        // Заменяем старые aurora цвета на фирменные
+        aurora1: "#A678FF", // Светло-фиолетовый
+        aurora2: "#FE9C2D", // Янтарно-оранжевый
+        aurora3: "#A678FF", // Светло-фиолетовый (вариант)
+        aurora4: "#FE9C2D", // Янтарно-оранжевый (вариант)
+        aurora5: "#262630", // Тёмно-серо-синий
       },
       borderRadius: {
         lg: "1.5rem",
@@ -55,4 +78,3 @@ export default {
   },
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;
-
