@@ -36,29 +36,49 @@ const Carousel = React.forwardRef<
         return
       }
 
-      setCanScrollPrev(api.canScrollPrev())
-      setCanScrollNext(api.canScrollNext())
+      const canPrev = api.canScrollPrev()
+      const canNext = api.canScrollNext()
+      console.log('Carousel state updated:', { canPrev, canNext, selectedIndex: api.selectedScrollSnap() })
+      
+      setCanScrollPrev(canPrev)
+      setCanScrollNext(canNext)
     }, [])
 
     const scrollPrev = React.useCallback(() => {
-      api?.scrollPrev()
+      console.log('scrollPrev called, api exists:', !!api)
+      if (api) {
+        api.scrollPrev()
+      }
     }, [api])
 
     const scrollNext = React.useCallback(() => {
-      api?.scrollNext()
+      console.log('scrollNext called, api exists:', !!api)
+      if (api) {
+        api.scrollNext()
+      }
     }, [api])
 
     const handleKeyDown = React.useCallback(
       (event: React.KeyboardEvent<HTMLDivElement>) => {
-        if (event.key === "ArrowLeft") {
-          event.preventDefault()
-          scrollPrev()
-        } else if (event.key === "ArrowRight") {
-          event.preventDefault()
-          scrollNext()
+        if (orientation === "vertical") {
+          if (event.key === "ArrowUp") {
+            event.preventDefault()
+            scrollPrev()
+          } else if (event.key === "ArrowDown") {
+            event.preventDefault()
+            scrollNext()
+          }
+        } else {
+          if (event.key === "ArrowLeft") {
+            event.preventDefault()
+            scrollPrev()
+          } else if (event.key === "ArrowRight") {
+            event.preventDefault()
+            scrollNext()
+          }
         }
       },
-      [scrollPrev, scrollNext]
+      [scrollPrev, scrollNext, orientation]
     )
 
     React.useEffect(() => {
@@ -71,9 +91,11 @@ const Carousel = React.forwardRef<
 
     React.useEffect(() => {
       if (!api) {
+        console.log('API not ready yet')
         return
       }
 
+      console.log('Setting up carousel listeners')
       onSelect(api)
       api.on("reInit", onSelect)
       api.on("select", onSelect)
@@ -84,48 +106,57 @@ const Carousel = React.forwardRef<
       }
     }, [api, onSelect])
 
-    // Wheel handler для вертикальной прокрутки
+    // Улучшенный обработчик колеса мыши для вертикальной прокрутки
     React.useEffect(() => {
       if (!api || orientation !== "vertical") {
         return
       }
 
-      let isWheeling = false
-      let timeout: ReturnType<typeof setTimeout>
+      let isScrolling = false
+      let scrollTimeout: ReturnType<typeof setTimeout>
 
       const onWheel = (event: WheelEvent) => {
+        // Предотвращаем стандартную прокрутку страницы
         event.preventDefault()
+        event.stopPropagation()
 
-        if (isWheeling) {
+        if (isScrolling) {
           return
         }
 
-        let scrolled = false
-        if (event.deltaY < 0) {
+        const delta = event.deltaY
+        console.log('Wheel event:', { delta, canScrollPrev: api.canScrollPrev(), canScrollNext: api.canScrollNext() })
+
+        if (delta < -50 && api.canScrollPrev()) {
+          console.log('Scrolling to previous slide')
           api.scrollPrev()
-          scrolled = true
-        } else if (event.deltaY > 0) {
+          isScrolling = true
+        } else if (delta > 50 && api.canScrollNext()) {
+          console.log('Scrolling to next slide')
           api.scrollNext()
-          scrolled = true
+          isScrolling = true
         }
 
-        if (scrolled) {
-          isWheeling = true
-          timeout = setTimeout(() => {
-            isWheeling = false
-          }, 500)
+        if (isScrolling) {
+          scrollTimeout = setTimeout(() => {
+            isScrolling = false
+          }, 800)
         }
       }
 
-      // Получаем контейнер напрямую через DOM
-      const containerElement = api.containerNode()
-      if (containerElement) {
-        containerElement.addEventListener("wheel", onWheel, { passive: false })
+      // Получаем viewport элемент напрямую
+      const viewportElement = api.rootNode()
+      if (viewportElement) {
+        console.log('Adding wheel listener to viewport element')
+        viewportElement.addEventListener("wheel", onWheel, { passive: false })
         
         return () => {
-          containerElement.removeEventListener("wheel", onWheel)
-          clearTimeout(timeout)
+          console.log('Removing wheel listener')
+          viewportElement.removeEventListener("wheel", onWheel)
+          clearTimeout(scrollTimeout)
         }
+      } else {
+        console.warn('Could not find viewport element for wheel listener')
       }
     }, [api, orientation])
 
@@ -149,6 +180,7 @@ const Carousel = React.forwardRef<
           className={cn("relative", className)}
           role="region"
           aria-roledescription="carousel"
+          tabIndex={0}
           {...props}
         >
           {children}

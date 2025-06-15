@@ -1,4 +1,3 @@
-
 import AuroraBackground from "@/components/AuroraBackground";
 import BurgerMenu from "@/components/BurgerMenu";
 import Advantages from "@/components/Advantages";
@@ -152,10 +151,10 @@ const Index = () => {
             </section>
           </CarouselItem>
         </CarouselContent>
-        <div className="absolute bottom-8 right-8 flex flex-col gap-2 z-50">
-            <CarouselPrevious className="relative w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-110 border-none" />
-            <CarouselNext className="relative w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-110 border-none" />
-        </div>
+        
+        {/* Кнопки навигации с исправленным позиционированием */}
+        <CarouselPrevious className="fixed top-8 right-8 w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white border-none shadow-xl hover:shadow-2xl transition-all hover:scale-110 z-[100]" />
+        <CarouselNext className="fixed bottom-8 right-8 w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white border-none shadow-xl hover:shadow-2xl transition-all hover:scale-110 z-[100]" />
       </Carousel>
     </div>
   );
