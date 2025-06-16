@@ -6,9 +6,10 @@ import { Input } from "@/components/ui/input";
 
 const ClientCalc = () => {
   const [employees, setEmployees] = useState('');
-  const [salary, setSalary] = useState('');
+  const [monthlySalary, setMonthlySalary] = useState('');
   const [results, setResults] = useState({
-    totalHumanCost: 0,
+    totalHumanCostMonthly: 0,
+    totalHumanCostAnnual: 0,
     annualSavings: 0,
     monthlySavings: 0,
     roi: 0,
@@ -18,34 +19,39 @@ const ClientCalc = () => {
 
   const calculateResults = () => {
     const numEmployees = parseInt(employees);
-    const numSalary = parseFloat(salary.replace(/[^\d.,]/g, '').replace(',', '.'));
+    const numMonthlySalary = parseFloat(monthlySalary.replace(/[^\d.,]/g, '').replace(',', '.'));
     
-    if (isNaN(numEmployees) || isNaN(numSalary) || numEmployees <= 0 || numSalary <= 0) {
+    if (isNaN(numEmployees) || isNaN(numMonthlySalary) || numEmployees <= 0 || numMonthlySalary <= 0) {
       return;
     }
 
-    // Формулы расчета согласно вашему описанию:
-    const total_human_cost = numSalary * numEmployees;
-    const savings = total_human_cost - 500000;
-    const monthly_savings = savings / 12;
-    const roi = (savings / 500000) * 100;
-    const isProfit = savings > 0;
+    // Формулы расчета:
+    const totalHumanCostMonthly = numMonthlySalary * numEmployees; // месячные затраты на людей
+    const totalHumanCostAnnual = totalHumanCostMonthly * 12; // годовые затраты на людей
+    const aiCost = 500000; // стоимость ИИ (единоразово)
+    
+    const annualSavings = totalHumanCostAnnual - aiCost; // годовая экономия
+    const monthlySavings = annualSavings / 12; // месячная экономия
+    const roi = (annualSavings / aiCost) * 100; // ROI в процентах
+    const isProfit = annualSavings > 0;
 
     setResults({
-      totalHumanCost: total_human_cost,
-      annualSavings: savings,
-      monthlySavings: monthly_savings,
-      roi: roi,
-      isProfit: isProfit
+      totalHumanCostMonthly,
+      totalHumanCostAnnual,
+      annualSavings,
+      monthlySavings,
+      roi,
+      isProfit
     });
     setIsCalculated(true);
   };
 
   const handleReset = () => {
     setEmployees('');
-    setSalary('');
+    setMonthlySalary('');
     setResults({
-      totalHumanCost: 0,
+      totalHumanCostMonthly: 0,
+      totalHumanCostAnnual: 0,
       annualSavings: 0,
       monthlySavings: 0,
       roi: 0,
@@ -100,13 +106,13 @@ const ClientCalc = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Зарплата одного сотрудника в год (₸)
+                  Зарплата одного сотрудника в месяц (₸)
                 </label>
                 <Input
                   type="text"
-                  value={salary}
-                  onChange={(e) => setSalary(e.target.value)}
-                  placeholder="Введите годовую зарплату"
+                  value={monthlySalary}
+                  onChange={(e) => setMonthlySalary(e.target.value)}
+                  placeholder="Введите месячную зарплату"
                   className="w-full h-10 border border-gray-300 rounded-md"
                 />
               </div>
@@ -114,7 +120,7 @@ const ClientCalc = () => {
               <Button
                 onClick={calculateResults}
                 className="w-full bg-brand-orange hover:bg-brand-orange/90 text-white font-medium py-2"
-                disabled={!employees || !salary}
+                disabled={!employees || !monthlySalary}
               >
                 Рассчитать
               </Button>
@@ -152,10 +158,17 @@ const ClientCalc = () => {
               </div>
             ) : (
               <div className="space-y-4">
-                {/* Общие затраты на людей */}
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <div className="text-sm text-gray-600">Общие затраты на сотрудников в год:</div>
-                  <div className="text-xl font-bold text-gray-800">{formatNumber(results.totalHumanCost)} ₸</div>
+                {/* Затраты на людей */}
+                <div className="space-y-2">
+                  <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="text-sm text-blue-700 font-medium">Затраты на сотрудников в месяц:</div>
+                    <div className="text-lg font-bold text-blue-800">{formatNumber(results.totalHumanCostMonthly)} ₸</div>
+                  </div>
+                  
+                  <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="text-sm text-blue-700 font-medium">Затраты на сотрудников в год:</div>
+                    <div className="text-lg font-bold text-blue-800">{formatNumber(results.totalHumanCostAnnual)} ₸</div>
+                  </div>
                 </div>
 
                 {/* Предупреждение если ИИ невыгоден */}
@@ -172,51 +185,57 @@ const ClientCalc = () => {
                   </div>
                 )}
 
-                {/* Таблица результатов */}
-                <div className="space-y-1">
-                  <div className={`grid grid-cols-2 py-3 border-b rounded-lg px-3 ${
-                    results.isProfit ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'
+                {/* Основные результаты */}
+                <div className="space-y-3">
+                  <div className={`p-4 rounded-lg border-2 ${
+                    results.isProfit 
+                      ? 'border-green-300 bg-green-50' 
+                      : 'border-red-300 bg-red-50'
                   }`}>
-                    <span className={`text-sm font-semibold ${
+                    <div className={`text-sm font-semibold mb-1 ${
                       results.isProfit ? 'text-green-700' : 'text-red-700'
                     }`}>
-                      {results.isProfit ? 'Годовая экономия:' : 'Годовые убытки:'}
-                    </span>
-                    <span className={`text-lg font-bold text-right ${
+                      {results.isProfit ? '💰 Экономия в месяц:' : '📉 Убытки в месяц:'}
+                    </div>
+                    <div className={`text-2xl font-bold ${
+                      results.isProfit ? 'text-green-600' : 'text-red-600'
+                    }`}>
+                      {results.isProfit ? '' : '-'}{formatNumber(results.monthlySavings)} ₸
+                    </div>
+                  </div>
+                  
+                  <div className={`p-4 rounded-lg border-2 ${
+                    results.isProfit 
+                      ? 'border-green-300 bg-green-50' 
+                      : 'border-red-300 bg-red-50'
+                  }`}>
+                    <div className={`text-sm font-semibold mb-1 ${
+                      results.isProfit ? 'text-green-700' : 'text-red-700'
+                    }`}>
+                      {results.isProfit ? '🎯 Экономия в год:' : '📉 Убытки в год:'}
+                    </div>
+                    <div className={`text-2xl font-bold ${
                       results.isProfit ? 'text-green-600' : 'text-red-600'
                     }`}>
                       {results.isProfit ? '' : '-'}{formatNumber(results.annualSavings)} ₸
-                    </span>
+                    </div>
                   </div>
                   
-                  <div className={`grid grid-cols-2 py-3 border-b rounded-lg px-3 ${
-                    results.isProfit ? 'border-blue-200 bg-blue-50' : 'border-red-200 bg-red-50'
+                  <div className={`p-4 rounded-lg border-2 ${
+                    results.roi > 0 
+                      ? 'border-purple-300 bg-purple-50' 
+                      : 'border-red-300 bg-red-50'
                   }`}>
-                    <span className={`text-sm font-semibold ${
-                      results.isProfit ? 'text-blue-700' : 'text-red-700'
+                    <div className={`text-sm font-semibold mb-1 ${
+                      results.roi > 0 ? 'text-purple-700' : 'text-red-700'
                     }`}>
-                      {results.isProfit ? 'Ежемесячная экономия:' : 'Ежемесячные убытки:'}
-                    </span>
-                    <span className={`text-lg font-bold text-right ${
-                      results.isProfit ? 'text-blue-600' : 'text-red-600'
-                    }`}>
-                      {results.isProfit ? '' : '-'}{formatNumber(results.monthlySavings)} ₸
-                    </span>
-                  </div>
-                  
-                  <div className={`grid grid-cols-2 py-3 border-b rounded-lg px-3 ${
-                    results.isProfit ? 'border-purple-200 bg-purple-50' : 'border-red-200 bg-red-50'
-                  }`}>
-                    <span className={`text-sm font-semibold ${
-                      results.isProfit ? 'text-purple-700' : 'text-red-700'
-                    }`}>
-                      ROI в процентах:
-                    </span>
-                    <span className={`text-lg font-bold text-right ${
-                      results.isProfit ? 'text-purple-600' : 'text-red-600'
+                      📊 ROI (возврат инвестиций):
+                    </div>
+                    <div className={`text-2xl font-bold ${
+                      results.roi > 0 ? 'text-purple-600' : 'text-red-600'
                     }`}>
                       {results.roi > 0 ? '+' : ''}{formatNumber(results.roi)}%
-                    </span>
+                    </div>
                   </div>
                 </div>
 
@@ -224,7 +243,7 @@ const ClientCalc = () => {
                 {results.isProfit && (
                   <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
                     <p className="text-sm text-green-700">
-                      <span className="font-semibold">Отличный результат!</span> ИИ-решение окупится и будет приносить экономию.
+                      <span className="font-semibold">🎉 Отличный результат!</span> ИИ-решение окупится и будет приносить стабильную экономию.
                     </p>
                   </div>
                 )}
