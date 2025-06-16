@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Calculator, ArrowLeft, DollarSign, Percent, Equal, CheckCircle } from "lucide-react";
+import { Calculator, ArrowLeft, DollarSign, Percent, Equal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const departments = [
   { value: "finance", label: "Финансовый отдел" },
@@ -120,29 +119,29 @@ const ClientCalc = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-purple/10 via-white to-brand-orange/10 p-2 sm:p-4">
-      <div className="max-w-7xl mx-auto">
-        {/* Header - компактный */}
-        <div className="text-center mb-4">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-brand-orange rounded-full mb-2 shadow-lg">
+    <div className="min-h-screen bg-gray-50 p-4">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-6">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-brand-orange rounded-full mb-3">
             <Calculator className="w-6 h-6 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-brand-darkBlue mb-1">
+          <h1 className="text-2xl font-bold text-brand-darkBlue mb-2">
             Расчёт с клиентом
           </h1>
-          <p className="text-sm text-gray-600">
+          <p className="text-gray-600">
             Выберите тип расчёта для работы с клиентами
           </p>
         </div>
 
-        {/* Tab Navigation - компактный */}
-        <div className="flex justify-center mb-4">
-          <div className="bg-white rounded-lg p-1 shadow-lg border">
+        {/* Tab Navigation */}
+        <div className="flex justify-center mb-6">
+          <div className="bg-white rounded-lg p-1 shadow-sm border">
             <button
               onClick={() => setActiveTab('simple')}
-              className={`px-4 py-2 rounded-md font-medium transition-all text-sm ${
+              className={`px-6 py-2 rounded-md font-medium transition-all ${
                 activeTab === 'simple'
-                  ? 'bg-brand-orange text-white shadow-md'
+                  ? 'bg-brand-orange text-white'
                   : 'text-gray-600 hover:text-brand-orange'
               }`}
             >
@@ -150,9 +149,9 @@ const ClientCalc = () => {
             </button>
             <button
               onClick={() => setActiveTab('economy')}
-              className={`px-4 py-2 rounded-md font-medium transition-all text-sm ${
+              className={`px-6 py-2 rounded-md font-medium transition-all ${
                 activeTab === 'economy'
-                  ? 'bg-brand-orange text-white shadow-md'
+                  ? 'bg-brand-orange text-white'
                   : 'text-gray-600 hover:text-brand-orange'
               }`}
             >
@@ -164,103 +163,89 @@ const ClientCalc = () => {
         {/* Simple Calculator */}
         {activeTab === 'simple' && (
           <div className="max-w-md mx-auto">
-            <Card className="shadow-xl border-0 bg-white/95 backdrop-blur-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg text-center text-brand-darkBlue">
-                  Калькулятор процентов
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Amount Input */}
-                <div className="space-y-1">
-                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                    <DollarSign className="w-4 h-4 text-brand-orange" />
-                    Сумма продажи
+            <div className="bg-white rounded-lg shadow-sm border p-6">
+              <h3 className="text-lg font-semibold text-center text-brand-darkBlue mb-6">
+                Калькулятор процентов
+              </h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Сумма продажи (₸)
                   </label>
                   <Input
                     type="text"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="Введите сумму"
-                    className="text-lg h-10 border-2 focus:border-brand-orange"
+                    className="w-full h-10 border border-gray-300 rounded-md"
                   />
                 </div>
 
-                {/* Percent Input */}
-                <div className="space-y-1">
-                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                    <Percent className="w-4 h-4 text-brand-purple" />
-                    Процент
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Процент (%)
                   </label>
                   <Input
                     type="text"
                     value={percent}
                     onChange={(e) => setPercent(e.target.value)}
                     placeholder="Введите процент"
-                    className="text-lg h-10 border-2 focus:border-brand-purple"
+                    className="w-full h-10 border border-gray-300 rounded-md"
                   />
                 </div>
 
-                {/* Calculate Button */}
                 <Button
                   onClick={handleCalculate}
-                  className="w-full h-10 text-base bg-brand-orange hover:bg-brand-orange/90 text-white font-semibold shadow-lg"
+                  className="w-full h-10 bg-brand-orange hover:bg-brand-orange/90 text-white font-medium"
                   disabled={!amount || !percent}
                 >
-                  <Equal className="w-4 h-4 mr-2" />
                   Рассчитать
                 </Button>
 
-                {/* Result */}
                 {isCalculated && result !== null && (
-                  <div className="mt-4 p-3 bg-gradient-to-r from-green-50 to-green-100 rounded-xl border-l-4 border-green-500 animate-fade-in">
+                  <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
                     <div className="text-center">
-                      <p className="text-sm text-green-700 font-medium mb-1">
+                      <p className="text-sm text-green-700 mb-1">
                         Результат расчёта:
                       </p>
                       <p className="text-xl font-bold text-green-800">
                         {formatNumber(result)} ₸
                       </p>
-                      <p className="text-xs text-green-600 mt-1">
-                        {percent}% от {formatNumber(parseFloat(amount.replace(/[^\d.,]/g, '').replace(',', '.')))} ₸
-                      </p>
                     </div>
                   </div>
                 )}
 
-                {/* Reset Button */}
                 {isCalculated && (
                   <Button
                     onClick={handleReset}
                     variant="outline"
-                    className="w-full border-2 border-gray-300 hover:border-brand-purple hover:text-brand-purple"
+                    className="w-full border border-gray-300"
                   >
                     Новый расчёт
                   </Button>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
         )}
 
-        {/* Economy Calculator - оптимизированный для одного экрана */}
+        {/* Economy Calculator - Table Style */}
         {activeTab === 'economy' && (
-          <div className="grid lg:grid-cols-2 gap-4 max-h-[calc(100vh-200px)] overflow-hidden">
+          <div className="grid lg:grid-cols-2 gap-6">
             {/* Левая часть - настройки */}
-            <Card className="bg-white/80 shadow-xl border border-white/40 backdrop-blur-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base text-brand-darkBlue">Параметры расчёта</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Выбор отдела */}
+            <div className="bg-white rounded-lg shadow-sm border p-6">
+              <h3 className="text-lg font-semibold text-brand-darkBlue mb-4">Параметры расчёта</h3>
+              
+              <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-brand-darkBlue mb-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Наименование отдела
                   </label>
                   <select
                     value={selectedDepartment}
                     onChange={(e) => setSelectedDepartment(e.target.value)}
-                    className="w-full p-2 text-sm rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-brand-orange transition-all"
+                    className="w-full p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-brand-orange"
                   >
                     {departments.map((dept) => (
                       <option key={dept.value} value={dept.value}>
@@ -270,144 +255,116 @@ const ClientCalc = () => {
                   </select>
                 </div>
 
-                {/* Количество сотрудников */}
                 <div>
-                  <label className="block text-sm font-semibold text-brand-darkBlue mb-1">
-                    Кол-во сотрудников: <span className="text-brand-orange">{employees}</span>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Кол-во сотрудников в отделе: <span className="text-brand-orange font-semibold">{employees}</span>
                   </label>
-                  <div className="relative">
-                    <input
-                      type="range"
-                      min="1"
-                      max="100"
-                      value={employees}
-                      onChange={(e) => setEmployees(Number(e.target.value))}
-                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-                      style={{
-                        background: `linear-gradient(to right, #FE9C2D 0%, #FE9C2D ${employees}%, #e5e7eb ${employees}%, #e5e7eb 100%)`
-                      }}
-                    />
-                    <div className="flex justify-between text-xs text-gray-500 mt-1">
-                      <span>1</span>
-                      <span>100</span>
-                    </div>
+                  <input
+                    type="range"
+                    min="1"
+                    max="100"
+                    value={employees}
+                    onChange={(e) => setEmployees(Number(e.target.value))}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                  />
+                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>1</span>
+                    <span>100</span>
                   </div>
                 </div>
 
-                {/* Зарплата */}
                 <div>
-                  <label className="block text-sm font-semibold text-brand-darkBlue mb-1">
-                    Средняя ЗП <span className="text-gray-500">(₸)</span>: <span className="text-brand-orange">{formatNumber(salary)}</span>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Средний уровень заработной платы (₸): <span className="text-brand-orange font-semibold">{formatNumber(salary)}</span>
                   </label>
-                  <div className="relative">
-                    <input
-                      type="range"
-                      min="10000"
-                      max="500000"
-                      step="10000"
-                      value={salary}
-                      onChange={(e) => setSalary(Number(e.target.value))}
-                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-                      style={{
-                        background: `linear-gradient(to right, #FE9C2D 0%, #FE9C2D ${((salary - 10000) / (500000 - 10000)) * 100}%, #e5e7eb ${((salary - 10000) / (500000 - 10000)) * 100}%, #e5e7eb 100%)`
-                      }}
-                    />
-                    <div className="flex justify-between text-xs text-gray-500 mt-1">
-                      <span>10К</span>
-                      <span>500К</span>
-                    </div>
+                  <input
+                    type="range"
+                    min="10000"
+                    max="500000"
+                    step="10000"
+                    value={salary}
+                    onChange={(e) => setSalary(Number(e.target.value))}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                  />
+                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>10 000</span>
+                    <span>500 000</span>
                   </div>
                 </div>
 
                 <Button
                   onClick={calculateResults}
-                  className="w-full bg-brand-orange hover:bg-brand-orange/90 text-white font-semibold py-2 px-4 rounded-lg transition-all transform hover:scale-105 shadow-lg"
+                  className="w-full bg-brand-orange hover:bg-brand-orange/90 text-white font-medium py-2"
                 >
                   Рассчитать
                 </Button>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
-            {/* Правая часть - результаты в компактном виде */}
-            <Card className="bg-white/80 shadow-xl border border-white/40 backdrop-blur-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base text-brand-darkBlue">
-                  Результат:
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="max-h-[calc(100vh-300px)] overflow-y-auto">
-                <div className="space-y-3">
-                  {/* Компактные результаты */}
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="bg-gray-50 rounded-lg p-2">
-                      <div className="text-xs text-gray-600 mb-1">Годовая ЗП отдела:</div>
-                      <div className="text-sm font-bold text-brand-darkBlue">{formatNumber(results.annualSalary)} ₸</div>
-                    </div>
-                    <div className="bg-blue-50 rounded-lg p-2">
-                      <div className="text-xs text-gray-600 mb-1">Экономия времени:</div>
-                      <div className="text-sm font-bold text-blue-600">{results.efficiency}%</div>
-                    </div>
-                  </div>
+            {/* Правая часть - результаты в табличном стиле */}
+            <div className="bg-white rounded-lg shadow-sm border p-6">
+              <h3 className="text-lg font-semibold text-brand-darkBlue mb-4">
+                Результат:
+              </h3>
 
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="bg-green-50 rounded-lg p-2">
-                      <div className="text-xs text-gray-600 mb-1">Выгода на 1 сотр/год:</div>
-                      <div className="text-sm font-bold text-green-600">{formatNumber(results.potentialBenefitPerEmployee)} ₸</div>
-                    </div>
-                    <div className="bg-green-50 rounded-lg p-2">
-                      <div className="text-xs text-gray-600 mb-1">Выгода на всех/год:</div>
-                      <div className="text-sm font-bold text-green-600">{formatNumber(results.potentialBenefitAll)} ₸</div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="bg-orange-50 rounded-lg p-2">
-                      <div className="text-xs text-gray-600 mb-1">Разработка ПОД КЛЮЧ:</div>
-                      <div className="text-sm font-bold text-brand-orange">500 000 ₸</div>
-                    </div>
-                    <div className="bg-purple-50 rounded-lg p-2">
-                      <div className="text-xs text-gray-600 mb-1">Платформа/год:</div>
-                      <div className="text-sm font-bold text-brand-purple">180 000 ₸</div>
-                    </div>
-                  </div>
-
-                  {/* Ключевые результаты */}
-                  <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-3 border-l-4 border-green-500">
-                    <div className="flex items-center gap-2 mb-1">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                      <div className="text-sm font-semibold text-green-700">Итоговая выгода в год:</div>
-                    </div>
-                    <div className="text-xl font-bold text-green-600">{formatNumber(results.finalBenefit)} ₸</div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="bg-gradient-to-r from-brand-purple/10 to-brand-purple/20 rounded-lg p-2 border-l-4 border-brand-purple">
-                      <div className="flex items-center gap-1 mb-1">
-                        <CheckCircle className="w-3 h-3 text-brand-purple" />
-                        <div className="text-xs font-semibold text-brand-purple">ROI:</div>
-                      </div>
-                      <div className="text-lg font-bold text-brand-purple">{results.roi}%</div>
-                    </div>
-                    <div className="bg-gradient-to-r from-brand-orange/10 to-brand-orange/20 rounded-lg p-2 border-l-4 border-brand-orange">
-                      <div className="flex items-center gap-1 mb-1">
-                        <CheckCircle className="w-3 h-3 text-brand-orange" />
-                        <div className="text-xs font-semibold text-brand-orange">Старт выгоды:</div>
-                      </div>
-                      <div className="text-sm font-bold text-brand-orange">{results.profitStartDate}</div>
-                    </div>
-                  </div>
+              {/* Таблица результатов */}
+              <div className="space-y-1">
+                <div className="grid grid-cols-2 py-2 border-b border-gray-100">
+                  <span className="text-sm text-gray-600">Годовая зарплата сотрудников отдела:</span>
+                  <span className="text-sm font-medium text-right">{formatNumber(results.annualSalary)} ₸/год</span>
                 </div>
-              </CardContent>
-            </Card>
+                
+                <div className="grid grid-cols-2 py-2 border-b border-gray-100">
+                  <span className="text-sm text-gray-600">Экономия времени с AI-ботом:</span>
+                  <span className="text-sm font-medium text-right text-blue-600">{results.efficiency}%</span>
+                </div>
+                
+                <div className="grid grid-cols-2 py-2 border-b border-gray-100">
+                  <span className="text-sm text-gray-600">Потенциальная выгода на 1 сотрудника в год:</span>
+                  <span className="text-sm font-medium text-right text-green-600">{formatNumber(results.potentialBenefitPerEmployee)} ₸/год</span>
+                </div>
+                
+                <div className="grid grid-cols-2 py-2 border-b border-gray-100">
+                  <span className="text-sm text-gray-600">Потенциальная выгода на всех сотрудников в год:</span>
+                  <span className="text-sm font-medium text-right text-green-600">{formatNumber(results.potentialBenefitAll)} ₸/год</span>
+                </div>
+                
+                <div className="grid grid-cols-2 py-2 border-b border-gray-100">
+                  <span className="text-sm text-gray-600">Стоимость разработки AI-бота «ПОД КЛЮЧ»:</span>
+                  <span className="text-sm font-medium text-right text-brand-orange">500 000 ₸</span>
+                </div>
+                
+                <div className="grid grid-cols-2 py-2 border-b border-gray-100">
+                  <span className="text-sm text-gray-600">Тариф «Стоимость доступа к платформе» в год:</span>
+                  <span className="text-sm font-medium text-right text-brand-purple">180 000 ₸/год</span>
+                </div>
+                
+                {/* Ключевые результаты */}
+                <div className="grid grid-cols-2 py-3 border-b-2 border-green-200 bg-green-50">
+                  <span className="text-sm font-semibold text-green-700">Итоговая выгода в год:</span>
+                  <span className="text-lg font-bold text-right text-green-600">{formatNumber(results.finalBenefit)} ₸/год</span>
+                </div>
+                
+                <div className="grid grid-cols-2 py-2 border-b border-gray-100">
+                  <span className="text-sm font-semibold text-brand-purple">ROI, %:</span>
+                  <span className="text-lg font-bold text-right text-brand-purple">{results.roi}%</span>
+                </div>
+                
+                <div className="grid grid-cols-2 py-2">
+                  <span className="text-sm font-semibold text-brand-orange">Возможный старт получения выгоды:</span>
+                  <span className="text-sm font-bold text-right text-brand-orange">{results.profitStartDate}</span>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
-        {/* Back to Home - компактный */}
-        <div className="mt-4 text-center">
+        {/* Back to Home */}
+        <div className="mt-8 text-center">
           <Link to="/">
             <Button
               variant="ghost"
-              className="text-brand-darkBlue hover:text-brand-orange hover:bg-brand-orange/10"
+              className="text-brand-darkBlue hover:text-brand-orange"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               На главную
