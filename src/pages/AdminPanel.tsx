@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase, getCurrentUser, isAdmin } from '@/lib/supabaseClient';
+import { supabase, getCurrentUser, isAdmin, createUserWithUsername } from '@/lib/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -104,44 +104,42 @@ const AdminPanel = () => {
     setSuccess('');
 
     try {
-      // Create user in Supabase Auth
-      const email = `${newManager.username}@yourcompany.local`;
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email,
-        password: newManager.password,
-        options: {
-          emailRedirectTo: undefined // Disable email confirmation
-        }
-      });
-
-      if (authError) {
-        setError('Ошибка создания пользователя: ' + authError.message);
+      // Validate username (no special characters, no spaces)
+      if (!/^[a-zA-Z0-9_]+$/.test(newManager.username)) {
+        setError('Логин может содержать только буквы, цифры и символ подчеркивания');
         return;
       }
 
-      if (!authData.user) {
-        setError('Не удалось создать пользователя');
-        return;
-      }
-
-      // Create manager profile
-      const { error: profileError } = await supabase
+      // Check if username already exists
+      const { data: existingUser } = await supabase
         .from('manager_profiles')
-        .insert({
-          user_id: authData.user.id,
-          username: newManager.username,
+        .select('username')
+        .eq('username', newManager.username)
+        .single();
+
+      if (existingUser) {
+        setError('Пользователь с таким логином уже существует');
+        return;
+      }
+
+      // Create user with profile
+      const { data, error } = await createUserWithUsername(
+        newManager.username,
+        newManager.password,
+        {
           base_salary: parseFloat(newManager.base_salary) || 0,
           sales_percentage: parseFloat(newManager.sales_percentage) || 0,
           kpi_target: parseFloat(newManager.kpi_target) || 0,
           role: 'manager'
-        });
+        }
+      );
 
-      if (profileError) {
-        setError('Ошибка создания профиля менеджера: ' + profileError.message);
+      if (error) {
+        setError('Ошибка создания пользователя: ' + error.message);
         return;
       }
 
-      setSuccess('Менеджер успешно добавлен');
+      setSuccess(`Менеджер "${newManager.username}" успешно создан`);
       setNewManager({
         username: '',
         password: '',
@@ -182,13 +180,13 @@ const AdminPanel = () => {
     }
   };
 
-  const handleDeleteManager = async (managerId: string, userId: string) => {
-    if (!confirm('Вы уверены, что хотите удалить этого менеджера?')) {
+  const handleDeleteManager = async (managerId: string, username: string) => {
+    if (!confirm(`Вы уверены, что хотите удалить менеджера "${username}"?`)) {
       return;
     }
 
     try {
-      // Delete from manager_profiles first
+      // Delete from manager_profiles (this will also trigger cascade delete in auth if configured)
       const { error: profileError } = await supabase
         .from('manager_profiles')
         .delete()
@@ -199,10 +197,7 @@ const AdminPanel = () => {
         return;
       }
 
-      // Note: We can't delete from auth.users directly from client
-      // This would need to be done via a server function or manually
-      
-      setSuccess('Менеджер удален');
+      setSuccess(`Менеджер "${username}" удален`);
       loadManagers();
     } catch (err) {
       setError('Произошла ошибка при удалении менеджера');
@@ -282,7 +277,7 @@ const AdminPanel = () => {
             <DialogHeader>
               <DialogTitle>Добавить нового менеджера</DialogTitle>
               <DialogDescription>
-                Заполните данные для создания нового менеджера
+                Создайте логин и пароль для нового менеджера
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleAddManager} className="space-y-4">
@@ -291,9 +286,14 @@ const AdminPanel = () => {
                 <Input
                   value={newManager.username}
                   onChange={(e) => setNewManager({...newManager, username: e.target.value})}
-                  placeholder="Введите логин"
+                  placeholder="Только буквы, цифры и _"
                   required
+                  pattern="[a-zA-Z0-9_]+"
+                  title="Только буквы, цифры и символ подчеркивания"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Пример: manager1, sales_manager, admin_user
+                </p>
               </div>
               
               <div>
@@ -303,8 +303,9 @@ const AdminPanel = () => {
                     type={showPassword ? 'text' : 'password'}
                     value={newManager.password}
                     onChange={(e) => setNewManager({...newManager, password: e.target.value})}
-                    placeholder="Введите пароль"
+                    placeholder="Минимум 6 символов"
                     required
+                    minLength={6}
                   />
                   <button
                     type="button"
@@ -322,7 +323,7 @@ const AdminPanel = () => {
                   type="number"
                   value={newManager.base_salary}
                   onChange={(e) => setNewManager({...newManager, base_salary: e.target.value})}
-                  placeholder="0"
+                  placeholder="250000"
                   min="0"
                 />
               </div>
@@ -333,7 +334,7 @@ const AdminPanel = () => {
                   type="number"
                   value={newManager.sales_percentage}
                   onChange={(e) => setNewManager({...newManager, sales_percentage: e.target.value})}
-                  placeholder="0"
+                  placeholder="5"
                   min="0"
                   max="100"
                   step="0.1"
@@ -346,7 +347,7 @@ const AdminPanel = () => {
                   type="number"
                   value={newManager.kpi_target}
                   onChange={(e) => setNewManager({...newManager, kpi_target: e.target.value})}
-                  placeholder="0"
+                  placeholder="500000"
                   min="0"
                 />
               </div>
@@ -485,7 +486,7 @@ const AdminPanel = () => {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  onClick={() => handleDeleteManager(manager.id, manager.user_id)}
+                                  onClick={() => handleDeleteManager(manager.id, manager.username)}
                                   disabled={manager.role === 'admin'}
                                   className="text-red-600 hover:text-red-700"
                                 >

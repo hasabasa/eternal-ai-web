@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/lib/supabaseClient';
+import { loginWithUsername, getUserProfile } from '@/lib/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,13 +21,7 @@ const AdminLogin = () => {
     setError('');
 
     try {
-      // Create email from username for Supabase Auth
-      const email = `${username}@yourcompany.local`;
-      
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { data, error } = await loginWithUsername(username, password);
 
       if (error) {
         setError('Неверный логин или пароль');
@@ -35,14 +29,15 @@ const AdminLogin = () => {
       }
 
       if (data.user) {
-        // Check if user is admin
-        const { data: profile } = await supabase
-          .from('manager_profiles')
-          .select('role')
-          .eq('user_id', data.user.id)
-          .single();
+        // Check if user profile exists and get role
+        const profile = await getUserProfile(data.user.id);
+        
+        if (!profile) {
+          setError('Профиль пользователя не найден');
+          return;
+        }
 
-        if (profile?.role === 'admin') {
+        if (profile.role === 'admin') {
           navigate('/admin-panel');
         } else {
           navigate('/profile');
@@ -66,7 +61,7 @@ const AdminLogin = () => {
             Вход в систему
           </CardTitle>
           <CardDescription>
-            Введите ваши учетные данные для доступа
+            Введите ваш логин и пароль для доступа
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -89,7 +84,11 @@ const AdminLogin = () => {
                 placeholder="Введите логин"
                 required
                 disabled={loading}
+                autoComplete="username"
               />
+              <p className="text-xs text-gray-500">
+                Используйте только логин, без @email.com
+              </p>
             </div>
 
             <div className="space-y-2">
@@ -105,6 +104,7 @@ const AdminLogin = () => {
                   placeholder="Введите пароль"
                   required
                   disabled={loading}
+                  autoComplete="current-password"
                 />
                 <button
                   type="button"
@@ -125,6 +125,14 @@ const AdminLogin = () => {
               {loading ? 'Вход...' : 'Войти'}
             </Button>
           </form>
+          
+          <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+            <p className="text-xs text-gray-600 text-center">
+              <strong>Примеры логинов:</strong><br />
+              Администратор: <code>admin</code><br />
+              Менеджер: <code>manager1</code>
+            </p>
+          </div>
         </CardContent>
       </Card>
     </div>
