@@ -52,12 +52,19 @@ const ClientCalc = () => {
   const [employees, setEmployees] = useState('');
   const [salary, setSalary] = useState('');
   const [results, setResults] = useState({
-    annualSalary: 0,
+    annualSalaryPerEmployee: 0,
+    annualSalaryAll: 0,
     efficiency: 20,
-    potentialBenefitPerEmployee: 0,
-    potentialBenefitAll: 0,
-    finalBenefitPerEmployee: 0,
-    finalBenefitAll: 0,
+    savingsPerEmployeePerMonth: 0,
+    savingsPerEmployeePerYear: 0,
+    savingsAllPerMonth: 0,
+    savingsAllPerYear: 0,
+    developmentCost: 500000,
+    platformCostPerYear: 180000,
+    finalBenefitPerEmployeeFirstYear: 0,
+    finalBenefitAllFirstYear: 0,
+    finalBenefitPerEmployeePerYear: 0,
+    finalBenefitAllPerYear: 0,
     roi: 0,
     profitStartDate: ""
   });
@@ -91,44 +98,53 @@ const ClientCalc = () => {
       return;
     }
 
-    // ПРАВИЛЬНАЯ ЛОГИКА РАСЧЁТА:
+    // ПРАВИЛЬНАЯ ЛОГИКА РАСЧЁТА согласно вашему описанию:
     
-    // 1. Годовая зарплата отдела
-    const annualSalary = numEmployees * numSalary * 12;
+    // 1. Годовая зарплата одного сотрудника и всех
+    const annualSalaryPerEmployee = numSalary * 12;
+    const annualSalaryAll = annualSalaryPerEmployee * numEmployees;
     
-    // 2. Экономия времени 20% от годовой зарплаты = потенциальная выгода на 1 сотрудника
-    const potentialBenefitPerEmployee = numSalary * 12 * 0.2; // 20% от годовой зарплаты одного сотрудника
+    // 2. Экономия 20% от зарплаты
+    const savingsPerEmployeePerMonth = numSalary * 0.2; // 20% от месячной зарплаты
+    const savingsPerEmployeePerYear = annualSalaryPerEmployee * 0.2; // 20% от годовой зарплаты
+    const savingsAllPerMonth = savingsPerEmployeePerMonth * numEmployees;
+    const savingsAllPerYear = savingsPerEmployeePerYear * numEmployees;
     
-    // 3. Потенциальная выгода на всех сотрудников
-    const potentialBenefitAll = potentialBenefitPerEmployee * numEmployees;
+    // 3. Затраты на ИИ
+    const developmentCost = 500000; // Разработка ПОД КЛЮЧ (единоразовая оплата)
+    const platformCostPerYear = 180000; // Тариф платформы (ежегодная оплата)
     
-    // 4. Затраты на внедрение ИИ
-    const developmentCost = 500000; // Разработка ПОД КЛЮЧ (разовая оплата)
-    const platformCostPerYear = 180000; // Годовая стоимость платформы
+    // 4. ПЕРВЫЙ ГОД: Экономия - разработка - платформа
+    const firstYearTotalCost = developmentCost + platformCostPerYear;
+    const finalBenefitAllFirstYear = savingsAllPerYear - firstYearTotalCost;
+    const finalBenefitPerEmployeeFirstYear = finalBenefitAllFirstYear / numEmployees;
     
-    // 5. ИТОГОВАЯ ВЫГОДА НА 1 СОТРУДНИКА В ГОД = Потенциальная выгода на 1 сотрудника - (Затраты на ИИ / количество сотрудников)
-    const totalCostPerEmployee = (developmentCost + platformCostPerYear) / numEmployees;
-    const finalBenefitPerEmployee = potentialBenefitPerEmployee - totalCostPerEmployee;
+    // 5. ПОСЛЕДУЮЩИЕ ГОДЫ: Экономия - только платформа
+    const finalBenefitAllPerYear = savingsAllPerYear - platformCostPerYear;
+    const finalBenefitPerEmployeePerYear = finalBenefitAllPerYear / numEmployees;
     
-    // 6. ИТОГОВАЯ ВЫГОДА НА ВСЕХ СОТРУДНИКОВ В ГОД = Потенциальная выгода на всех - Общие затраты на ИИ
-    const finalBenefitAll = potentialBenefitAll - (developmentCost + platformCostPerYear);
+    // 6. ROI для первого года = (Чистая прибыль / Инвестиции) * 100%
+    const roi = firstYearTotalCost > 0 ? Math.round((finalBenefitAllFirstYear / firstYearTotalCost) * 100) : 0;
     
-    // 7. ROI = (Чистая прибыль / Инвестиции) * 100%
-    const totalInvestment = developmentCost + platformCostPerYear;
-    const roi = totalInvestment > 0 ? Math.round((finalBenefitAll / totalInvestment) * 100) : 0;
-    
-    // 8. Дата начала получения выгоды (через 3 месяца)
+    // 7. Дата начала получения выгоды (через 3 месяца)
     const startDate = new Date();
     startDate.setMonth(startDate.getMonth() + 3);
     const profitStartDate = startDate.toLocaleDateString('ru-RU');
 
     setResults({
-      annualSalary,
+      annualSalaryPerEmployee,
+      annualSalaryAll,
       efficiency: 20,
-      potentialBenefitPerEmployee,
-      potentialBenefitAll,
-      finalBenefitPerEmployee,
-      finalBenefitAll,
+      savingsPerEmployeePerMonth,
+      savingsPerEmployeePerYear,
+      savingsAllPerMonth,
+      savingsAllPerYear,
+      developmentCost,
+      platformCostPerYear,
+      finalBenefitPerEmployeeFirstYear,
+      finalBenefitAllFirstYear,
+      finalBenefitPerEmployeePerYear,
+      finalBenefitAllPerYear,
       roi,
       profitStartDate
     });
@@ -139,12 +155,19 @@ const ClientCalc = () => {
     setEmployees('');
     setSalary('');
     setResults({
-      annualSalary: 0,
+      annualSalaryPerEmployee: 0,
+      annualSalaryAll: 0,
       efficiency: 20,
-      potentialBenefitPerEmployee: 0,
-      potentialBenefitAll: 0,
-      finalBenefitPerEmployee: 0,
-      finalBenefitAll: 0,
+      savingsPerEmployeePerMonth: 0,
+      savingsPerEmployeePerYear: 0,
+      savingsAllPerMonth: 0,
+      savingsAllPerYear: 0,
+      developmentCost: 500000,
+      platformCostPerYear: 180000,
+      finalBenefitPerEmployeeFirstYear: 0,
+      finalBenefitAllFirstYear: 0,
+      finalBenefitPerEmployeePerYear: 0,
+      finalBenefitAllPerYear: 0,
       roi: 0,
       profitStartDate: ""
     });
@@ -312,7 +335,7 @@ const ClientCalc = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Средний уровень заработной платы одного сотрудника (₸)
+                    Средний уровень заработной платы одного сотрудника в месяц (₸)
                   </label>
                   <Input
                     type="text"
@@ -357,8 +380,13 @@ const ClientCalc = () => {
                 /* Таблица результатов */
                 <div className="space-y-1">
                   <div className="grid grid-cols-2 py-2 border-b border-gray-100">
-                    <span className="text-sm text-gray-600">Годовая зарплата сотрудников отдела:</span>
-                    <span className="text-sm font-medium text-right">{formatNumber(results.annualSalary)} ₸/год</span>
+                    <span className="text-sm text-gray-600">Годовая зарплата 1 сотрудника:</span>
+                    <span className="text-sm font-medium text-right">{formatNumber(results.annualSalaryPerEmployee)} ₸/год</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 py-2 border-b border-gray-100">
+                    <span className="text-sm text-gray-600">Годовая зарплата всех сотрудников:</span>
+                    <span className="text-sm font-medium text-right">{formatNumber(results.annualSalaryAll)} ₸/год</span>
                   </div>
                   
                   <div className="grid grid-cols-2 py-2 border-b border-gray-100">
@@ -367,38 +395,58 @@ const ClientCalc = () => {
                   </div>
                   
                   <div className="grid grid-cols-2 py-2 border-b border-gray-100">
-                    <span className="text-sm text-gray-600">Потенциальная выгода на 1 сотрудника в год:</span>
-                    <span className="text-sm font-medium text-right text-green-600">{formatNumber(results.potentialBenefitPerEmployee)} ₸/год</span>
+                    <span className="text-sm text-gray-600">Экономия на 1 сотрудника в месяц:</span>
+                    <span className="text-sm font-medium text-right text-green-600">{formatNumber(results.savingsPerEmployeePerMonth)} ₸/мес</span>
                   </div>
                   
                   <div className="grid grid-cols-2 py-2 border-b border-gray-100">
-                    <span className="text-sm text-gray-600">Потенциальная выгода на всех сотрудников в год:</span>
-                    <span className="text-sm font-medium text-right text-green-600">{formatNumber(results.potentialBenefitAll)} ₸/год</span>
+                    <span className="text-sm text-gray-600">Экономия на 1 сотрудника в год:</span>
+                    <span className="text-sm font-medium text-right text-green-600">{formatNumber(results.savingsPerEmployeePerYear)} ₸/год</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 py-2 border-b border-gray-100">
+                    <span className="text-sm text-gray-600">Экономия на всех сотрудников в месяц:</span>
+                    <span className="text-sm font-medium text-right text-green-600">{formatNumber(results.savingsAllPerMonth)} ₸/мес</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 py-2 border-b border-gray-100">
+                    <span className="text-sm text-gray-600">Экономия на всех сотрудников в год:</span>
+                    <span className="text-sm font-medium text-right text-green-600">{formatNumber(results.savingsAllPerYear)} ₸/год</span>
                   </div>
                   
                   <div className="grid grid-cols-2 py-2 border-b border-gray-100">
                     <span className="text-sm text-gray-600">Стоимость разработки AI-бота «ПОД КЛЮЧ»:</span>
-                    <span className="text-sm font-medium text-right text-brand-orange">500 000 ₸</span>
+                    <span className="text-sm font-medium text-right text-brand-orange">{formatNumber(results.developmentCost)} ₸ (единоразово)</span>
                   </div>
                   
                   <div className="grid grid-cols-2 py-2 border-b border-gray-100">
-                    <span className="text-sm text-gray-600">Тариф «Стоимость доступа к платформе» в год:</span>
-                    <span className="text-sm font-medium text-right text-brand-purple">180 000 ₸/год</span>
+                    <span className="text-sm text-gray-600">Тариф «Стоимость доступа к платформе»:</span>
+                    <span className="text-sm font-medium text-right text-brand-purple">{formatNumber(results.platformCostPerYear)} ₸/год (ежегодно)</span>
                   </div>
                   
                   {/* Ключевые результаты */}
                   <div className="grid grid-cols-2 py-3 border-b border-green-200 bg-green-50">
-                    <span className="text-sm font-semibold text-green-700">Итоговая выгода на 1 сотрудника в год:</span>
-                    <span className="text-base font-bold text-right text-green-600">{formatNumber(results.finalBenefitPerEmployee)} ₸/год</span>
+                    <span className="text-sm font-semibold text-green-700">Чистая выгода в ПЕРВЫЙ ГОД на 1 сотрудника:</span>
+                    <span className="text-base font-bold text-right text-green-600">{formatNumber(results.finalBenefitPerEmployeeFirstYear)} ₸/год</span>
                   </div>
                   
-                  <div className="grid grid-cols-2 py-3 border-b-2 border-green-200 bg-green-50">
-                    <span className="text-sm font-semibold text-green-700">Итоговая выгода на всех сотрудников в год:</span>
-                    <span className="text-lg font-bold text-right text-green-600">{formatNumber(results.finalBenefitAll)} ₸/год</span>
+                  <div className="grid grid-cols-2 py-3 border-b border-green-200 bg-green-50">
+                    <span className="text-sm font-semibold text-green-700">Чистая выгода в ПЕРВЫЙ ГОД на всех:</span>
+                    <span className="text-lg font-bold text-right text-green-600">{formatNumber(results.finalBenefitAllFirstYear)} ₸/год</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 py-3 border-b border-blue-200 bg-blue-50">
+                    <span className="text-sm font-semibold text-blue-700">Чистая выгода КАЖДЫЙ ПОСЛЕДУЮЩИЙ ГОД на 1 сотрудника:</span>
+                    <span className="text-base font-bold text-right text-blue-600">{formatNumber(results.finalBenefitPerEmployeePerYear)} ₸/год</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 py-3 border-b border-blue-200 bg-blue-50">
+                    <span className="text-sm font-semibold text-blue-700">Чистая выгода КАЖДЫЙ ПОСЛЕДУЮЩИЙ ГОД на всех:</span>
+                    <span className="text-lg font-bold text-right text-blue-600">{formatNumber(results.finalBenefitAllPerYear)} ₸/год</span>
                   </div>
                   
                   <div className="grid grid-cols-2 py-2 border-b border-gray-100">
-                    <span className="text-sm font-semibold text-brand-purple">ROI, %:</span>
+                    <span className="text-sm font-semibold text-brand-purple">ROI первого года, %:</span>
                     <span className="text-lg font-bold text-right text-brand-purple">{results.roi}%</span>
                   </div>
                   
