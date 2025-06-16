@@ -90,16 +90,29 @@ const ClientCalc = () => {
       return;
     }
 
-    const annualSalary = numEmployees * numSalary * 12;
-    const potentialBenefitPerEmployee = numSalary * 12 * 0.2; // 20% экономия времени
-    const potentialBenefitAll = potentialBenefitPerEmployee * numEmployees;
-    const developmentCost = 500000;
-    const platformCost = 180000;
-    const totalCost = developmentCost + platformCost;
-    const finalBenefit = potentialBenefitAll - totalCost;
-    const roi = Math.round((finalBenefit / totalCost) * 100);
+    // ИСПРАВЛЕННЫЕ ФОРМУЛЫ:
     
-    // Дата начала получения выгоды (через 3 месяца)
+    // 1. Годовая зарплата отдела
+    const annualSalary = numEmployees * numSalary * 12;
+    
+    // 2. Экономия времени 20% = потенциальная выгода на 1 сотрудника
+    const potentialBenefitPerEmployee = numSalary * 12 * 0.2; // 20% от годовой зарплаты
+    
+    // 3. Потенциальная выгода на всех сотрудников
+    const potentialBenefitAll = potentialBenefitPerEmployee * numEmployees;
+    
+    // 4. Затраты на внедрение ИИ
+    const developmentCost = 500000; // Разработка ПОД КЛЮЧ
+    const platformCost = 180000;    // Годовая стоимость платформы
+    const totalCost = developmentCost + platformCost;
+    
+    // 5. ИТОГОВАЯ ВЫГОДА = Потенциальная выгода - Затраты на ИИ
+    const finalBenefit = potentialBenefitAll - totalCost;
+    
+    // 6. ROI = (Чистая прибыль / Инвестиции) * 100%
+    const roi = totalCost > 0 ? Math.round((finalBenefit / totalCost) * 100) : 0;
+    
+    // 7. Дата начала получения выгоды (через 3 месяца)
     const startDate = new Date();
     startDate.setMonth(startDate.getMonth() + 3);
     const profitStartDate = startDate.toLocaleDateString('ru-RU');
