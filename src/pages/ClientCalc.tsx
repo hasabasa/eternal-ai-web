@@ -297,7 +297,7 @@ const ClientCalc = () => {
                 {/* Зарплата */}
                 <div>
                   <label className="block text-sm font-semibold text-brand-darkBlue mb-1">
-                    Средняя ЗП <span className="text-gray-500">(₽)</span>: <span className="text-brand-orange">{formatNumber(salary)}</span>
+                    Средняя ЗП <span className="text-gray-500">(₸)</span>: <span className="text-brand-orange">{formatNumber(salary)}</span>
                   </label>
                   <div className="relative">
                     <input
@@ -341,7 +341,7 @@ const ClientCalc = () => {
                   <div className="grid grid-cols-2 gap-2">
                     <div className="bg-gray-50 rounded-lg p-2">
                       <div className="text-xs text-gray-600 mb-1">Годовая ЗП отдела:</div>
-                      <div className="text-sm font-bold text-brand-darkBlue">{formatNumber(results.annualSalary)} ₽</div>
+                      <div className="text-sm font-bold text-brand-darkBlue">{formatNumber(results.annualSalary)} ₸</div>
                     </div>
                     <div className="bg-blue-50 rounded-lg p-2">
                       <div className="text-xs text-gray-600 mb-1">Экономия времени:</div>
@@ -352,22 +352,22 @@ const ClientCalc = () => {
                   <div className="grid grid-cols-2 gap-2">
                     <div className="bg-green-50 rounded-lg p-2">
                       <div className="text-xs text-gray-600 mb-1">Выгода на 1 сотр/год:</div>
-                      <div className="text-sm font-bold text-green-600">{formatNumber(results.potentialBenefitPerEmployee)} ₽</div>
+                      <div className="text-sm font-bold text-green-600">{formatNumber(results.potentialBenefitPerEmployee)} ₸</div>
                     </div>
                     <div className="bg-green-50 rounded-lg p-2">
                       <div className="text-xs text-gray-600 mb-1">Выгода на всех/год:</div>
-                      <div className="text-sm font-bold text-green-600">{formatNumber(results.potentialBenefitAll)} ₽</div>
+                      <div className="text-sm font-bold text-green-600">{formatNumber(results.potentialBenefitAll)} ₸</div>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2">
                     <div className="bg-orange-50 rounded-lg p-2">
                       <div className="text-xs text-gray-600 mb-1">Разработка ПОД КЛЮЧ:</div>
-                      <div className="text-sm font-bold text-brand-orange">500 000 ₽</div>
+                      <div className="text-sm font-bold text-brand-orange">500 000 ₸</div>
                     </div>
                     <div className="bg-purple-50 rounded-lg p-2">
                       <div className="text-xs text-gray-600 mb-1">Платформа/год:</div>
-                      <div className="text-sm font-bold text-brand-purple">180 000 ₽</div>
+                      <div className="text-sm font-bold text-brand-purple">180 000 ₸</div>
                     </div>
                   </div>
 
@@ -377,7 +377,7 @@ const ClientCalc = () => {
                       <CheckCircle className="w-4 h-4 text-green-600" />
                       <div className="text-sm font-semibold text-green-700">Итоговая выгода в год:</div>
                     </div>
-                    <div className="text-xl font-bold text-green-600">{formatNumber(results.finalBenefit)} ₽</div>
+                    <div className="text-xl font-bold text-green-600">{formatNumber(results.finalBenefit)} ₸</div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2">
