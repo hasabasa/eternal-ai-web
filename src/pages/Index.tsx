@@ -7,7 +7,6 @@ import CaseServices from "@/components/CaseServices";
 import Solutions from "@/components/Solutions";
 import Process from "@/components/Process";
 import Statistics from "@/components/Statistics";
-import Calculator from "@/components/Calculator";
 import SimpleCarousel from "@/components/SimpleCarousel";
 import { Button } from "@/components/ui/button";
 import { Calculator as CalculatorIcon } from "lucide-react";
@@ -84,21 +83,14 @@ const Index = () => {
       </div>
     </section>,
 
-    // Калькулятор экономии - страница 8 (новая)
-    <section key="calculator" className="h-screen w-full flex items-center justify-center bg-gradient-to-br from-brand-purple/5 to-brand-orange/10 overflow-hidden">
-      <div className="animate-section-entrance">
-        <Calculator />
-      </div>
-    </section>,
-
-    // Кейс - Услуги - страница 9 (перенесена)
+    // Кейс - Услуги - страница 8 (перенесена с 9)
     <section key="case-services" className="h-screen w-full flex items-center justify-center bg-gradient-to-br from-brand-orange/5 to-brand-darkBlue/10 overflow-hidden">
       <div className="animate-section-entrance">
         <CaseServices />
       </div>
     </section>,
 
-    // Финальная секция - страница 10
+    // Финальная секция - страница 9 (перенесена с 10)
     <section key="final" className="h-screen w-full flex items-center justify-center bg-gradient-to-br from-brand-darkBlue/5 to-brand-purple/10 overflow-hidden">
       <div className="max-w-4xl mx-auto px-4 text-center animate-section-entrance">
         <div className="bg-gradient-to-br from-white/95 to-white/80 rounded-2xl p-6 sm:p-8 shadow-2xl border border-gray-200">
