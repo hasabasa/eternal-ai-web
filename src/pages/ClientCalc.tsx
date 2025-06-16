@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Calculator, ArrowLeft, AlertTriangle, Settings, Check, X } from "lucide-react";
+import { Calculator, ArrowLeft, AlertTriangle, Settings, Check, X, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -32,6 +32,7 @@ const ClientCalc = () => {
   const [googleSheets, setGoogleSheets] = useState(false);
   const [crmIntegration, setCrmIntegration] = useState(false);
   const [salesAnalysis, setSalesAnalysis] = useState(false);
+  const [showBonusMessage, setShowBonusMessage] = useState(false);
 
   const calculateResults = () => {
     const numEmployees = parseInt(employees);
@@ -103,6 +104,21 @@ const ClientCalc = () => {
     return totalCost;
   };
 
+  // Проверка на бонус "Анализ продаж"
+  useEffect(() => {
+    const totalCost = calculateDevelopmentCost();
+    if (totalCost >= 500000 && !salesAnalysis) {
+      setShowBonusMessage(true);
+      // Автоматически скрываем сообщение через 5 секунд
+      const timer = setTimeout(() => {
+        setShowBonusMessage(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    } else {
+      setShowBonusMessage(false);
+    }
+  }, [socialNetworks, imageProcessing, googleSheets, crmIntegration, salesAnalysis]);
+
   const formatNumber = (num: number) => {
     return new Intl.NumberFormat('ru-RU', {
       minimumFractionDigits: 0,
@@ -119,6 +135,7 @@ const ClientCalc = () => {
 
   const selectedNetworksCount = Object.values(socialNetworks).filter(Boolean).length;
   const developmentCost = calculateDevelopmentCost();
+  const isEligibleForBonus = developmentCost >= 500000;
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
@@ -135,6 +152,27 @@ const ClientCalc = () => {
             Рассчитайте экономию и стоимость разработки ИИ-ассистента
           </p>
         </div>
+
+        {/* Bonus Message */}
+        {showBonusMessage && (
+          <div className="mb-6 mx-auto max-w-md">
+            <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-4 rounded-lg shadow-lg animate-bounce">
+              <div className="flex items-center gap-3">
+                <Gift className="w-6 h-6" />
+                <div>
+                  <div className="font-bold">🎉 Сюрприз!</div>
+                  <div className="text-sm">При заказе от 500,000 ₸ - "Анализ продаж от ИИ" в подарок!</div>
+                </div>
+                <button 
+                  onClick={() => setShowBonusMessage(false)}
+                  className="ml-auto text-white hover:text-gray-200"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Tabs */}
         <div className="flex justify-center mb-6">
@@ -347,144 +385,162 @@ const ClientCalc = () => {
               <div className="space-y-6">
                 {/* Социальные сети */}
                 <div>
-                  <h4 className="font-semibold text-gray-800 mb-3">Социальные сети</h4>
-                  <div className="space-y-3">
-                    {[
-                      { key: 'instagram', label: 'Instagram', icon: '📷' },
-                      { key: 'telegram', label: 'Telegram', icon: '✈️' },
-                      { key: 'threads', label: 'Threads', icon: '🧵' },
-                      { key: 'whatsapp', label: 'WhatsApp', icon: '💬' }
-                    ].map((network) => (
-                      <div key={network.key} className="flex items-center space-x-3">
-                        <Checkbox
-                          id={network.key}
-                          checked={socialNetworks[network.key as keyof typeof socialNetworks]}
-                          onCheckedChange={(checked) => 
-                            handleSocialNetworkChange(network.key, checked as boolean)
-                          }
-                        />
-                        <label 
-                          htmlFor={network.key}
-                          className="text-sm font-medium text-gray-700 cursor-pointer flex items-center gap-2"
-                        >
-                          <span>{network.icon}</span>
-                          {network.label}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                  
-                  {selectedNetworksCount > 0 && (
-                    <div className="mt-3 p-3 bg-blue-50 rounded-lg">
-                      <div className="text-sm text-blue-700">
-                        <div>• 1-я соц. сеть: <span className="font-semibold">250,000 ₸</span></div>
-                        {selectedNetworksCount > 1 && (
-                          <div>• 2-я соц. сеть: <span className="font-semibold">+100,000 ₸</span></div>
-                        )}
-                        {selectedNetworksCount > 2 && (
-                          <div>• 3-я соц. сеть: <span className="font-semibold">+50,000 ₸</span></div>
-                        )}
-                        {selectedNetworksCount > 3 && (
-                          <div>• 4-я соц. сеть: <span className="font-semibold">+50,000 ₸</span></div>
-                        )}
-                      </div>
+                  <details className="group">
+                    <summary className="flex items-center justify-between cursor-pointer p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                      <h4 className="font-semibold text-gray-800">📱 Социальные сети</h4>
+                      <span className="text-gray-500 group-open:rotate-180 transition-transform">▼</span>
+                    </summary>
+                    <div className="mt-3 space-y-3 pl-4">
+                      {[
+                        { key: 'instagram', label: 'Instagram', icon: '📷' },
+                        { key: 'telegram', label: 'Telegram', icon: '✈️' },
+                        { key: 'threads', label: 'Threads', icon: '🧵' },
+                        { key: 'whatsapp', label: 'WhatsApp', icon: '💬' }
+                      ].map((network) => (
+                        <div key={network.key} className="flex items-center space-x-3">
+                          <Checkbox
+                            id={network.key}
+                            checked={socialNetworks[network.key as keyof typeof socialNetworks]}
+                            onCheckedChange={(checked) => 
+                              handleSocialNetworkChange(network.key, checked as boolean)
+                            }
+                          />
+                          <label 
+                            htmlFor={network.key}
+                            className="text-sm font-medium text-gray-700 cursor-pointer flex items-center gap-2"
+                          >
+                            <span>{network.icon}</span>
+                            {network.label}
+                          </label>
+                        </div>
+                      ))}
+                      
+                      {selectedNetworksCount > 0 && (
+                        <div className="mt-3 p-3 bg-blue-50 rounded-lg">
+                          <div className="text-sm text-blue-700">
+                            <div>• 1-я соц. сеть: <span className="font-semibold">250,000 ₸</span></div>
+                            {selectedNetworksCount > 1 && (
+                              <div>• 2-я соц. сеть: <span className="font-semibold">+100,000 ₸</span></div>
+                            )}
+                            {selectedNetworksCount > 2 && (
+                              <div>• 3-я соц. сеть: <span className="font-semibold">+50,000 ₸</span></div>
+                            )}
+                            {selectedNetworksCount > 3 && (
+                              <div>• 4-я соц. сеть: <span className="font-semibold">+50,000 ₸</span></div>
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </details>
                 </div>
 
                 {/* Дополнительные функции */}
                 <div>
-                  <h4 className="font-semibold text-gray-800 mb-3">Дополнительные функции</h4>
-                  <div className="space-y-4">
-                    {/* Обработка изображений */}
-                    <div className="border rounded-lg p-4">
-                      <div className="flex items-center space-x-3 mb-2">
-                        <Checkbox
-                          id="imageProcessing"
-                          checked={imageProcessing}
-                          onCheckedChange={setImageProcessing}
-                        />
-                        <label htmlFor="imageProcessing" className="font-medium text-gray-700 cursor-pointer">
-                          🖼️ Обработка изображений
-                        </label>
-                      </div>
-                      <p className="text-sm text-gray-600 ml-6">
-                        ИИ сможет анализировать и обрабатывать изображения от клиентов
-                      </p>
-                      {imageProcessing && (
-                        <div className="mt-2 ml-6 text-sm font-semibold text-brand-orange">
-                          +170,000 ₸
+                  <details className="group">
+                    <summary className="flex items-center justify-between cursor-pointer p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                      <h4 className="font-semibold text-gray-800">⚙️ Дополнительные функции</h4>
+                      <span className="text-gray-500 group-open:rotate-180 transition-transform">▼</span>
+                    </summary>
+                    <div className="mt-3 space-y-4 pl-4">
+                      {/* Обработка изображений */}
+                      <div className="border rounded-lg p-4">
+                        <div className="flex items-center space-x-3 mb-2">
+                          <Checkbox
+                            id="imageProcessing"
+                            checked={imageProcessing}
+                            onCheckedChange={setImageProcessing}
+                          />
+                          <label htmlFor="imageProcessing" className="font-medium text-gray-700 cursor-pointer">
+                            🖼️ Обработка изображений
+                          </label>
                         </div>
-                      )}
-                    </div>
+                        <p className="text-sm text-gray-600 ml-6">
+                          ИИ сможет анализировать и обрабатывать изображения от клиентов
+                        </p>
+                        {imageProcessing && (
+                          <div className="mt-2 ml-6 text-sm font-semibold text-brand-orange">
+                            +170,000 ₸
+                          </div>
+                        )}
+                      </div>
 
-                    {/* Google Таблицы */}
-                    <div className="border rounded-lg p-4">
-                      <div className="flex items-center space-x-3 mb-2">
-                        <Checkbox
-                          id="googleSheets"
-                          checked={googleSheets}
-                          onCheckedChange={setGoogleSheets}
-                        />
-                        <label htmlFor="googleSheets" className="font-medium text-gray-700 cursor-pointer">
-                          📊 Интеграция с Google Таблицами
-                        </label>
-                      </div>
-                      <p className="text-sm text-gray-600 ml-6">
-                        Автоматическое заполнение и обновление данных в таблицах
-                      </p>
-                      {googleSheets && (
-                        <div className="mt-2 ml-6 text-sm font-semibold text-brand-orange">
-                          +50,000 ₸
+                      {/* Google Таблицы */}
+                      <div className="border rounded-lg p-4">
+                        <div className="flex items-center space-x-3 mb-2">
+                          <Checkbox
+                            id="googleSheets"
+                            checked={googleSheets}
+                            onCheckedChange={setGoogleSheets}
+                          />
+                          <label htmlFor="googleSheets" className="font-medium text-gray-700 cursor-pointer">
+                            📊 Интеграция с Google Таблицами
+                          </label>
                         </div>
-                      )}
-                    </div>
+                        <p className="text-sm text-gray-600 ml-6">
+                          Автоматическое заполнение и обновление данных в таблицах
+                        </p>
+                        {googleSheets && (
+                          <div className="mt-2 ml-6 text-sm font-semibold text-brand-orange">
+                            +50,000 ₸
+                          </div>
+                        )}
+                      </div>
 
-                    {/* CRM системы */}
-                    <div className="border rounded-lg p-4">
-                      <div className="flex items-center space-x-3 mb-2">
-                        <Checkbox
-                          id="crmIntegration"
-                          checked={crmIntegration}
-                          onCheckedChange={setCrmIntegration}
-                        />
-                        <label htmlFor="crmIntegration" className="font-medium text-gray-700 cursor-pointer">
-                          🔗 Интеграция с CRM системами
-                        </label>
-                      </div>
-                      <p className="text-sm text-gray-600 ml-6">
-                        Синхронизация с популярными CRM системами (AmoCRM, Битрикс24, и др.)
-                      </p>
-                      {crmIntegration && (
-                        <div className="mt-2 ml-6 text-sm font-semibold text-brand-orange">
-                          +120,000 ₸
+                      {/* CRM системы */}
+                      <div className="border rounded-lg p-4">
+                        <div className="flex items-center space-x-3 mb-2">
+                          <Checkbox
+                            id="crmIntegration"
+                            checked={crmIntegration}
+                            onCheckedChange={setCrmIntegration}
+                          />
+                          <label htmlFor="crmIntegration" className="font-medium text-gray-700 cursor-pointer">
+                            🔗 Интеграция с CRM системами
+                          </label>
                         </div>
-                      )}
-                    </div>
+                        <p className="text-sm text-gray-600 ml-6">
+                          Синхронизация с популярными CRM системами (AmoCRM, Битрикс24, и др.)
+                        </p>
+                        {crmIntegration && (
+                          <div className="mt-2 ml-6 text-sm font-semibold text-brand-orange">
+                            +120,000 ₸
+                          </div>
+                        )}
+                      </div>
 
-                    {/* Анализ продаж */}
-                    <div className="border rounded-lg p-4">
-                      <div className="flex items-center space-x-3 mb-2">
-                        <Checkbox
-                          id="salesAnalysis"
-                          checked={salesAnalysis}
-                          onCheckedChange={setSalesAnalysis}
-                        />
-                        <label htmlFor="salesAnalysis" className="font-medium text-gray-700 cursor-pointer">
-                          📈 Анализ продаж от ИИ
-                        </label>
-                      </div>
-                      <p className="text-sm text-gray-600 ml-6">
-                        Собирает базу данных клиентов, делает регулярные рассылки, 
-                        дополнительные продажи и сохраняет лояльность клиентов
-                      </p>
-                      {salesAnalysis && (
-                        <div className="mt-2 ml-6 text-sm font-semibold text-brand-orange">
-                          +200,000 ₸
+                      {/* Анализ продаж */}
+                      <div className={`border rounded-lg p-4 ${isEligibleForBonus ? 'border-yellow-300 bg-yellow-50' : ''}`}>
+                        <div className="flex items-center space-x-3 mb-2">
+                          <Checkbox
+                            id="salesAnalysis"
+                            checked={salesAnalysis}
+                            onCheckedChange={setSalesAnalysis}
+                            disabled={!isEligibleForBonus}
+                          />
+                          <label htmlFor="salesAnalysis" className={`font-medium cursor-pointer flex items-center gap-2 ${
+                            isEligibleForBonus ? 'text-yellow-700' : 'text-gray-400'
+                          }`}>
+                            📈 Анализ продаж от ИИ
+                            {isEligibleForBonus && <Gift className="w-4 h-4 text-yellow-600" />}
+                          </label>
                         </div>
-                      )}
+                        <p className="text-sm text-gray-600 ml-6">
+                          Собирает базу данных клиентов, делает регулярные рассылки, 
+                          дополнительные продажи и сохраняет лояльность клиентов
+                        </p>
+                        {isEligibleForBonus ? (
+                          <div className="mt-2 ml-6 text-sm font-semibold text-yellow-600">
+                            🎁 БОНУС при заказе от 500,000 ₸!
+                          </div>
+                        ) : (
+                          <div className="mt-2 ml-6 text-sm text-gray-500">
+                            Доступно при заказе от 500,000 ₸
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  </details>
                 </div>
               </div>
             </div>
@@ -540,10 +596,14 @@ const ClientCalc = () => {
                       </div>
                     )}
 
-                    {salesAnalysis && (
-                      <div className="p-3 bg-red-50 rounded-lg border border-red-200">
-                        <div className="text-sm text-red-700 font-medium">Анализ продаж:</div>
-                        <div className="text-lg font-bold text-red-800">200,000 ₸</div>
+                    {salesAnalysis && isEligibleForBonus && (
+                      <div className="p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                        <div className="text-sm text-yellow-700 font-medium flex items-center gap-2">
+                          <Gift className="w-4 h-4" />
+                          Анализ продаж (БОНУС):
+                        </div>
+                        <div className="text-lg font-bold text-yellow-800 line-through">200,000 ₸</div>
+                        <div className="text-sm text-yellow-600 font-semibold">БЕСПЛАТНО! 🎁</div>
                       </div>
                     )}
                   </div>
@@ -560,6 +620,11 @@ const ClientCalc = () => {
                       <div className="text-sm text-gray-600 mt-2">
                         Единоразовая оплата «под ключ»
                       </div>
+                      {isEligibleForBonus && salesAnalysis && (
+                        <div className="mt-2 text-sm text-yellow-600 font-semibold">
+                          🎁 Экономия 200,000 ₸ на "Анализе продаж"!
+                        </div>
+                      )}
                     </div>
                   </div>
 
