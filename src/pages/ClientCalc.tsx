@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Calculator, ArrowLeft, DollarSign, Percent, Equal } from "lucide-react";
+import { Calculator, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -49,8 +49,8 @@ const ClientCalc = () => {
 
   // Калькулятор экономии
   const [selectedDepartment, setSelectedDepartment] = useState("sales");
-  const [employees, setEmployees] = useState(50);
-  const [salary, setSalary] = useState(250000);
+  const [employees, setEmployees] = useState('');
+  const [salary, setSalary] = useState('');
   const [results, setResults] = useState({
     annualSalary: 0,
     efficiency: 20,
@@ -60,6 +60,7 @@ const ClientCalc = () => {
     roi: 0,
     profitStartDate: ""
   });
+  const [isEconomyCalculated, setIsEconomyCalculated] = useState(false);
 
   const [activeTab, setActiveTab] = useState<'simple' | 'economy'>('simple');
 
@@ -82,9 +83,16 @@ const ClientCalc = () => {
   };
 
   const calculateResults = () => {
-    const annualSalary = employees * salary * 12;
-    const potentialBenefitPerEmployee = salary * 12 * 0.2; // 20% экономия времени
-    const potentialBenefitAll = potentialBenefitPerEmployee * employees;
+    const numEmployees = parseInt(employees);
+    const numSalary = parseFloat(salary.replace(/[^\d.,]/g, '').replace(',', '.'));
+    
+    if (isNaN(numEmployees) || isNaN(numSalary) || numEmployees <= 0 || numSalary <= 0) {
+      return;
+    }
+
+    const annualSalary = numEmployees * numSalary * 12;
+    const potentialBenefitPerEmployee = numSalary * 12 * 0.2; // 20% экономия времени
+    const potentialBenefitAll = potentialBenefitPerEmployee * numEmployees;
     const developmentCost = 500000;
     const platformCost = 180000;
     const totalCost = developmentCost + platformCost;
@@ -105,11 +113,23 @@ const ClientCalc = () => {
       roi,
       profitStartDate
     });
+    setIsEconomyCalculated(true);
   };
 
-  useEffect(() => {
-    calculateResults();
-  }, [employees, salary]);
+  const handleEconomyReset = () => {
+    setEmployees('');
+    setSalary('');
+    setResults({
+      annualSalary: 0,
+      efficiency: 20,
+      potentialBenefitPerEmployee: 0,
+      potentialBenefitAll: 0,
+      finalBenefit: 0,
+      roi: 0,
+      profitStartDate: ""
+    });
+    setIsEconomyCalculated(false);
+  };
 
   const formatNumber = (num: number) => {
     return new Intl.NumberFormat('ru-RU', {
@@ -257,47 +277,49 @@ const ClientCalc = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Кол-во сотрудников в отделе: <span className="text-brand-orange font-semibold">{employees}</span>
+                    Кол-во сотрудников в отделе
                   </label>
-                  <input
-                    type="range"
-                    min="1"
-                    max="100"
+                  <Input
+                    type="number"
                     value={employees}
-                    onChange={(e) => setEmployees(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                    onChange={(e) => setEmployees(e.target.value)}
+                    placeholder="Введите количество сотрудников"
+                    min="1"
+                    max="1000"
+                    className="w-full h-10 border border-gray-300 rounded-md"
                   />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <span>1</span>
-                    <span>100</span>
-                  </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Средний уровень заработной платы (₸): <span className="text-brand-orange font-semibold">{formatNumber(salary)}</span>
+                    Средний уровень заработной платы одного сотрудника (₸)
                   </label>
-                  <input
-                    type="range"
-                    min="10000"
-                    max="500000"
-                    step="10000"
+                  <Input
+                    type="text"
                     value={salary}
-                    onChange={(e) => setSalary(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                    onChange={(e) => setSalary(e.target.value)}
+                    placeholder="Введите среднюю зарплату"
+                    className="w-full h-10 border border-gray-300 rounded-md"
                   />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <span>10 000</span>
-                    <span>500 000</span>
-                  </div>
                 </div>
 
                 <Button
                   onClick={calculateResults}
                   className="w-full bg-brand-orange hover:bg-brand-orange/90 text-white font-medium py-2"
+                  disabled={!employees || !salary}
                 >
                   Рассчитать
                 </Button>
+
+                {isEconomyCalculated && (
+                  <Button
+                    onClick={handleEconomyReset}
+                    variant="outline"
+                    className="w-full border border-gray-300"
+                  >
+                    Новый расчёт
+                  </Button>
+                )}
               </div>
             </div>
 
@@ -307,54 +329,60 @@ const ClientCalc = () => {
                 Результат:
               </h3>
 
-              {/* Таблица результатов */}
-              <div className="space-y-1">
-                <div className="grid grid-cols-2 py-2 border-b border-gray-100">
-                  <span className="text-sm text-gray-600">Годовая зарплата сотрудников отдела:</span>
-                  <span className="text-sm font-medium text-right">{formatNumber(results.annualSalary)} ₸/год</span>
+              {!isEconomyCalculated ? (
+                <div className="text-center py-8 text-gray-500">
+                  <p>Заполните параметры и нажмите "Рассчитать"</p>
                 </div>
-                
-                <div className="grid grid-cols-2 py-2 border-b border-gray-100">
-                  <span className="text-sm text-gray-600">Экономия времени с AI-ботом:</span>
-                  <span className="text-sm font-medium text-right text-blue-600">{results.efficiency}%</span>
+              ) : (
+                /* Таблица результатов */
+                <div className="space-y-1">
+                  <div className="grid grid-cols-2 py-2 border-b border-gray-100">
+                    <span className="text-sm text-gray-600">Годовая зарплата сотрудников отдела:</span>
+                    <span className="text-sm font-medium text-right">{formatNumber(results.annualSalary)} ₸/год</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 py-2 border-b border-gray-100">
+                    <span className="text-sm text-gray-600">Экономия времени с AI-ботом:</span>
+                    <span className="text-sm font-medium text-right text-blue-600">{results.efficiency}%</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 py-2 border-b border-gray-100">
+                    <span className="text-sm text-gray-600">Потенциальная выгода на 1 сотрудника в год:</span>
+                    <span className="text-sm font-medium text-right text-green-600">{formatNumber(results.potentialBenefitPerEmployee)} ₸/год</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 py-2 border-b border-gray-100">
+                    <span className="text-sm text-gray-600">Потенциальная выгода на всех сотрудников в год:</span>
+                    <span className="text-sm font-medium text-right text-green-600">{formatNumber(results.potentialBenefitAll)} ₸/год</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 py-2 border-b border-gray-100">
+                    <span className="text-sm text-gray-600">Стоимость разработки AI-бота «ПОД КЛЮЧ»:</span>
+                    <span className="text-sm font-medium text-right text-brand-orange">500 000 ₸</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 py-2 border-b border-gray-100">
+                    <span className="text-sm text-gray-600">Тариф «Стоимость доступа к платформе» в год:</span>
+                    <span className="text-sm font-medium text-right text-brand-purple">180 000 ₸/год</span>
+                  </div>
+                  
+                  {/* Ключевые результаты */}
+                  <div className="grid grid-cols-2 py-3 border-b-2 border-green-200 bg-green-50">
+                    <span className="text-sm font-semibold text-green-700">Итоговая выгода в год:</span>
+                    <span className="text-lg font-bold text-right text-green-600">{formatNumber(results.finalBenefit)} ₸/год</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 py-2 border-b border-gray-100">
+                    <span className="text-sm font-semibold text-brand-purple">ROI, %:</span>
+                    <span className="text-lg font-bold text-right text-brand-purple">{results.roi}%</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 py-2">
+                    <span className="text-sm font-semibold text-brand-orange">Возможный старт получения выгоды:</span>
+                    <span className="text-sm font-bold text-right text-brand-orange">{results.profitStartDate}</span>
+                  </div>
                 </div>
-                
-                <div className="grid grid-cols-2 py-2 border-b border-gray-100">
-                  <span className="text-sm text-gray-600">Потенциальная выгода на 1 сотрудника в год:</span>
-                  <span className="text-sm font-medium text-right text-green-600">{formatNumber(results.potentialBenefitPerEmployee)} ₸/год</span>
-                </div>
-                
-                <div className="grid grid-cols-2 py-2 border-b border-gray-100">
-                  <span className="text-sm text-gray-600">Потенциальная выгода на всех сотрудников в год:</span>
-                  <span className="text-sm font-medium text-right text-green-600">{formatNumber(results.potentialBenefitAll)} ₸/год</span>
-                </div>
-                
-                <div className="grid grid-cols-2 py-2 border-b border-gray-100">
-                  <span className="text-sm text-gray-600">Стоимость разработки AI-бота «ПОД КЛЮЧ»:</span>
-                  <span className="text-sm font-medium text-right text-brand-orange">500 000 ₸</span>
-                </div>
-                
-                <div className="grid grid-cols-2 py-2 border-b border-gray-100">
-                  <span className="text-sm text-gray-600">Тариф «Стоимость доступа к платформе» в год:</span>
-                  <span className="text-sm font-medium text-right text-brand-purple">180 000 ₸/год</span>
-                </div>
-                
-                {/* Ключевые результаты */}
-                <div className="grid grid-cols-2 py-3 border-b-2 border-green-200 bg-green-50">
-                  <span className="text-sm font-semibold text-green-700">Итоговая выгода в год:</span>
-                  <span className="text-lg font-bold text-right text-green-600">{formatNumber(results.finalBenefit)} ₸/год</span>
-                </div>
-                
-                <div className="grid grid-cols-2 py-2 border-b border-gray-100">
-                  <span className="text-sm font-semibold text-brand-purple">ROI, %:</span>
-                  <span className="text-lg font-bold text-right text-brand-purple">{results.roi}%</span>
-                </div>
-                
-                <div className="grid grid-cols-2 py-2">
-                  <span className="text-sm font-semibold text-brand-orange">Возможный старт получения выгоды:</span>
-                  <span className="text-sm font-bold text-right text-brand-orange">{results.profitStartDate}</span>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         )}
