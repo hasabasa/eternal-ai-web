@@ -33,6 +33,7 @@ const ClientCalc = () => {
   const [crmIntegration, setCrmIntegration] = useState(false);
   const [salesAnalysis, setSalesAnalysis] = useState(false);
   const [showBonusMessage, setShowBonusMessage] = useState(false);
+  const [bonusUnlocked, setBonusUnlocked] = useState(false);
 
   const calculateResults = () => {
     const numEmployees = parseInt(employees);
@@ -99,7 +100,7 @@ const ClientCalc = () => {
     if (imageProcessing) totalCost += 170000;
     if (googleSheets) totalCost += 50000;
     if (crmIntegration) totalCost += 120000;
-    if (salesAnalysis) totalCost += 200000;
+    // Анализ продаж не добавляется в стоимость, так как это бонус
     
     return totalCost;
   };
@@ -107,17 +108,20 @@ const ClientCalc = () => {
   // Проверка на бонус "Анализ продаж"
   useEffect(() => {
     const totalCost = calculateDevelopmentCost();
-    if (totalCost >= 500000 && !salesAnalysis) {
+    if (totalCost >= 500000 && !bonusUnlocked) {
+      setBonusUnlocked(true);
       setShowBonusMessage(true);
       // Автоматически скрываем сообщение через 5 секунд
       const timer = setTimeout(() => {
         setShowBonusMessage(false);
       }, 5000);
       return () => clearTimeout(timer);
-    } else {
+    } else if (totalCost < 500000) {
+      setBonusUnlocked(false);
+      setSalesAnalysis(false);
       setShowBonusMessage(false);
     }
-  }, [socialNetworks, imageProcessing, googleSheets, crmIntegration, salesAnalysis]);
+  }, [socialNetworks, imageProcessing, googleSheets, crmIntegration, bonusUnlocked]);
 
   const formatNumber = (num: number) => {
     return new Intl.NumberFormat('ru-RU', {
@@ -135,7 +139,6 @@ const ClientCalc = () => {
 
   const selectedNetworksCount = Object.values(socialNetworks).filter(Boolean).length;
   const developmentCost = calculateDevelopmentCost();
-  const isEligibleForBonus = developmentCost >= 500000;
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
@@ -260,7 +263,6 @@ const ClientCalc = () => {
                 <h4 className="text-sm font-semibold text-gray-700 mb-2">Стоимость ИИ-решения:</h4>
                 <div className="text-sm text-gray-600 space-y-1">
                   <div>• Разработка ИИ-бота «ПОД КЛЮЧ»: <span className="font-semibold">500,000 ₸</span> (единоразово)</div>
-                  <div>• Тариф доступа к платформе: <span className="font-semibold">180,000 ₸/год</span></div>
                 </div>
               </div>
             </div>
@@ -509,36 +511,29 @@ const ClientCalc = () => {
                         )}
                       </div>
 
-                      {/* Анализ продаж */}
-                      <div className={`border rounded-lg p-4 ${isEligibleForBonus ? 'border-yellow-300 bg-yellow-50' : ''}`}>
-                        <div className="flex items-center space-x-3 mb-2">
-                          <Checkbox
-                            id="salesAnalysis"
-                            checked={salesAnalysis}
-                            onCheckedChange={setSalesAnalysis}
-                            disabled={!isEligibleForBonus}
-                          />
-                          <label htmlFor="salesAnalysis" className={`font-medium cursor-pointer flex items-center gap-2 ${
-                            isEligibleForBonus ? 'text-yellow-700' : 'text-gray-400'
-                          }`}>
-                            📈 Анализ продаж от ИИ
-                            {isEligibleForBonus && <Gift className="w-4 h-4 text-yellow-600" />}
-                          </label>
-                        </div>
-                        <p className="text-sm text-gray-600 ml-6">
-                          Собирает базу данных клиентов, делает регулярные рассылки, 
-                          дополнительные продажи и сохраняет лояльность клиентов
-                        </p>
-                        {isEligibleForBonus ? (
+                      {/* Анализ продаж - показывается только при достижении 500К */}
+                      {bonusUnlocked && (
+                        <div className="border-2 border-yellow-300 bg-yellow-50 rounded-lg p-4">
+                          <div className="flex items-center space-x-3 mb-2">
+                            <Checkbox
+                              id="salesAnalysis"
+                              checked={salesAnalysis}
+                              onCheckedChange={setSalesAnalysis}
+                            />
+                            <label htmlFor="salesAnalysis" className="font-medium text-yellow-700 cursor-pointer flex items-center gap-2">
+                              📈 Бонус: Анализ продаж от ИИ
+                              <Gift className="w-4 h-4 text-yellow-600" />
+                            </label>
+                          </div>
+                          <p className="text-sm text-yellow-700 ml-6 font-medium">
+                            <strong>Возможности:</strong> Собирает базу данных клиентов, делает регулярные рассылки, 
+                            дополнительные продажи и сохраняет лояльность клиентов
+                          </p>
                           <div className="mt-2 ml-6 text-sm font-semibold text-yellow-600">
-                            🎁 БОНУС при заказе от 500,000 ₸!
+                            🎁 БЕСПЛАТНО при заказе от 500,000 ₸!
                           </div>
-                        ) : (
-                          <div className="mt-2 ml-6 text-sm text-gray-500">
-                            Доступно при заказе от 500,000 ₸
-                          </div>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
                   </details>
                 </div>
@@ -596,7 +591,7 @@ const ClientCalc = () => {
                       </div>
                     )}
 
-                    {salesAnalysis && isEligibleForBonus && (
+                    {salesAnalysis && bonusUnlocked && (
                       <div className="p-3 bg-yellow-50 rounded-lg border border-yellow-200">
                         <div className="text-sm text-yellow-700 font-medium flex items-center gap-2">
                           <Gift className="w-4 h-4" />
@@ -620,7 +615,7 @@ const ClientCalc = () => {
                       <div className="text-sm text-gray-600 mt-2">
                         Единоразовая оплата «под ключ»
                       </div>
-                      {isEligibleForBonus && salesAnalysis && (
+                      {bonusUnlocked && salesAnalysis && (
                         <div className="mt-2 text-sm text-yellow-600 font-semibold">
                           🎁 Экономия 200,000 ₸ на "Анализе продаж"!
                         </div>
@@ -648,13 +643,6 @@ const ClientCalc = () => {
                         <Check className="w-4 h-4 text-green-600" />
                         <span>Техническая поддержка 30 дней</span>
                       </div>
-                    </div>
-                  </div>
-
-                  {/* Дополнительные расходы */}
-                  <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <div className="text-sm text-yellow-800">
-                      <span className="font-semibold">⚠️ Не забудьте:</span> Ежегодная плата за доступ к платформе составляет <span className="font-semibold">180,000 ₸/год</span>
                     </div>
                   </div>
                 </div>
