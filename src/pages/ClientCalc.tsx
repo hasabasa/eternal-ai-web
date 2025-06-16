@@ -115,32 +115,32 @@ const ClientCalc = () => {
   const formatNumber = (num: number) => {
     return new Intl.NumberFormat('ru-RU', {
       minimumFractionDigits: 0,
-      maximumFractionDigits: 2
+      maximumFractionDigits: 0
     }).format(num);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-purple/10 via-white to-brand-orange/10 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-brand-purple/10 via-white to-brand-orange/10 p-2 sm:p-4">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-brand-orange rounded-full mb-4 shadow-lg">
-            <Calculator className="w-8 h-8 text-white" />
+        {/* Header - компактный */}
+        <div className="text-center mb-4">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-brand-orange rounded-full mb-2 shadow-lg">
+            <Calculator className="w-6 h-6 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-brand-darkBlue mb-2">
+          <h1 className="text-2xl font-bold text-brand-darkBlue mb-1">
             Расчёт с клиентом
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm text-gray-600">
             Выберите тип расчёта для работы с клиентами
           </p>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="flex justify-center mb-8">
-          <div className="bg-white rounded-xl p-1 shadow-lg border">
+        {/* Tab Navigation - компактный */}
+        <div className="flex justify-center mb-4">
+          <div className="bg-white rounded-lg p-1 shadow-lg border">
             <button
               onClick={() => setActiveTab('simple')}
-              className={`px-6 py-3 rounded-lg font-medium transition-all ${
+              className={`px-4 py-2 rounded-md font-medium transition-all text-sm ${
                 activeTab === 'simple'
                   ? 'bg-brand-orange text-white shadow-md'
                   : 'text-gray-600 hover:text-brand-orange'
@@ -150,7 +150,7 @@ const ClientCalc = () => {
             </button>
             <button
               onClick={() => setActiveTab('economy')}
-              className={`px-6 py-3 rounded-lg font-medium transition-all ${
+              className={`px-4 py-2 rounded-md font-medium transition-all text-sm ${
                 activeTab === 'economy'
                   ? 'bg-brand-orange text-white shadow-md'
                   : 'text-gray-600 hover:text-brand-orange'
@@ -165,14 +165,14 @@ const ClientCalc = () => {
         {activeTab === 'simple' && (
           <div className="max-w-md mx-auto">
             <Card className="shadow-xl border-0 bg-white/95 backdrop-blur-sm">
-              <CardHeader className="pb-4">
+              <CardHeader className="pb-3">
                 <CardTitle className="text-lg text-center text-brand-darkBlue">
                   Калькулятор процентов
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-4">
                 {/* Amount Input */}
-                <div className="space-y-2">
+                <div className="space-y-1">
                   <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
                     <DollarSign className="w-4 h-4 text-brand-orange" />
                     Сумма продажи
@@ -182,12 +182,12 @@ const ClientCalc = () => {
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="Введите сумму"
-                    className="text-lg h-12 border-2 focus:border-brand-orange"
+                    className="text-lg h-10 border-2 focus:border-brand-orange"
                   />
                 </div>
 
                 {/* Percent Input */}
-                <div className="space-y-2">
+                <div className="space-y-1">
                   <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
                     <Percent className="w-4 h-4 text-brand-purple" />
                     Процент
@@ -197,28 +197,28 @@ const ClientCalc = () => {
                     value={percent}
                     onChange={(e) => setPercent(e.target.value)}
                     placeholder="Введите процент"
-                    className="text-lg h-12 border-2 focus:border-brand-purple"
+                    className="text-lg h-10 border-2 focus:border-brand-purple"
                   />
                 </div>
 
                 {/* Calculate Button */}
                 <Button
                   onClick={handleCalculate}
-                  className="w-full h-12 text-lg bg-brand-orange hover:bg-brand-orange/90 text-white font-semibold shadow-lg"
+                  className="w-full h-10 text-base bg-brand-orange hover:bg-brand-orange/90 text-white font-semibold shadow-lg"
                   disabled={!amount || !percent}
                 >
-                  <Equal className="w-5 h-5 mr-2" />
+                  <Equal className="w-4 h-4 mr-2" />
                   Рассчитать
                 </Button>
 
                 {/* Result */}
                 {isCalculated && result !== null && (
-                  <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-green-100 rounded-xl border-l-4 border-green-500 animate-fade-in">
+                  <div className="mt-4 p-3 bg-gradient-to-r from-green-50 to-green-100 rounded-xl border-l-4 border-green-500 animate-fade-in">
                     <div className="text-center">
                       <p className="text-sm text-green-700 font-medium mb-1">
                         Результат расчёта:
                       </p>
-                      <p className="text-2xl font-bold text-green-800">
+                      <p className="text-xl font-bold text-green-800">
                         {formatNumber(result)} ₸
                       </p>
                       <p className="text-xs text-green-600 mt-1">
@@ -243,24 +243,24 @@ const ClientCalc = () => {
           </div>
         )}
 
-        {/* Economy Calculator */}
+        {/* Economy Calculator - оптимизированный для одного экрана */}
         {activeTab === 'economy' && (
-          <div className="grid lg:grid-cols-2 gap-6">
+          <div className="grid lg:grid-cols-2 gap-4 max-h-[calc(100vh-200px)] overflow-hidden">
             {/* Левая часть - настройки */}
             <Card className="bg-white/80 shadow-xl border border-white/40 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-lg text-brand-darkBlue">Параметры расчёта</CardTitle>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base text-brand-darkBlue">Параметры расчёта</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-4">
                 {/* Выбор отдела */}
                 <div>
-                  <label className="block text-sm font-semibold text-brand-darkBlue mb-2">
+                  <label className="block text-sm font-semibold text-brand-darkBlue mb-1">
                     Наименование отдела
                   </label>
                   <select
                     value={selectedDepartment}
                     onChange={(e) => setSelectedDepartment(e.target.value)}
-                    className="w-full p-3 rounded-xl border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-brand-orange transition-all"
+                    className="w-full p-2 text-sm rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-brand-orange transition-all"
                   >
                     {departments.map((dept) => (
                       <option key={dept.value} value={dept.value}>
@@ -272,8 +272,8 @@ const ClientCalc = () => {
 
                 {/* Количество сотрудников */}
                 <div>
-                  <label className="block text-sm font-semibold text-brand-darkBlue mb-2">
-                    Кол-во сотрудников в отделе: <span className="text-brand-orange">{employees}</span>
+                  <label className="block text-sm font-semibold text-brand-darkBlue mb-1">
+                    Кол-во сотрудников: <span className="text-brand-orange">{employees}</span>
                   </label>
                   <div className="relative">
                     <input
@@ -296,8 +296,8 @@ const ClientCalc = () => {
 
                 {/* Зарплата */}
                 <div>
-                  <label className="block text-sm font-semibold text-brand-darkBlue mb-2">
-                    Средний уровень заработной платы одного сотрудника <span className="text-gray-500">(в рублях)</span>: <span className="text-brand-orange">{formatNumber(salary)}</span>
+                  <label className="block text-sm font-semibold text-brand-darkBlue mb-1">
+                    Средняя ЗП <span className="text-gray-500">(₽)</span>: <span className="text-brand-orange">{formatNumber(salary)}</span>
                   </label>
                   <div className="relative">
                     <input
@@ -313,115 +313,88 @@ const ClientCalc = () => {
                       }}
                     />
                     <div className="flex justify-between text-xs text-gray-500 mt-1">
-                      <span>10 000</span>
-                      <span>500 000</span>
+                      <span>10К</span>
+                      <span>500К</span>
                     </div>
                   </div>
                 </div>
 
                 <Button
                   onClick={calculateResults}
-                  className="w-full bg-brand-orange hover:bg-brand-orange/90 text-white font-semibold py-3 px-6 rounded-xl transition-all transform hover:scale-105 shadow-lg"
+                  className="w-full bg-brand-orange hover:bg-brand-orange/90 text-white font-semibold py-2 px-4 rounded-lg transition-all transform hover:scale-105 shadow-lg"
                 >
                   Рассчитать
                 </Button>
               </CardContent>
             </Card>
 
-            {/* Правая часть - результаты */}
+            {/* Правая часть - результаты в компактном виде */}
             <Card className="bg-white/80 shadow-xl border border-white/40 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-lg text-brand-darkBlue flex items-center gap-2">
-                  <span>Результат:</span>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base text-brand-darkBlue">
+                  Результат:
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {/* Годовая зарплата */}
-                  <div className="bg-gray-50 rounded-xl p-4">
-                    <h4 className="text-sm font-semibold text-gray-700 mb-2">Годовая зарплата сотрудников отдела:</h4>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-2xl font-bold text-brand-darkBlue">{formatNumber(results.annualSalary)}</span>
-                      <span className="text-sm text-gray-500">₽/год</span>
+              <CardContent className="max-h-[calc(100vh-300px)] overflow-y-auto">
+                <div className="space-y-3">
+                  {/* Компактные результаты */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="bg-gray-50 rounded-lg p-2">
+                      <div className="text-xs text-gray-600 mb-1">Годовая ЗП отдела:</div>
+                      <div className="text-sm font-bold text-brand-darkBlue">{formatNumber(results.annualSalary)} ₽</div>
+                    </div>
+                    <div className="bg-blue-50 rounded-lg p-2">
+                      <div className="text-xs text-gray-600 mb-1">Экономия времени:</div>
+                      <div className="text-sm font-bold text-blue-600">{results.efficiency}%</div>
                     </div>
                   </div>
 
-                  {/* Экономия времени */}
-                  <div className="bg-blue-50 rounded-xl p-4">
-                    <h4 className="text-sm font-semibold text-gray-700 mb-2">Экономия времени с AI-ботом:</h4>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-2xl font-bold text-blue-600">{results.efficiency}</span>
-                      <span className="text-sm text-gray-500">%</span>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="bg-green-50 rounded-lg p-2">
+                      <div className="text-xs text-gray-600 mb-1">Выгода на 1 сотр/год:</div>
+                      <div className="text-sm font-bold text-green-600">{formatNumber(results.potentialBenefitPerEmployee)} ₽</div>
+                    </div>
+                    <div className="bg-green-50 rounded-lg p-2">
+                      <div className="text-xs text-gray-600 mb-1">Выгода на всех/год:</div>
+                      <div className="text-sm font-bold text-green-600">{formatNumber(results.potentialBenefitAll)} ₽</div>
                     </div>
                   </div>
 
-                  {/* Потенциальная выгода на 1 сотрудника */}
-                  <div className="bg-green-50 rounded-xl p-4">
-                    <h4 className="text-sm font-semibold text-gray-700 mb-2">Потенциальная выгода на 1 сотрудника с AI-ботом, в год:</h4>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-2xl font-bold text-green-600">{formatNumber(results.potentialBenefitPerEmployee)}</span>
-                      <span className="text-sm text-gray-500">₽/год</span>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="bg-orange-50 rounded-lg p-2">
+                      <div className="text-xs text-gray-600 mb-1">Разработка ПОД КЛЮЧ:</div>
+                      <div className="text-sm font-bold text-brand-orange">500 000 ₽</div>
+                    </div>
+                    <div className="bg-purple-50 rounded-lg p-2">
+                      <div className="text-xs text-gray-600 mb-1">Платформа/год:</div>
+                      <div className="text-sm font-bold text-brand-purple">180 000 ₽</div>
                     </div>
                   </div>
 
-                  {/* Потенциальная выгода на всех */}
-                  <div className="bg-green-50 rounded-xl p-4">
-                    <h4 className="text-sm font-semibold text-gray-700 mb-2">Потенциальная выгода на всех сотрудников с AI-ботом, в год:</h4>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-2xl font-bold text-green-600">{formatNumber(results.potentialBenefitAll)}</span>
-                      <span className="text-sm text-gray-500">₽/год</span>
+                  {/* Ключевые результаты */}
+                  <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-3 border-l-4 border-green-500">
+                    <div className="flex items-center gap-2 mb-1">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <div className="text-sm font-semibold text-green-700">Итоговая выгода в год:</div>
                     </div>
+                    <div className="text-xl font-bold text-green-600">{formatNumber(results.finalBenefit)} ₽</div>
                   </div>
 
-                  {/* Стоимость разработки */}
-                  <div className="bg-orange-50 rounded-xl p-4">
-                    <h4 className="text-sm font-semibold text-gray-700 mb-2">Стоимость разработки AI-бота «ПОД КЛЮЧ»:</h4>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-2xl font-bold text-brand-orange">500 000</span>
-                      <span className="text-sm text-gray-500">₽</span>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="bg-gradient-to-r from-brand-purple/10 to-brand-purple/20 rounded-lg p-2 border-l-4 border-brand-purple">
+                      <div className="flex items-center gap-1 mb-1">
+                        <CheckCircle className="w-3 h-3 text-brand-purple" />
+                        <div className="text-xs font-semibold text-brand-purple">ROI:</div>
+                      </div>
+                      <div className="text-lg font-bold text-brand-purple">{results.roi}%</div>
                     </div>
-                  </div>
-
-                  {/* Тариф платформы */}
-                  <div className="bg-purple-50 rounded-xl p-4">
-                    <h4 className="text-sm font-semibold text-gray-700 mb-2">Тариф «Стоимость доступа к платформе», в год:</h4>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-2xl font-bold text-brand-purple">180 000</span>
-                      <span className="text-sm text-gray-500">₽/год</span>
+                    <div className="bg-gradient-to-r from-brand-orange/10 to-brand-orange/20 rounded-lg p-2 border-l-4 border-brand-orange">
+                      <div className="flex items-center gap-1 mb-1">
+                        <CheckCircle className="w-3 h-3 text-brand-orange" />
+                        <div className="text-xs font-semibold text-brand-orange">Старт выгоды:</div>
+                      </div>
+                      <div className="text-sm font-bold text-brand-orange">{results.profitStartDate}</div>
                     </div>
-                  </div>
-
-                  {/* Итоговая выгода */}
-                  <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-xl p-4 border-l-4 border-green-500">
-                    <div className="flex items-center gap-2 mb-2">
-                      <CheckCircle className="w-5 h-5 text-green-600" />
-                      <h4 className="text-sm font-semibold text-green-700">Итоговая выгода в год:</h4>
-                    </div>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-3xl font-bold text-green-600">{formatNumber(results.finalBenefit)}</span>
-                      <span className="text-sm text-gray-500">₽/год</span>
-                    </div>
-                  </div>
-
-                  {/* ROI */}
-                  <div className="bg-gradient-to-r from-brand-purple/10 to-brand-purple/20 rounded-xl p-4 border-l-4 border-brand-purple">
-                    <div className="flex items-center gap-2 mb-2">
-                      <CheckCircle className="w-5 h-5 text-brand-purple" />
-                      <h4 className="text-sm font-semibold text-brand-purple">ROI, %:</h4>
-                    </div>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-3xl font-bold text-brand-purple">{results.roi}</span>
-                      <span className="text-sm text-gray-500">%</span>
-                    </div>
-                  </div>
-
-                  {/* Дата старта */}
-                  <div className="bg-gradient-to-r from-brand-orange/10 to-brand-orange/20 rounded-xl p-4 border-l-4 border-brand-orange">
-                    <div className="flex items-center gap-2 mb-2">
-                      <CheckCircle className="w-5 h-5 text-brand-orange" />
-                      <h4 className="text-sm font-semibold text-brand-orange">Возможный старт получения выгоды:</h4>
-                    </div>
-                    <div className="text-2xl font-bold text-brand-orange">{results.profitStartDate}</div>
                   </div>
                 </div>
               </CardContent>
@@ -429,8 +402,8 @@ const ClientCalc = () => {
           </div>
         )}
 
-        {/* Back to Home */}
-        <div className="mt-8 text-center">
+        {/* Back to Home - компактный */}
+        <div className="mt-4 text-center">
           <Link to="/">
             <Button
               variant="ghost"
