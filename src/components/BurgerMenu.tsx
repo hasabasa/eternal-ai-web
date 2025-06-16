@@ -1,8 +1,7 @@
-
 import React from "react";
 import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 const menuItems = [
   { name: "Мой профиль", to: "/profile" },
@@ -22,7 +21,9 @@ const BurgerMenu: React.FC = () => {
           </button>
         </SheetTrigger>
         <SheetContent side="right" className="w-64 sm:w-80 bg-white/95 shadow-xl flex flex-col gap-4 pt-8">
-          <span className="text-lg font-semibold mb-2 text-primary">Меню</span>
+          <SheetHeader>
+            <SheetTitle className="text-lg font-semibold mb-2 text-primary">Меню</SheetTitle>
+          </SheetHeader>
           <nav className="flex flex-col gap-2">
             {menuItems.map((item) => (
               <Link
