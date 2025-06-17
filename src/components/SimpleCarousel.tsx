@@ -1,34 +1,49 @@
-
-import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { ChevronUp, ChevronDown } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface SimpleCarouselProps {
   children: React.ReactNode[];
   className?: string;
 }
 
-const SimpleCarousel: React.FC<SimpleCarouselProps> = ({ children, className = '' }) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
+const SimpleCarousel: React.FC<SimpleCarouselProps> = ({ children, className }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isScrolling = useRef(false);
+  const [isMobile, setIsMobile] = useState(false);
+
   const totalSlides = children.length;
 
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const goToNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % totalSlides);
   };
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % totalSlides);
+  const goToPrev = () => {
+    setCurrentIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
   };
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
-  };
-
+  // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'ArrowLeft') {
-        prevSlide();
-      } else if (event.key === 'ArrowRight') {
-        nextSlide();
+      if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        goToPrev();
+      } else if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        goToNext();
       }
     };
 
@@ -36,50 +51,138 @@ const SimpleCarousel: React.FC<SimpleCarouselProps> = ({ children, className = '
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // Desktop mouse wheel navigation
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || isMobile) return;
+
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      
+      if (isScrolling.current) return;
+      
+      isScrolling.current = true;
+
+      if (event.deltaY > 0) {
+        goToNext();
+      } else {
+        goToPrev();
+      }
+
+      setTimeout(() => {
+        isScrolling.current = false;
+      }, 500);
+    };
+
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    return () => container.removeEventListener('wheel', handleWheel);
+  }, [isMobile]);
+
+  // Touch navigation for mobile
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || !isMobile) return;
+
+    let startY = 0;
+    let endY = 0;
+
+    const handleTouchStart = (event: TouchEvent) => {
+      startY = event.touches[0].clientY;
+    };
+
+    const handleTouchEnd = (event: TouchEvent) => {
+      endY = event.changedTouches[0].clientY;
+      const deltaY = startY - endY;
+
+      if (Math.abs(deltaY) > 50) {
+        if (deltaY > 0) {
+          goToNext();
+        } else {
+          goToPrev();
+        }
+      }
+    };
+
+    container.addEventListener('touchstart', handleTouchStart);
+    container.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [isMobile]);
+
   return (
-    <div className={`relative ${className}`}>
-      <div className="overflow-hidden">
-        <div 
-          className="flex transition-transform duration-500 ease-in-out"
-          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-        >
-          {children.map((child, index) => (
-            <div key={index} className="w-full flex-shrink-0">
-              {child}
-            </div>
-          ))}
-        </div>
+    <div 
+      ref={containerRef}
+      className={cn("relative w-full h-full overflow-hidden", className)}
+      tabIndex={0}
+    >
+      {/* Slides container */}
+      <div 
+        className="h-full transition-transform duration-700 ease-in-out"
+        style={{
+          transform: `translateY(-${currentIndex * 100}%)`,
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+      >
+        {children.map((child, index) => (
+          <div
+            key={index}
+            className="flex-shrink-0 w-full"
+            style={{ minHeight: '100vh' }}
+          >
+            {child}
+          </div>
+        ))}
       </div>
 
-      {/* Navigation arrows */}
-      <button
-        onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/80 hover:bg-white/95 rounded-full shadow-lg transition-all z-10"
-        disabled={currentSlide === 0}
-      >
-        <ChevronLeft className="w-6 h-6" />
-      </button>
+      {/* Navigation buttons - возвращены на прежнее место */}
+      <div className="fixed top-8 left-2 z-[9999]">
+        <Button
+          onClick={goToPrev}
+          className="w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white border-none shadow-xl hover:shadow-2xl transition-all hover:scale-110"
+          size="icon"
+        >
+          <ChevronUp className="h-5 w-5" />
+        </Button>
+      </div>
+      
+      <div className="fixed bottom-8 left-2 z-[9999]">
+        <Button
+          onClick={goToNext}
+          className="w-14 h-14 bg-brand-orange/90 hover:bg-brand-orange text-white border-none shadow-xl hover:shadow-2xl transition-all hover:scale-110"
+          size="icon"
+        >
+          <ChevronDown className="h-5 w-5" />
+        </Button>
+      </div>
 
-      <button
-        onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white/80 hover:bg-white/95 rounded-full shadow-lg transition-all z-10"
-        disabled={currentSlide === totalSlides - 1}
-      >
-        <ChevronRight className="w-6 h-6" />
-      </button>
-
-      {/* Dots indicator */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+      {/* Slide indicators - возвращены на прежнее место */}
+      <div className="fixed left-6 top-1/2 transform -translate-y-1/2 z-[9999] flex flex-col space-y-2">
         {children.map((_, index) => (
           <button
             key={index}
-            onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all ${
-              currentSlide === index ? 'bg-brand-orange' : 'bg-white/50'
-            }`}
+            onClick={() => setCurrentIndex(index)}
+            className={cn(
+              "w-2 h-8 rounded-full transition-all duration-300",
+              index === currentIndex 
+                ? "bg-brand-orange" 
+                : "bg-white/50 hover:bg-white/70"
+            )}
           />
         ))}
       </div>
+
+      {/* Mobile swipe hint */}
+      {isMobile && (
+        <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-[9999] text-white/70 text-xs text-center">
+          <div className="bg-black/30 px-3 py-1 rounded-full backdrop-blur-sm">
+            Свайп вверх/вниз для навигации
+          </div>
+        </div>
+      )}
     </div>
   );
 };
