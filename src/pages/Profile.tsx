@@ -148,10 +148,17 @@ const Profile = () => {
   };
 
   const getSalesProgress = () => {
-    if (!salesPlan || salesPlan.target_amount === 0) return { progress: 0, achieved: 0, target: 0 };
+    if (!salesPlan || salesPlan.target_amount === 0) {
+      return { 
+        progress: 0, 
+        achieved: salesAchievements.reduce((sum, achievement) => sum + achievement.amount, 0), 
+        target: 0 
+      };
+    }
     
     const totalAchieved = salesAchievements.reduce((sum, achievement) => sum + achievement.amount, 0);
-    const progress = Math.min((totalAchieved / salesPlan.target_amount) * 100, 100);
+    // Исправляем логику: не ограничиваем прогресс 100%
+    const progress = (totalAchieved / salesPlan.target_amount) * 100;
     
     return {
       progress,
@@ -258,12 +265,18 @@ const Profile = () => {
                     </div>
                     
                     <div className="space-y-2">
+                      {/* Ограничиваем прогресс-бар максимумом 100% для визуального отображения */}
                       <Progress 
-                        value={salesProgress.progress} 
+                        value={Math.min(salesProgress.progress, 100)} 
                         className="h-4"
                       />
                       <div className="text-center">
-                        <Badge variant={salesProgress.progress >= 100 ? "default" : "secondary"} className="text-lg px-3 py-1">
+                        <Badge 
+                          variant={salesProgress.progress >= 100 ? "default" : "secondary"} 
+                          className={`text-lg px-3 py-1 ${
+                            salesProgress.progress > 100 ? 'bg-green-600 text-white' : ''
+                          }`}
+                        >
                           {salesProgress.progress.toFixed(1)}% выполнено
                         </Badge>
                       </div>
@@ -271,7 +284,17 @@ const Profile = () => {
                     
                     {salesProgress.progress >= 100 && (
                       <div className="text-center p-3 bg-green-50 rounded-lg border border-green-200">
-                        <div className="text-green-700 font-semibold">🎉 Поздравляем! План выполнен!</div>
+                        <div className="text-green-700 font-semibold">
+                          {salesProgress.progress > 100 
+                            ? `🎉 Превышение плана на ${(salesProgress.progress - 100).toFixed(1)}%!` 
+                            : '🎉 Поздравляем! План выполнен!'
+                          }
+                        </div>
+                        {salesProgress.progress > 100 && (
+                          <div className="text-sm text-green-600 mt-1">
+                            Перевыполнение: {formatNumber(salesProgress.achieved - salesProgress.target)} ₸
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>

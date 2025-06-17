@@ -546,7 +546,8 @@ const AdminPanel = () => {
       return { progress: 0, achieved: totalAchieved, target: 0 };
     }
     
-    const progress = Math.min((totalAchieved / plan.target_amount) * 100, 100);
+    // Исправляем логику: не ограничиваем прогресс 100%
+    const progress = (totalAchieved / plan.target_amount) * 100;
     return { progress, achieved: totalAchieved, target: plan.target_amount };
   };
 
@@ -1083,9 +1084,15 @@ const AdminPanel = () => {
                           <TableCell>
                             {manager.role === 'manager' && salesProgress.target > 0 ? (
                               <div className="space-y-1">
-                                <Progress value={salesProgress.progress} className="w-20 h-2" />
+                                {/* Ограничиваем прогресс-бар максимумом 100% для визуального отображения */}
+                                <Progress value={Math.min(salesProgress.progress, 100)} className="w-20 h-2" />
                                 <div className="text-xs text-center">
-                                  {salesProgress.progress.toFixed(0)}%
+                                  <Badge 
+                                    variant={salesProgress.progress >= 100 ? "default" : "secondary"}
+                                    className={salesProgress.progress > 100 ? 'bg-green-600 text-white' : ''}
+                                  >
+                                    {salesProgress.progress.toFixed(0)}%
+                                  </Badge>
                                 </div>
                               </div>
                             ) : (
