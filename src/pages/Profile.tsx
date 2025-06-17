@@ -85,13 +85,18 @@ const Profile = () => {
 
   const loadManagerData = async (managerId: string) => {
     try {
+      // Calculate the first day of next month for the date range
+      const currentDate = new Date(currentMonth + '-01');
+      const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+      const nextMonthString = nextMonth.toISOString().slice(0, 10); // YYYY-MM-DD
+
       // Load penalties for current month
       const { data: penaltiesData } = await supabase
         .from('penalties')
         .select('*')
         .eq('manager_id', managerId)
         .gte('created_at', `${currentMonth}-01`)
-        .lt('created_at', `${currentMonth}-32`);
+        .lt('created_at', nextMonthString);
 
       // Load bonuses for current month
       const { data: bonusesData } = await supabase
@@ -99,15 +104,14 @@ const Profile = () => {
         .select('*')
         .eq('manager_id', managerId)
         .gte('created_at', `${currentMonth}-01`)
-        .lt('created_at', `${currentMonth}-32`);
+        .lt('created_at', nextMonthString);
 
-      // Load sales plan for current month
+      // Load sales plan for current month (remove .single() to handle no results)
       const { data: salesPlanData } = await supabase
         .from('sales_plans')
         .select('*')
         .eq('manager_id', managerId)
-        .eq('month_year', currentMonth)
-        .single();
+        .eq('month_year', currentMonth);
 
       // Load sales achievements for current month
       const { data: achievementsData } = await supabase
@@ -118,7 +122,7 @@ const Profile = () => {
 
       setPenalties(penaltiesData || []);
       setBonuses(bonusesData || []);
-      setSalesPlan(salesPlanData);
+      setSalesPlan(salesPlanData && salesPlanData.length > 0 ? salesPlanData[0] : null);
       setSalesAchievements(achievementsData || []);
     } catch (err) {
       console.error('Error loading manager data:', err);

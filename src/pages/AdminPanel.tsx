@@ -200,22 +200,32 @@ const AdminPanel = () => {
   };
 
   const loadPenalties = async () => {
+    // Calculate the first day of next month for the date range
+    const currentDate = new Date(currentMonth + '-01');
+    const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+    const nextMonthString = nextMonth.toISOString().slice(0, 10); // YYYY-MM-DD
+
     const { data } = await supabase
       .from('penalties')
       .select('*')
       .gte('created_at', `${currentMonth}-01`)
-      .lt('created_at', `${currentMonth}-32`)
+      .lt('created_at', nextMonthString)
       .order('created_at', { ascending: false });
 
     setPenalties(data || []);
   };
 
   const loadBonuses = async () => {
+    // Calculate the first day of next month for the date range
+    const currentDate = new Date(currentMonth + '-01');
+    const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+    const nextMonthString = nextMonth.toISOString().slice(0, 10); // YYYY-MM-DD
+
     const { data } = await supabase
       .from('bonuses')
       .select('*')
       .gte('created_at', `${currentMonth}-01`)
-      .lt('created_at', `${currentMonth}-32`)
+      .lt('created_at', nextMonthString)
       .order('created_at', { ascending: false });
 
     setBonuses(data || []);
