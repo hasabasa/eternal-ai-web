@@ -27,11 +27,19 @@ const createMockClient = () => ({
   from: () => ({
     select: () => ({
       eq: () => ({
-        single: async () => ({ data: null, error: { message: 'Supabase not configured' } })
+        single: async () => ({ data: null, error: { message: 'Supabase not configured' } }),
+        order: () => ({ data: [], error: { message: 'Supabase not configured' } })
       }),
-      limit: () => ({ data: null, error: { message: 'Supabase not configured' } })
+      limit: () => ({ data: [], error: { message: 'Supabase not configured' } }),
+      order: () => ({ data: [], error: { message: 'Supabase not configured' } })
     }),
-    insert: async () => ({ error: { message: 'Supabase not configured' } })
+    insert: async () => ({ error: { message: 'Supabase not configured' } }),
+    update: () => ({
+      eq: async () => ({ error: { message: 'Supabase not configured' } })
+    }),
+    delete: () => ({
+      eq: async () => ({ error: { message: 'Supabase not configured' } })
+    })
   })
 })
 
