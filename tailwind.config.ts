@@ -9,18 +9,16 @@ export default {
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
   ],
+  prefix: "",
   theme: {
     container: {
       center: true,
       padding: "2rem",
       screens: {
-        "2xl": "1400px"
-      }
+        "2xl": "1400px",
+      },
     },
     extend: {
-      fontFamily: {
-        inter: ["Inter", "sans-serif"],
-      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -28,51 +26,60 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#262630", // Тёмно-серо-синий
-          foreground: "#ffffff",
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "#f1f5f9",
-          foreground: "#262630",
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
         },
         muted: {
-          DEFAULT: "#f1f5f9",
-          foreground: "#64748b",
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "#f1f5f9",
-          foreground: "#262630",
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
         },
-        // Фирменные цвета
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
         brand: {
-          orange: "#FE9C2D", // Янтарно-оранжевый
-          darkBlue: "#262630", // Тёмно-серо-синий  
-          purple: "#A678FF", // Светло-фиолетовый
+          orange: "#FE9C2D",
+          purple: "#8B5CF6",
+          darkBlue: "#1E3A8A",
         },
-        // Заменяем старые aurora цвета на фирменные
-        aurora1: "#A678FF", // Светло-фиолетовый
-        aurora2: "#FE9C2D", // Янтарно-оранжевый
-        aurora3: "#A678FF", // Светло-фиолетовый (вариант)
-        aurora4: "#FE9C2D", // Янтарно-оранжевый (вариант)
-        aurora5: "#262630", // Тёмно-серо-синий
+      },
+      fontFamily: {
+        inter: ["Inter", "sans-serif"],
       },
       borderRadius: {
-        lg: "1.5rem",
-        xl: "2rem",
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
-        "aurora-move": {
-          "0%, 100%": { transform: "translateY(0) scale(1)" },
-          "50%": { transform: "translateY(-30px) scale(1.08)" }
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
-        "fade-in": {
-          "0%": { opacity: "0", transform: "translateY(24px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
-        }
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
       },
       animation: {
-        "aurora-move": "aurora-move 8s ease-in-out infinite alternate",
-        "fade-in": "fade-in 0.9s cubic-bezier(0.4,0,0.2,1) both",
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
       },
     },
   },
