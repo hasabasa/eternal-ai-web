@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Settings, 
   UserPlus, 
@@ -22,17 +22,12 @@ import {
   EyeOff,
   Save,
   X,
-  User,
-  Lock,
   DollarSign,
-  Target,
-  Percent,
   AlertTriangle,
   Gift,
+  Target,
   TrendingUp,
-  Calendar,
-  Plus,
-  Minus
+  Plus
 } from 'lucide-react';
 
 interface ManagerProfile {
@@ -77,20 +72,6 @@ interface SalesAchievement {
   month_year: string;
 }
 
-interface SalaryCalculation {
-  base_salary: number;
-  total_penalties: number;
-  total_bonuses: number;
-  sales_commission: number;
-  final_salary: number;
-}
-
-interface SalesProgress {
-  target_amount: number;
-  achieved_amount: number;
-  progress_percentage: number;
-}
-
 const AdminPanel = () => {
   const [managers, setManagers] = useState<ManagerProfile[]>([]);
   const [penalties, setPenalties] = useState<Penalty[]>([]);
@@ -100,7 +81,7 @@ const AdminPanel = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [activeTab, setActiveTab] = useState('managers');
+  const [adminProfileId, setAdminProfileId] = useState<string>('');
   
   // Dialog states
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -108,11 +89,10 @@ const AdminPanel = () => {
   const [isBonusDialogOpen, setIsBonusDialogOpen] = useState(false);
   const [isSalesPlanDialogOpen, setIsSalesPlanDialogOpen] = useState(false);
   const [isSalesAchievementDialogOpen, setIsSalesAchievementDialogOpen] = useState(false);
-  const [isTotalPlanDialogOpen, setIsTotalPlanDialogOpen] = useState(false);
-  
   const [editingManager, setEditingManager] = useState<ManagerProfile | null>(null);
-  const [selectedManagerId, setSelectedManagerId] = useState<string>('');
+
   const navigate = useNavigate();
+  const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
 
   // Form states for adding new manager
   const [newManager, setNewManager] = useState({
@@ -124,34 +104,32 @@ const AdminPanel = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
 
-  // Form states for penalties and bonuses
-  const [penaltyForm, setPenaltyForm] = useState({
+  // Form states for penalties
+  const [newPenalty, setNewPenalty] = useState({
     manager_id: '',
     amount: '',
     reason: ''
   });
 
-  const [bonusForm, setBonusForm] = useState({
+  // Form states for bonuses
+  const [newBonus, setNewBonus] = useState({
     manager_id: '',
     amount: '',
     reason: ''
   });
 
-  // Form states for sales plans and achievements
-  const [salesPlanForm, setSalesPlanForm] = useState({
+  // Form states for sales plans
+  const [newSalesPlan, setNewSalesPlan] = useState({
     manager_id: '',
     target_amount: '',
-    month_year: new Date().toISOString().slice(0, 7) // YYYY-MM
+    month_year: currentMonth
   });
 
-  const [salesAchievementForm, setSalesAchievementForm] = useState({
+  // Form states for sales achievements
+  const [newSalesAchievement, setNewSalesAchievement] = useState({
     manager_id: '',
     amount: '',
-    month_year: new Date().toISOString().slice(0, 7) // YYYY-MM
-  });
-
-  const [totalPlanForm, setTotalPlanForm] = useState({
-    total_sales_plan: ''
+    month_year: currentMonth
   });
 
   // Check admin access on component mount
@@ -171,6 +149,17 @@ const AdminPanel = () => {
       if (!adminCheck) {
         navigate('/profile');
         return;
+      }
+
+      // Get admin profile ID
+      const { data: adminProfile } = await supabase
+        .from('manager_profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (adminProfile) {
+        setAdminProfileId(adminProfile.id);
       }
 
       loadAllData();
@@ -211,69 +200,43 @@ const AdminPanel = () => {
   };
 
   const loadPenalties = async () => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('penalties')
-      .select(`
-        *,
-        manager_profiles!penalties_manager_id_fkey(username)
-      `)
+      .select('*')
+      .gte('created_at', `${currentMonth}-01`)
+      .lt('created_at', `${currentMonth}-32`)
       .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Error loading penalties:', error);
-      return;
-    }
 
     setPenalties(data || []);
   };
 
   const loadBonuses = async () => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('bonuses')
-      .select(`
-        *,
-        manager_profiles!bonuses_manager_id_fkey(username)
-      `)
+      .select('*')
+      .gte('created_at', `${currentMonth}-01`)
+      .lt('created_at', `${currentMonth}-32`)
       .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Error loading bonuses:', error);
-      return;
-    }
 
     setBonuses(data || []);
   };
 
   const loadSalesPlans = async () => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('sales_plans')
-      .select(`
-        *,
-        manager_profiles!sales_plans_manager_id_fkey(username)
-      `)
-      .order('month_year', { ascending: false });
-
-    if (error) {
-      console.error('Error loading sales plans:', error);
-      return;
-    }
+      .select('*')
+      .eq('month_year', currentMonth)
+      .order('created_at', { ascending: false });
 
     setSalesPlans(data || []);
   };
 
   const loadSalesAchievements = async () => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('sales_achievements')
-      .select(`
-        *,
-        manager_profiles!sales_achievements_manager_id_fkey(username)
-      `)
-      .order('month_year', { ascending: false });
-
-    if (error) {
-      console.error('Error loading sales achievements:', error);
-      return;
-    }
+      .select('*')
+      .eq('month_year', currentMonth)
+      .order('created_at', { ascending: false });
 
     setSalesAchievements(data || []);
   };
@@ -343,20 +306,13 @@ const AdminPanel = () => {
     setError('');
 
     try {
-      const currentUser = await getCurrentUser();
-      const adminProfile = await supabase
-        .from('manager_profiles')
-        .select('id')
-        .eq('user_id', currentUser?.id)
-        .single();
-
       const { error } = await supabase
         .from('penalties')
         .insert({
-          manager_id: penaltyForm.manager_id,
-          amount: parseFloat(penaltyForm.amount),
-          reason: penaltyForm.reason,
-          created_by: adminProfile.data?.id
+          manager_id: newPenalty.manager_id,
+          amount: parseFloat(newPenalty.amount),
+          reason: newPenalty.reason,
+          created_by: adminProfileId
         });
 
       if (error) {
@@ -365,7 +321,7 @@ const AdminPanel = () => {
       }
 
       setSuccess('Штраф успешно добавлен');
-      setPenaltyForm({ manager_id: '', amount: '', reason: '' });
+      setNewPenalty({ manager_id: '', amount: '', reason: '' });
       setIsPenaltyDialogOpen(false);
       loadPenalties();
     } catch (err) {
@@ -381,20 +337,13 @@ const AdminPanel = () => {
     setError('');
 
     try {
-      const currentUser = await getCurrentUser();
-      const adminProfile = await supabase
-        .from('manager_profiles')
-        .select('id')
-        .eq('user_id', currentUser?.id)
-        .single();
-
       const { error } = await supabase
         .from('bonuses')
         .insert({
-          manager_id: bonusForm.manager_id,
-          amount: parseFloat(bonusForm.amount),
-          reason: bonusForm.reason,
-          created_by: adminProfile.data?.id
+          manager_id: newBonus.manager_id,
+          amount: parseFloat(newBonus.amount),
+          reason: newBonus.reason,
+          created_by: adminProfileId
         });
 
       if (error) {
@@ -403,7 +352,7 @@ const AdminPanel = () => {
       }
 
       setSuccess('Бонус успешно добавлен');
-      setBonusForm({ manager_id: '', amount: '', reason: '' });
+      setNewBonus({ manager_id: '', amount: '', reason: '' });
       setIsBonusDialogOpen(false);
       loadBonuses();
     } catch (err) {
@@ -419,20 +368,26 @@ const AdminPanel = () => {
     setError('');
 
     try {
-      const currentUser = await getCurrentUser();
-      const adminProfile = await supabase
-        .from('manager_profiles')
+      // Check if plan already exists for this manager and month
+      const { data: existingPlan } = await supabase
+        .from('sales_plans')
         .select('id')
-        .eq('user_id', currentUser?.id)
+        .eq('manager_id', newSalesPlan.manager_id)
+        .eq('month_year', newSalesPlan.month_year)
         .single();
+
+      if (existingPlan) {
+        setError('План продаж для этого менеджера на указанный месяц уже существует');
+        return;
+      }
 
       const { error } = await supabase
         .from('sales_plans')
         .insert({
-          manager_id: salesPlanForm.manager_id,
-          target_amount: parseFloat(salesPlanForm.target_amount),
-          month_year: salesPlanForm.month_year,
-          created_by: adminProfile.data?.id
+          manager_id: newSalesPlan.manager_id,
+          target_amount: parseFloat(newSalesPlan.target_amount),
+          month_year: newSalesPlan.month_year,
+          created_by: adminProfileId
         });
 
       if (error) {
@@ -441,7 +396,7 @@ const AdminPanel = () => {
       }
 
       setSuccess('План продаж успешно добавлен');
-      setSalesPlanForm({ manager_id: '', target_amount: '', month_year: new Date().toISOString().slice(0, 7) });
+      setNewSalesPlan({ manager_id: '', target_amount: '', month_year: currentMonth });
       setIsSalesPlanDialogOpen(false);
       loadSalesPlans();
     } catch (err) {
@@ -457,20 +412,13 @@ const AdminPanel = () => {
     setError('');
 
     try {
-      const currentUser = await getCurrentUser();
-      const adminProfile = await supabase
-        .from('manager_profiles')
-        .select('id')
-        .eq('user_id', currentUser?.id)
-        .single();
-
       const { error } = await supabase
         .from('sales_achievements')
         .insert({
-          manager_id: salesAchievementForm.manager_id,
-          amount: parseFloat(salesAchievementForm.amount),
-          month_year: salesAchievementForm.month_year,
-          created_by: adminProfile.data?.id
+          manager_id: newSalesAchievement.manager_id,
+          amount: parseFloat(newSalesAchievement.amount),
+          month_year: newSalesAchievement.month_year,
+          created_by: adminProfileId
         });
 
       if (error) {
@@ -479,42 +427,11 @@ const AdminPanel = () => {
       }
 
       setSuccess('Достижение продаж успешно добавлено');
-      setSalesAchievementForm({ manager_id: '', amount: '', month_year: new Date().toISOString().slice(0, 7) });
+      setNewSalesAchievement({ manager_id: '', amount: '', month_year: currentMonth });
       setIsSalesAchievementDialogOpen(false);
       loadSalesAchievements();
     } catch (err) {
       setError('Произошла ошибка при добавлении достижения продаж');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleUpdateTotalPlan = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-
-    try {
-      const currentUser = await getCurrentUser();
-      
-      const { error } = await supabase
-        .from('manager_profiles')
-        .update({
-          total_sales_plan: parseFloat(totalPlanForm.total_sales_plan)
-        })
-        .eq('user_id', currentUser?.id);
-
-      if (error) {
-        setError('Ошибка обновления общего плана продаж');
-        return;
-      }
-
-      setSuccess('Общий план продаж успешно обновлен');
-      setTotalPlanForm({ total_sales_plan: '' });
-      setIsTotalPlanDialogOpen(false);
-      loadManagers();
-    } catch (err) {
-      setError('Произошла ошибка при обновлении общего плана продаж');
     } finally {
       setLoading(false);
     }
@@ -527,7 +444,8 @@ const AdminPanel = () => {
         .update({
           base_salary: manager.base_salary,
           sales_percentage: manager.sales_percentage,
-          kpi_target: manager.kpi_target
+          kpi_target: manager.kpi_target,
+          total_sales_plan: manager.total_sales_plan
         })
         .eq('id', manager.id);
 
@@ -583,55 +501,44 @@ const AdminPanel = () => {
 
   const getManagerName = (managerId: string) => {
     const manager = managers.find(m => m.id === managerId);
-    return manager?.username || 'Неизвестно';
+    return manager ? manager.username : 'Неизвестно';
   };
 
-  const getSalesProgress = (managerId: string, monthYear: string) => {
-    const plan = salesPlans.find(p => p.manager_id === managerId && p.month_year === monthYear);
-    const achievements = salesAchievements.filter(a => a.manager_id === managerId && a.month_year === monthYear);
+  const getSalesProgress = (managerId: string) => {
+    const plan = salesPlans.find(p => p.manager_id === managerId);
+    const achievements = salesAchievements.filter(a => a.manager_id === managerId);
     const totalAchieved = achievements.reduce((sum, a) => sum + a.amount, 0);
     
-    if (!plan || plan.target_amount === 0) return { progress: 0, achieved: 0, target: 0 };
+    if (!plan || plan.target_amount === 0) {
+      return { progress: 0, achieved: totalAchieved, target: 0 };
+    }
     
     const progress = Math.min((totalAchieved / plan.target_amount) * 100, 100);
     return { progress, achieved: totalAchieved, target: plan.target_amount };
   };
 
-  const getCurrentMonthSalaryData = (managerId: string) => {
-    const currentMonth = new Date().toISOString().slice(0, 7);
-    const monthPenalties = penalties.filter(p => 
-      p.manager_id === managerId && 
-      p.created_at.slice(0, 7) === currentMonth
-    );
-    const monthBonuses = bonuses.filter(b => 
-      b.manager_id === managerId && 
-      b.created_at.slice(0, 7) === currentMonth
-    );
-    const monthAchievements = salesAchievements.filter(a => 
-      a.manager_id === managerId && 
-      a.month_year === currentMonth
-    );
-    
+  const calculateSalary = (managerId: string) => {
     const manager = managers.find(m => m.id === managerId);
-    if (!manager) return { baseSalary: 0, penalties: 0, bonuses: 0, commission: 0, total: 0 };
+    if (!manager) return { base: 0, commission: 0, bonuses: 0, penalties: 0, total: 0 };
+
+    const managerPenalties = penalties.filter(p => p.manager_id === managerId);
+    const managerBonuses = bonuses.filter(b => b.manager_id === managerId);
+    const achievements = salesAchievements.filter(a => a.manager_id === managerId);
     
-    const totalPenalties = monthPenalties.reduce((sum, p) => sum + p.amount, 0);
-    const totalBonuses = monthBonuses.reduce((sum, b) => sum + b.amount, 0);
-    const totalSales = monthAchievements.reduce((sum, a) => sum + a.amount, 0);
+    const totalSales = achievements.reduce((sum, a) => sum + a.amount, 0);
     const commission = (totalSales * manager.sales_percentage) / 100;
+    const totalBonuses = managerBonuses.reduce((sum, b) => sum + b.amount, 0);
+    const totalPenalties = managerPenalties.reduce((sum, p) => sum + p.amount, 0);
     const total = manager.base_salary + commission + totalBonuses - totalPenalties;
-    
+
     return {
-      baseSalary: manager.base_salary,
-      penalties: totalPenalties,
-      bonuses: totalBonuses,
+      base: manager.base_salary,
       commission,
+      bonuses: totalBonuses,
+      penalties: totalPenalties,
       total
     };
   };
-
-  const adminProfile = managers.find(m => m.role === 'admin');
-  const currentMonth = new Date().toISOString().slice(0, 7);
 
   if (loading && managers.length === 0) {
     return (
@@ -646,9 +553,9 @@ const AdminPanel = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
+        <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-brand-orange rounded-full flex items-center justify-center">
@@ -661,927 +568,625 @@ const AdminPanel = () => {
                 <p className="text-gray-600">Управление менеджерами и настройками</p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              {adminProfile && (
-                <Dialog open={isTotalPlanDialogOpen} onOpenChange={setIsTotalPlanDialogOpen}>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" className="text-brand-purple border-brand-purple/30">
-                      <Target className="w-4 h-4 mr-2" />
-                      Общий план: {formatNumber(adminProfile.total_sales_plan || 0)} ₸
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Установить общий план продаж</DialogTitle>
-                      <DialogDescription>
-                        Установите общий план продаж на месяц для всей команды
-                      </DialogDescription>
-                    </DialogHeader>
-                    <form onSubmit={handleUpdateTotalPlan} className="space-y-4">
-                      <div>
-                        <label className="text-sm font-medium text-gray-700">Общий план продаж (₸)</label>
-                        <Input
-                          type="number"
-                          value={totalPlanForm.total_sales_plan}
-                          onChange={(e) => setTotalPlanForm({total_sales_plan: e.target.value})}
-                          placeholder="4000000"
-                          required
-                          min="0"
-                        />
-                      </div>
-                      <div className="flex gap-2">
-                        <Button type="submit" className="flex-1 bg-brand-orange hover:bg-brand-orange/90" disabled={loading}>
-                          {loading ? 'Сохранение...' : 'Сохранить'}
-                        </Button>
-                        <Button type="button" variant="outline" onClick={() => setIsTotalPlanDialogOpen(false)}>
-                          Отмена
-                        </Button>
-                      </div>
-                    </form>
-                  </DialogContent>
-                </Dialog>
-              )}
-              <Button
-                onClick={handleLogout}
-                variant="outline"
-                className="text-red-600 border-red-200 hover:bg-red-50"
-              >
-                <LogOut className="w-4 h-4 mr-2" />
-                Выйти
-              </Button>
-            </div>
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              className="text-red-600 border-red-200 hover:bg-red-50"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Выйти
+            </Button>
           </div>
         </div>
 
         {/* Alerts */}
         {error && (
-          <Alert variant="destructive" className="mb-6">
+          <Alert variant="destructive">
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
         
         {success && (
-          <Alert className="mb-6 border-green-200 bg-green-50">
+          <Alert className="border-green-200 bg-green-50">
             <AlertDescription className="text-green-700">{success}</AlertDescription>
           </Alert>
         )}
 
-        {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="managers">Менеджеры</TabsTrigger>
-            <TabsTrigger value="penalties">Штрафы</TabsTrigger>
-            <TabsTrigger value="bonuses">Бонусы</TabsTrigger>
-            <TabsTrigger value="sales-plans">Планы продаж</TabsTrigger>
-            <TabsTrigger value="progress">Прогресс</TabsTrigger>
-          </TabsList>
-
-          {/* Managers Tab */}
-          <TabsContent value="managers">
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="flex items-center gap-2">
-                      <Users className="w-5 h-5" />
-                      Список менеджеров
-                    </CardTitle>
-                    <CardDescription>
-                      Управление профилями и настройками менеджеров
-                    </CardDescription>
+        {/* Action Buttons */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-brand-orange hover:bg-brand-orange/90">
+                <UserPlus className="w-4 h-4 mr-2" />
+                Добавить менеджера
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Добавить нового менеджера</DialogTitle>
+                <DialogDescription>
+                  Создайте логин и пароль для нового менеджера
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleAddManager} className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Логин</label>
+                  <Input
+                    value={newManager.username}
+                    onChange={(e) => setNewManager({...newManager, username: e.target.value})}
+                    placeholder="Только буквы, цифры и _"
+                    required
+                    pattern="[a-zA-Z0-9_]+"
+                    title="Только буквы, цифры и символ подчеркивания"
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Пароль</label>
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? 'text' : 'password'}
+                      value={newManager.password}
+                      onChange={(e) => setNewManager({...newManager, password: e.target.value})}
+                      placeholder="Минимум 6 символов"
+                      required
+                      minLength={6}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
                   </div>
-                  
-                  {/* Add Manager Dialog */}
-                  <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button className="bg-brand-orange hover:bg-brand-orange/90">
-                        <UserPlus className="w-4 h-4 mr-2" />
-                        Добавить менеджера
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-lg bg-white/95 backdrop-blur-xl border border-white/20 shadow-2xl">
-                      {/* Glassmorphism overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-white/60 to-white/40 backdrop-blur-xl rounded-lg -z-10"></div>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Базовая зарплата (₸)</label>
+                  <Input
+                    type="number"
+                    value={newManager.base_salary}
+                    onChange={(e) => setNewManager({...newManager, base_salary: e.target.value})}
+                    placeholder="250000"
+                    min="0"
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Процент от продаж (%)</label>
+                  <Input
+                    type="number"
+                    value={newManager.sales_percentage}
+                    onChange={(e) => setNewManager({...newManager, sales_percentage: e.target.value})}
+                    placeholder="5"
+                    min="0"
+                    max="100"
+                    step="0.1"
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-gray-700">KPI цель (₸)</label>
+                  <Input
+                    type="number"
+                    value={newManager.kpi_target}
+                    onChange={(e) => setNewManager({...newManager, kpi_target: e.target.value})}
+                    placeholder="500000"
+                    min="0"
+                  />
+                </div>
+                
+                <div className="flex gap-2 pt-4">
+                  <Button type="submit" className="flex-1 bg-brand-orange hover:bg-brand-orange/90" disabled={loading}>
+                    {loading ? 'Создание...' : 'Создать'}
+                  </Button>
+                  <Button type="button" variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                    Отмена
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={isPenaltyDialogOpen} onOpenChange={setIsPenaltyDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-50">
+                <AlertTriangle className="w-4 h-4 mr-2" />
+                Добавить штраф
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Добавить штраф</DialogTitle>
+                <DialogDescription>
+                  Назначьте штраф менеджеру
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleAddPenalty} className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Менеджер</label>
+                  <Select value={newPenalty.manager_id} onValueChange={(value) => setNewPenalty({...newPenalty, manager_id: value})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Выберите менеджера" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {managers.filter(m => m.role === 'manager').map((manager) => (
+                        <SelectItem key={manager.id} value={manager.id}>
+                          {manager.username}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Сумма штрафа (₸)</label>
+                  <Input
+                    type="number"
+                    value={newPenalty.amount}
+                    onChange={(e) => setNewPenalty({...newPenalty, amount: e.target.value})}
+                    placeholder="5000"
+                    min="0"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Причина</label>
+                  <Textarea
+                    value={newPenalty.reason}
+                    onChange={(e) => setNewPenalty({...newPenalty, reason: e.target.value})}
+                    placeholder="Опишите причину штрафа"
+                    required
+                  />
+                </div>
+                
+                <div className="flex gap-2 pt-4">
+                  <Button type="submit" className="flex-1 bg-red-600 hover:bg-red-700" disabled={loading}>
+                    {loading ? 'Добавление...' : 'Добавить штраф'}
+                  </Button>
+                  <Button type="button" variant="outline" onClick={() => setIsPenaltyDialogOpen(false)}>
+                    Отмена
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={isBonusDialogOpen} onOpenChange={setIsBonusDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="text-green-600 border-green-200 hover:bg-green-50">
+                <Gift className="w-4 h-4 mr-2" />
+                Добавить бонус
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Добавить бонус</DialogTitle>
+                <DialogDescription>
+                  Назначьте бонус менеджеру
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleAddBonus} className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Менеджер</label>
+                  <Select value={newBonus.manager_id} onValueChange={(value) => setNewBonus({...newBonus, manager_id: value})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Выберите менеджера" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {managers.filter(m => m.role === 'manager').map((manager) => (
+                        <SelectItem key={manager.id} value={manager.id}>
+                          {manager.username}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Сумма бонуса (₸)</label>
+                  <Input
+                    type="number"
+                    value={newBonus.amount}
+                    onChange={(e) => setNewBonus({...newBonus, amount: e.target.value})}
+                    placeholder="10000"
+                    min="0"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Причина</label>
+                  <Textarea
+                    value={newBonus.reason}
+                    onChange={(e) => setNewBonus({...newBonus, reason: e.target.value})}
+                    placeholder="Опишите причину бонуса"
+                    required
+                  />
+                </div>
+                
+                <div className="flex gap-2 pt-4">
+                  <Button type="submit" className="flex-1 bg-green-600 hover:bg-green-700" disabled={loading}>
+                    {loading ? 'Добавление...' : 'Добавить бонус'}
+                  </Button>
+                  <Button type="button" variant="outline" onClick={() => setIsBonusDialogOpen(false)}>
+                    Отмена
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={isSalesPlanDialogOpen} onOpenChange={setIsSalesPlanDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="text-blue-600 border-blue-200 hover:bg-blue-50">
+                <Target className="w-4 h-4 mr-2" />
+                План продаж
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Установить план продаж</DialogTitle>
+                <DialogDescription>
+                  Установите цель продаж для менеджера
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleAddSalesPlan} className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Менеджер</label>
+                  <Select value={newSalesPlan.manager_id} onValueChange={(value) => setNewSalesPlan({...newSalesPlan, manager_id: value})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Выберите менеджера" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {managers.filter(m => m.role === 'manager').map((manager) => (
+                        <SelectItem key={manager.id} value={manager.id}>
+                          {manager.username}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Целевая сумма (₸)</label>
+                  <Input
+                    type="number"
+                    value={newSalesPlan.target_amount}
+                    onChange={(e) => setNewSalesPlan({...newSalesPlan, target_amount: e.target.value})}
+                    placeholder="500000"
+                    min="0"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Месяц</label>
+                  <Input
+                    type="month"
+                    value={newSalesPlan.month_year}
+                    onChange={(e) => setNewSalesPlan({...newSalesPlan, month_year: e.target.value})}
+                    required
+                  />
+                </div>
+                
+                <div className="flex gap-2 pt-4">
+                  <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700" disabled={loading}>
+                    {loading ? 'Установка...' : 'Установить план'}
+                  </Button>
+                  <Button type="button" variant="outline" onClick={() => setIsSalesPlanDialogOpen(false)}>
+                    Отмена
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={isSalesAchievementDialogOpen} onOpenChange={setIsSalesAchievementDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="text-purple-600 border-purple-200 hover:bg-purple-50">
+                <TrendingUp className="w-4 h-4 mr-2" />
+                Добавить продажу
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Добавить достижение продаж</DialogTitle>
+                <DialogDescription>
+                  Зафиксируйте продажу менеджера
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleAddSalesAchievement} className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Менеджер</label>
+                  <Select value={newSalesAchievement.manager_id} onValueChange={(value) => setNewSalesAchievement({...newSalesAchievement, manager_id: value})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Выберите менеджера" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {managers.filter(m => m.role === 'manager').map((manager) => (
+                        <SelectItem key={manager.id} value={manager.id}>
+                          {manager.username}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Сумма продажи (₸)</label>
+                  <Input
+                    type="number"
+                    value={newSalesAchievement.amount}
+                    onChange={(e) => setNewSalesAchievement({...newSalesAchievement, amount: e.target.value})}
+                    placeholder="50000"
+                    min="0"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Месяц</label>
+                  <Input
+                    type="month"
+                    value={newSalesAchievement.month_year}
+                    onChange={(e) => setNewSalesAchievement({...newSalesAchievement, month_year: e.target.value})}
+                    required
+                  />
+                </div>
+                
+                <div className="flex gap-2 pt-4">
+                  <Button type="submit" className="flex-1 bg-purple-600 hover:bg-purple-700" disabled={loading}>
+                    {loading ? 'Добавление...' : 'Добавить продажу'}
+                  </Button>
+                  <Button type="button" variant="outline" onClick={() => setIsSalesAchievementDialogOpen(false)}>
+                    Отмена
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
+
+        {/* Managers Table */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="w-5 h-5" />
+              Список менеджеров
+            </CardTitle>
+            <CardDescription>
+              Управление профилями и настройками менеджеров
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {managers.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                <p>Менеджеры не найдены</p>
+                <p className="text-sm">Добавьте первого менеджера</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Логин</TableHead>
+                      <TableHead>Роль</TableHead>
+                      <TableHead>Базовая зарплата</TableHead>
+                      <TableHead>Процент</TableHead>
+                      <TableHead>План продаж</TableHead>
+                      <TableHead>Прогресс</TableHead>
+                      <TableHead>Итоговая ЗП</TableHead>
+                      <TableHead>Действия</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {managers.map((manager) => {
+                      const salesProgress = getSalesProgress(manager.id);
+                      const salary = calculateSalary(manager.id);
                       
-                      <DialogHeader className="relative z-10">
-                        <div className="flex items-center gap-3 mb-2">
-                          <div className="w-10 h-10 bg-gradient-to-br from-brand-orange to-brand-orange/80 rounded-full flex items-center justify-center shadow-lg">
-                            <UserPlus className="w-5 h-5 text-white" />
-                          </div>
-                          <div>
-                            <DialogTitle className="text-xl font-bold text-brand-darkBlue">
-                              Добавить нового менеджера
-                            </DialogTitle>
-                            <DialogDescription className="text-gray-600">
-                              Создайте учетную запись для нового сотрудника
-                            </DialogDescription>
-                          </div>
-                        </div>
-                      </DialogHeader>
-                      
-                      <form onSubmit={handleAddManager} className="space-y-6 relative z-10">
-                        {/* Username Field */}
-                        <div className="space-y-2">
-                          <label className="flex items-center gap-2 text-sm font-semibold text-brand-darkBlue">
-                            <User className="w-4 h-4 text-brand-orange" />
-                            Логин пользователя
-                          </label>
-                          <Input
-                            value={newManager.username}
-                            onChange={(e) => setNewManager({...newManager, username: e.target.value})}
-                            placeholder="manager1, sales_user, admin_user"
-                            required
-                            pattern="[a-zA-Z0-9_]+"
-                            title="Только буквы, цифры и символ подчеркивания"
-                            className="h-12 bg-white/80 border-white/30 backdrop-blur-sm focus:bg-white/90 focus:border-brand-orange/50 transition-all"
-                          />
-                          <p className="text-xs text-gray-500 bg-gray-50/80 p-2 rounded-md">
-                            💡 Используйте только латинские буквы, цифры и символ подчеркивания
-                          </p>
-                        </div>
-                        
-                        {/* Password Field */}
-                        <div className="space-y-2">
-                          <label className="flex items-center gap-2 text-sm font-semibold text-brand-darkBlue">
-                            <Lock className="w-4 h-4 text-brand-orange" />
-                            Пароль
-                          </label>
-                          <div className="relative">
-                            <Input
-                              type={showPassword ? 'text' : 'password'}
-                              value={newManager.password}
-                              onChange={(e) => setNewManager({...newManager, password: e.target.value})}
-                              placeholder="Минимум 6 символов"
-                              required
-                              minLength={6}
-                              className="h-12 bg-white/80 border-white/30 backdrop-blur-sm focus:bg-white/90 focus:border-brand-orange/50 transition-all pr-12"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => setShowPassword(!showPassword)}
-                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-brand-orange transition-colors"
-                            >
-                              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                            </button>
-                          </div>
-                        </div>
-                        
-                        {/* Salary Fields Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {/* Base Salary */}
-                          <div className="space-y-2">
-                            <label className="flex items-center gap-2 text-sm font-semibold text-brand-darkBlue">
-                              <DollarSign className="w-4 h-4 text-brand-orange" />
-                              Базовая зарплата
-                            </label>
-                            <Input
-                              type="number"
-                              value={newManager.base_salary}
-                              onChange={(e) => setNewManager({...newManager, base_salary: e.target.value})}
-                              placeholder="250000"
-                              min="0"
-                              className="h-12 bg-white/80 border-white/30 backdrop-blur-sm focus:bg-white/90 focus:border-brand-orange/50 transition-all"
-                            />
-                            <p className="text-xs text-gray-500">₸ в месяц</p>
-                          </div>
-                          
-                          {/* Sales Percentage */}
-                          <div className="space-y-2">
-                            <label className="flex items-center gap-2 text-sm font-semibold text-brand-darkBlue">
-                              <Percent className="w-4 h-4 text-brand-orange" />
-                              Процент от продаж
-                            </label>
-                            <Input
-                              type="number"
-                              value={newManager.sales_percentage}
-                              onChange={(e) => setNewManager({...newManager, sales_percentage: e.target.value})}
-                              placeholder="5"
-                              min="0"
-                              max="100"
-                              step="0.1"
-                              className="h-12 bg-white/80 border-white/30 backdrop-blur-sm focus:bg-white/90 focus:border-brand-orange/50 transition-all"
-                            />
-                            <p className="text-xs text-gray-500">% от продаж</p>
-                          </div>
-                        </div>
-                        
-                        {/* KPI Target */}
-                        <div className="space-y-2">
-                          <label className="flex items-center gap-2 text-sm font-semibold text-brand-darkBlue">
-                            <Target className="w-4 h-4 text-brand-orange" />
-                            KPI цель
-                          </label>
-                          <Input
-                            type="number"
-                            value={newManager.kpi_target}
-                            onChange={(e) => setNewManager({...newManager, kpi_target: e.target.value})}
-                            placeholder="500000"
-                            min="0"
-                            className="h-12 bg-white/80 border-white/30 backdrop-blur-sm focus:bg-white/90 focus:border-brand-orange/50 transition-all"
-                          />
-                          <p className="text-xs text-gray-500">₸ цель продаж в месяц</p>
-                        </div>
-                        
-                        {/* Action Buttons */}
-                        <div className="flex gap-3 pt-4 border-t border-white/30">
-                          <Button 
-                            type="submit" 
-                            className="flex-1 h-12 bg-gradient-to-r from-brand-orange to-brand-orange/90 hover:from-brand-orange/90 hover:to-brand-orange text-white font-semibold shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02]" 
-                            disabled={loading}
-                          >
-                            {loading ? (
-                              <>
-                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                                Создание...
-                              </>
+                      return (
+                        <TableRow key={manager.id}>
+                          <TableCell className="font-medium">{manager.username}</TableCell>
+                          <TableCell>
+                            <Badge variant={manager.role === 'admin' ? 'default' : 'secondary'}>
+                              {manager.role === 'admin' ? 'Администратор' : 'Менеджер'}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {editingManager?.id === manager.id ? (
+                              <Input
+                                type="number"
+                                value={editingManager.base_salary}
+                                onChange={(e) => setEditingManager({
+                                  ...editingManager,
+                                  base_salary: parseFloat(e.target.value) || 0
+                                })}
+                                className="w-24"
+                              />
                             ) : (
-                              <>
-                                <UserPlus className="w-4 h-4 mr-2" />
-                                Создать менеджера
-                              </>
+                              `${formatNumber(manager.base_salary)} ₸`
                             )}
-                          </Button>
-                          <Button 
-                            type="button" 
-                            variant="outline" 
-                            onClick={() => setIsAddDialogOpen(false)}
-                            className="h-12 bg-white/80 border-white/30 hover:bg-white/90 backdrop-blur-sm transition-all"
-                          >
-                            <X className="w-4 h-4 mr-2" />
-                            Отмена
-                          </Button>
-                        </div>
-                      </form>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-              </CardHeader>
-              <CardContent>
-                {managers.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
-                    <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                    <p>Менеджеры не найдены</p>
-                    <p className="text-sm">Добавьте первого менеджера</p>
-                  </div>
-                ) : (
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Логин</TableHead>
-                          <TableHead>Роль</TableHead>
-                          <TableHead>Зарплата за месяц</TableHead>
-                          <TableHead>Процент</TableHead>
-                          <TableHead>KPI цель</TableHead>
-                          <TableHead>Дата создания</TableHead>
-                          <TableHead>Действия</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {managers.map((manager) => {
-                          const salaryData = getCurrentMonthSalaryData(manager.id);
-                          return (
-                            <TableRow key={manager.id}>
-                              <TableCell className="font-medium">{manager.username}</TableCell>
-                              <TableCell>
-                                <Badge variant={manager.role === 'admin' ? 'default' : 'secondary'}>
-                                  {manager.role === 'admin' ? 'Администратор' : 'Менеджер'}
-                                </Badge>
-                              </TableCell>
-                              <TableCell>
-                                {manager.role === 'manager' ? (
-                                  <div className="space-y-1">
-                                    <div className="text-sm">
-                                      <span className="text-gray-600">Оклад:</span> {formatNumber(salaryData.baseSalary)} ₸
-                                    </div>
-                                    {salaryData.commission > 0 && (
-                                      <div className="text-sm text-green-600">
-                                        <span>Комиссия:</span> +{formatNumber(salaryData.commission)} ₸
-                                      </div>
-                                    )}
-                                    {salaryData.bonuses > 0 && (
-                                      <div className="text-sm text-blue-600">
-                                        <span>Бонусы:</span> +{formatNumber(salaryData.bonuses)} ₸
-                                      </div>
-                                    )}
-                                    {salaryData.penalties > 0 && (
-                                      <div className="text-sm text-red-600">
-                                        <span>Штрафы:</span> -{formatNumber(salaryData.penalties)} ₸
-                                      </div>
-                                    )}
-                                    <div className="text-sm font-semibold border-t pt-1">
-                                      <span>Итого:</span> {formatNumber(salaryData.total)} ₸
-                                    </div>
+                          </TableCell>
+                          <TableCell>
+                            {editingManager?.id === manager.id ? (
+                              <Input
+                                type="number"
+                                value={editingManager.sales_percentage}
+                                onChange={(e) => setEditingManager({
+                                  ...editingManager,
+                                  sales_percentage: parseFloat(e.target.value) || 0
+                                })}
+                                className="w-20"
+                                step="0.1"
+                              />
+                            ) : (
+                              `${manager.sales_percentage}%`
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {manager.role === 'manager' ? (
+                              salesProgress.target > 0 ? `${formatNumber(salesProgress.target)} ₸` : 'Не установлен'
+                            ) : (
+                              editingManager?.id === manager.id ? (
+                                <Input
+                                  type="number"
+                                  value={editingManager.total_sales_plan}
+                                  onChange={(e) => setEditingManager({
+                                    ...editingManager,
+                                    total_sales_plan: parseFloat(e.target.value) || 0
+                                  })}
+                                  className="w-28"
+                                  placeholder="Общий план"
+                                />
+                              ) : (
+                                manager.total_sales_plan > 0 ? `${formatNumber(manager.total_sales_plan)} ₸` : 'Не установлен'
+                              )
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {manager.role === 'manager' && salesProgress.target > 0 ? (
+                              <div className="space-y-1">
+                                <Progress value={salesProgress.progress} className="w-20 h-2" />
+                                <div className="text-xs text-center">
+                                  {salesProgress.progress.toFixed(0)}%
+                                </div>
+                              </div>
+                            ) : (
+                              '-'
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {manager.role === 'manager' ? (
+                              <div className="space-y-1">
+                                <div className="font-semibold text-brand-orange">
+                                  {formatNumber(salary.total)} ₸
+                                </div>
+                                {(salary.bonuses > 0 || salary.penalties > 0) && (
+                                  <div className="text-xs text-gray-500">
+                                    {salary.bonuses > 0 && <span className="text-green-600">+{formatNumber(salary.bonuses)}</span>}
+                                    {salary.bonuses > 0 && salary.penalties > 0 && ' '}
+                                    {salary.penalties > 0 && <span className="text-red-600">-{formatNumber(salary.penalties)}</span>}
                                   </div>
-                                ) : (
-                                  <span className="text-gray-500">—</span>
                                 )}
-                              </TableCell>
-                              <TableCell>
-                                {editingManager?.id === manager.id ? (
-                                  <Input
-                                    type="number"
-                                    value={editingManager.sales_percentage}
-                                    onChange={(e) => setEditingManager({
-                                      ...editingManager,
-                                      sales_percentage: parseFloat(e.target.value) || 0
-                                    })}
-                                    className="w-20"
-                                    step="0.1"
-                                  />
-                                ) : (
-                                  `${manager.sales_percentage}%`
-                                )}
-                              </TableCell>
-                              <TableCell>
-                                {editingManager?.id === manager.id ? (
-                                  <Input
-                                    type="number"
-                                    value={editingManager.kpi_target}
-                                    onChange={(e) => setEditingManager({
-                                      ...editingManager,
-                                      kpi_target: parseFloat(e.target.value) || 0
-                                    })}
-                                    className="w-28"
-                                  />
-                                ) : (
-                                  `${formatNumber(manager.kpi_target || 0)} ₸`
-                                )}
-                              </TableCell>
-                              <TableCell>
-                                {new Date(manager.created_at).toLocaleDateString('ru-RU')}
-                              </TableCell>
-                              <TableCell>
-                                <div className="flex gap-2">
-                                  {editingManager?.id === manager.id ? (
-                                    <>
-                                      <Button
-                                        size="sm"
-                                        onClick={() => handleUpdateManager(editingManager)}
-                                        className="bg-green-600 hover:bg-green-700"
-                                      >
-                                        <Save className="w-4 h-4" />
-                                      </Button>
-                                      <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={() => setEditingManager(null)}
-                                      >
-                                        <X className="w-4 h-4" />
-                                      </Button>
-                                    </>
-                                  ) : (
-                                    <>
-                                      <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={() => setEditingManager(manager)}
-                                        disabled={manager.role === 'admin'}
-                                      >
-                                        <Edit className="w-4 h-4" />
-                                      </Button>
-                                      <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={() => handleDeleteManager(manager.id, manager.username)}
-                                        disabled={manager.role === 'admin'}
-                                        className="text-red-600 hover:text-red-700"
-                                      >
-                                        <Trash2 className="w-4 h-4" />
-                                      </Button>
-                                    </>
-                                  )}
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })}
-                      </TableBody>
-                    </Table>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Penalties Tab */}
-          <TabsContent value="penalties">
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="flex items-center gap-2">
-                      <AlertTriangle className="w-5 h-5 text-red-600" />
-                      Штрафы
-                    </CardTitle>
-                    <CardDescription>
-                      Управление штрафными санкциями для менеджеров
-                    </CardDescription>
-                  </div>
-                  
-                  <Dialog open={isPenaltyDialogOpen} onOpenChange={setIsPenaltyDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button className="bg-red-600 hover:bg-red-700 text-white">
-                        <Minus className="w-4 h-4 mr-2" />
-                        Добавить штраф
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Добавить штраф</DialogTitle>
-                        <DialogDescription>
-                          Наложите штрафную санкцию на менеджера
-                        </DialogDescription>
-                      </DialogHeader>
-                      <form onSubmit={handleAddPenalty} className="space-y-4">
-                        <div>
-                          <label className="text-sm font-medium text-gray-700">Менеджер</label>
-                          <select
-                            value={penaltyForm.manager_id}
-                            onChange={(e) => setPenaltyForm({...penaltyForm, manager_id: e.target.value})}
-                            className="w-full p-2 border rounded-md"
-                            required
-                          >
-                            <option value="">Выберите менеджера</option>
-                            {managers.filter(m => m.role === 'manager').map(manager => (
-                              <option key={manager.id} value={manager.id}>
-                                {manager.username}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium text-gray-700">Сумма штрафа (₸)</label>
-                          <Input
-                            type="number"
-                            value={penaltyForm.amount}
-                            onChange={(e) => setPenaltyForm({...penaltyForm, amount: e.target.value})}
-                            placeholder="5000"
-                            required
-                            min="0"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium text-gray-700">Причина штрафа</label>
-                          <Textarea
-                            value={penaltyForm.reason}
-                            onChange={(e) => setPenaltyForm({...penaltyForm, reason: e.target.value})}
-                            placeholder="Опоздание на работу"
-                            required
-                            rows={3}
-                          />
-                        </div>
-                        <div className="flex gap-2">
-                          <Button type="submit" className="flex-1 bg-red-600 hover:bg-red-700" disabled={loading}>
-                            {loading ? 'Добавление...' : 'Добавить штраф'}
-                          </Button>
-                          <Button type="button" variant="outline" onClick={() => setIsPenaltyDialogOpen(false)}>
-                            Отмена
-                          </Button>
-                        </div>
-                      </form>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Менеджер</TableHead>
-                        <TableHead>Сумма</TableHead>
-                        <TableHead>Причина</TableHead>
-                        <TableHead>Дата</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {penalties.map((penalty) => (
-                        <TableRow key={penalty.id}>
-                          <TableCell>{getManagerName(penalty.manager_id)}</TableCell>
-                          <TableCell className="text-red-600 font-semibold">
-                            -{formatNumber(penalty.amount)} ₸
+                              </div>
+                            ) : (
+                              '-'
+                            )}
                           </TableCell>
-                          <TableCell>{penalty.reason}</TableCell>
-                          <TableCell>{formatDate(penalty.created_at)}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Bonuses Tab */}
-          <TabsContent value="bonuses">
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="flex items-center gap-2">
-                      <Gift className="w-5 h-5 text-green-600" />
-                      Бонусы
-                    </CardTitle>
-                    <CardDescription>
-                      Управление бонусными выплатами для менеджеров
-                    </CardDescription>
-                  </div>
-                  
-                  <Dialog open={isBonusDialogOpen} onOpenChange={setIsBonusDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button className="bg-green-600 hover:bg-green-700 text-white">
-                        <Plus className="w-4 h-4 mr-2" />
-                        Добавить бонус
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Добавить бонус</DialogTitle>
-                        <DialogDescription>
-                          Начислите бонусную выплату менеджеру
-                        </DialogDescription>
-                      </DialogHeader>
-                      <form onSubmit={handleAddBonus} className="space-y-4">
-                        <div>
-                          <label className="text-sm font-medium text-gray-700">Менеджер</label>
-                          <select
-                            value={bonusForm.manager_id}
-                            onChange={(e) => setBonusForm({...bonusForm, manager_id: e.target.value})}
-                            className="w-full p-2 border rounded-md"
-                            required
-                          >
-                            <option value="">Выберите менеджера</option>
-                            {managers.filter(m => m.role === 'manager').map(manager => (
-                              <option key={manager.id} value={manager.id}>
-                                {manager.username}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium text-gray-700">Сумма бонуса (₸)</label>
-                          <Input
-                            type="number"
-                            value={bonusForm.amount}
-                            onChange={(e) => setBonusForm({...bonusForm, amount: e.target.value})}
-                            placeholder="10000"
-                            required
-                            min="0"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium text-gray-700">Причина бонуса</label>
-                          <Textarea
-                            value={bonusForm.reason}
-                            onChange={(e) => setBonusForm({...bonusForm, reason: e.target.value})}
-                            placeholder="Превышение плана продаж"
-                            required
-                            rows={3}
-                          />
-                        </div>
-                        <div className="flex gap-2">
-                          <Button type="submit" className="flex-1 bg-green-600 hover:bg-green-700" disabled={loading}>
-                            {loading ? 'Добавление...' : 'Добавить бонус'}
-                          </Button>
-                          <Button type="button" variant="outline" onClick={() => setIsBonusDialogOpen(false)}>
-                            Отмена
-                          </Button>
-                        </div>
-                      </form>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Менеджер</TableHead>
-                        <TableHead>Сумма</TableHead>
-                        <TableHead>Причина</TableHead>
-                        <TableHead>Дата</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {bonuses.map((bonus) => (
-                        <TableRow key={bonus.id}>
-                          <TableCell>{getManagerName(bonus.manager_id)}</TableCell>
-                          <TableCell className="text-green-600 font-semibold">
-                            +{formatNumber(bonus.amount)} ₸
-                          </TableCell>
-                          <TableCell>{bonus.reason}</TableCell>
-                          <TableCell>{formatDate(bonus.created_at)}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Sales Plans Tab */}
-          <TabsContent value="sales-plans">
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="flex items-center gap-2">
-                      <Target className="w-5 h-5 text-brand-purple" />
-                      Планы продаж
-                    </CardTitle>
-                    <CardDescription>
-                      Установка планов продаж для менеджеров
-                    </CardDescription>
-                  </div>
-                  
-                  <div className="flex gap-2">
-                    <Dialog open={isSalesPlanDialogOpen} onOpenChange={setIsSalesPlanDialogOpen}>
-                      <DialogTrigger asChild>
-                        <Button className="bg-brand-purple hover:bg-brand-purple/90 text-white">
-                          <Target className="w-4 h-4 mr-2" />
-                          Установить план
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Установить план продаж</DialogTitle>
-                          <DialogDescription>
-                            Установите план продаж для менеджера на месяц
-                          </DialogDescription>
-                        </DialogHeader>
-                        <form onSubmit={handleAddSalesPlan} className="space-y-4">
-                          <div>
-                            <label className="text-sm font-medium text-gray-700">Менеджер</label>
-                            <select
-                              value={salesPlanForm.manager_id}
-                              onChange={(e) => setSalesPlanForm({...salesPlanForm, manager_id: e.target.value})}
-                              className="w-full p-2 border rounded-md"
-                              required
-                            >
-                              <option value="">Выберите менеджера</option>
-                              {managers.filter(m => m.role === 'manager').map(manager => (
-                                <option key={manager.id} value={manager.id}>
-                                  {manager.username}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                          <div>
-                            <label className="text-sm font-medium text-gray-700">План продаж (₸)</label>
-                            <Input
-                              type="number"
-                              value={salesPlanForm.target_amount}
-                              onChange={(e) => setSalesPlanForm({...salesPlanForm, target_amount: e.target.value})}
-                              placeholder="500000"
-                              required
-                              min="0"
-                            />
-                          </div>
-                          <div>
-                            <label className="text-sm font-medium text-gray-700">Месяц</label>
-                            <Input
-                              type="month"
-                              value={salesPlanForm.month_year}
-                              onChange={(e) => setSalesPlanForm({...salesPlanForm, month_year: e.target.value})}
-                              required
-                            />
-                          </div>
-                          <div className="flex gap-2">
-                            <Button type="submit" className="flex-1 bg-brand-purple hover:bg-brand-purple/90" disabled={loading}>
-                              {loading ? 'Установка...' : 'Установить план'}
-                            </Button>
-                            <Button type="button" variant="outline" onClick={() => setIsSalesPlanDialogOpen(false)}>
-                              Отмена
-                            </Button>
-                          </div>
-                        </form>
-                      </DialogContent>
-                    </Dialog>
-
-                    <Dialog open={isSalesAchievementDialogOpen} onOpenChange={setIsSalesAchievementDialogOpen}>
-                      <DialogTrigger asChild>
-                        <Button className="bg-brand-orange hover:bg-brand-orange/90 text-white">
-                          <TrendingUp className="w-4 h-4 mr-2" />
-                          Добавить продажу
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Добавить продажу</DialogTitle>
-                          <DialogDescription>
-                            Зафиксируйте продажу менеджера для расчета прогресса
-                          </DialogDescription>
-                        </DialogHeader>
-                        <form onSubmit={handleAddSalesAchievement} className="space-y-4">
-                          <div>
-                            <label className="text-sm font-medium text-gray-700">Менеджер</label>
-                            <select
-                              value={salesAchievementForm.manager_id}
-                              onChange={(e) => setSalesAchievementForm({...salesAchievementForm, manager_id: e.target.value})}
-                              className="w-full p-2 border rounded-md"
-                              required
-                            >
-                              <option value="">Выберите менеджера</option>
-                              {managers.filter(m => m.role === 'manager').map(manager => (
-                                <option key={manager.id} value={manager.id}>
-                                  {manager.username}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                          <div>
-                            <label className="text-sm font-medium text-gray-700">Сумма продажи (₸)</label>
-                            <Input
-                              type="number"
-                              value={salesAchievementForm.amount}
-                              onChange={(e) => setSalesAchievementForm({...salesAchievementForm, amount: e.target.value})}
-                              placeholder="50000"
-                              required
-                              min="0"
-                            />
-                          </div>
-                          <div>
-                            <label className="text-sm font-medium text-gray-700">Месяц</label>
-                            <Input
-                              type="month"
-                              value={salesAchievementForm.month_year}
-                              onChange={(e) => setSalesAchievementForm({...salesAchievementForm, month_year: e.target.value})}
-                              required
-                            />
-                          </div>
-                          <div className="flex gap-2">
-                            <Button type="submit" className="flex-1 bg-brand-orange hover:bg-brand-orange/90" disabled={loading}>
-                              {loading ? 'Добавление...' : 'Добавить продажу'}
-                            </Button>
-                            <Button type="button" variant="outline" onClick={() => setIsSalesAchievementDialogOpen(false)}>
-                              Отмена
-                            </Button>
-                          </div>
-                        </form>
-                      </DialogContent>
-                    </Dialog>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Sales Plans */}
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4">Планы продаж</h3>
-                    <div className="overflow-x-auto">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Менеджер</TableHead>
-                            <TableHead>План</TableHead>
-                            <TableHead>Месяц</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {salesPlans.map((plan) => (
-                            <TableRow key={plan.id}>
-                              <TableCell>{getManagerName(plan.manager_id)}</TableCell>
-                              <TableCell className="font-semibold text-brand-purple">
-                                {formatNumber(plan.target_amount)} ₸
-                              </TableCell>
-                              <TableCell>{plan.month_year}</TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  </div>
-
-                  {/* Sales Achievements */}
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4">Достижения продаж</h3>
-                    <div className="overflow-x-auto">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Менеджер</TableHead>
-                            <TableHead>Продажа</TableHead>
-                            <TableHead>Месяц</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {salesAchievements.map((achievement) => (
-                            <TableRow key={achievement.id}>
-                              <TableCell>{getManagerName(achievement.manager_id)}</TableCell>
-                              <TableCell className="font-semibold text-brand-orange">
-                                {formatNumber(achievement.amount)} ₸
-                              </TableCell>
-                              <TableCell>{achievement.month_year}</TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Progress Tab */}
-          <TabsContent value="progress">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-brand-orange" />
-                  Прогресс выполнения планов
-                </CardTitle>
-                <CardDescription>
-                  Отслеживание прогресса выполнения планов продаж
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  {/* Overall Progress */}
-                  {adminProfile && adminProfile.total_sales_plan > 0 && (
-                    <div className="p-6 bg-gradient-to-r from-brand-orange/10 to-brand-purple/10 rounded-lg border">
-                      <h3 className="text-lg font-semibold mb-4">Общий прогресс команды</h3>
-                      <div className="space-y-2">
-                        {(() => {
-                          const totalPlan = adminProfile.total_sales_plan;
-                          const totalAchieved = salesAchievements
-                            .filter(a => a.month_year === currentMonth)
-                            .reduce((sum, a) => sum + a.amount, 0);
-                          const overallProgress = totalPlan > 0 ? (totalAchieved / totalPlan) * 100 : 0;
-                          
-                          return (
-                            <>
-                              <div className="flex justify-between text-sm">
-                                <span>Общий план: {formatNumber(totalPlan)} ₸</span>
-                                <span>Выполнено: {formatNumber(totalAchieved)} ₸</span>
-                              </div>
-                              <Progress 
-                                value={Math.min(overallProgress, 100)} 
-                                className="h-3"
-                                style={{
-                                  background: 'linear-gradient(to right, #FE9C2D, #A678FF)'
-                                }}
-                              />
-                              <div className="text-center text-sm font-semibold">
-                                {overallProgress.toFixed(1)}% выполнено
-                              </div>
-                            </>
-                          );
-                        })()}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Individual Progress */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {managers
-                      .filter(m => m.role === 'manager')
-                      .map(manager => {
-                        const progress = getSalesProgress(manager.id, currentMonth);
-                        return (
-                          <div key={manager.id} className="p-4 border rounded-lg bg-white shadow-sm">
-                            <div className="flex items-center justify-between mb-3">
-                              <h4 className="font-semibold">{manager.username}</h4>
-                              <Badge variant="outline">
-                                {progress.progress.toFixed(1)}%
-                              </Badge>
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <div className="flex justify-between text-sm text-gray-600">
-                                <span>План:</span>
-                                <span>{formatNumber(progress.target)} ₸</span>
-                              </div>
-                              <div className="flex justify-between text-sm text-gray-600">
-                                <span>Выполнено:</span>
-                                <span className="text-brand-orange font-semibold">
-                                  {formatNumber(progress.achieved)} ₸
-                                </span>
-                              </div>
-                              
-                              <Progress 
-                                value={Math.min(progress.progress, 100)} 
-                                className="h-2"
-                              />
-                              
-                              {progress.progress >= 100 && (
-                                <div className="text-center text-sm text-green-600 font-semibold">
-                                  🎉 План выполнен!
-                                </div>
+                          <TableCell>
+                            <div className="flex gap-2">
+                              {editingManager?.id === manager.id ? (
+                                <>
+                                  <Button
+                                    size="sm"
+                                    onClick={() => handleUpdateManager(editingManager)}
+                                    className="bg-green-600 hover:bg-green-700"
+                                  >
+                                    <Save className="w-4 h-4" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => setEditingManager(null)}
+                                  >
+                                    <X className="w-4 h-4" />
+                                  </Button>
+                                </>
+                              ) : (
+                                <>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => setEditingManager(manager)}
+                                    disabled={manager.role === 'admin'}
+                                  >
+                                    <Edit className="w-4 h-4" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => handleDeleteManager(manager.id, manager.username)}
+                                    disabled={manager.role === 'admin'}
+                                    className="text-red-600 hover:text-red-700"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </>
                               )}
                             </div>
-                          </div>
-                        );
-                      })}
-                  </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Recent Activities */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Recent Penalties */}
+          {penalties.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-red-600">
+                  <AlertTriangle className="w-5 h-5" />
+                  Штрафы за месяц
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {penalties.slice(0, 5).map((penalty) => (
+                    <div key={penalty.id} className="p-3 bg-red-50 rounded-lg border border-red-200">
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <span className="font-semibold text-red-600">-{formatNumber(penalty.amount)} ₸</span>
+                          <span className="text-sm text-gray-600 ml-2">{getManagerName(penalty.manager_id)}</span>
+                        </div>
+                        <span className="text-xs text-gray-500">{formatDate(penalty.created_at)}</span>
+                      </div>
+                      <p className="text-sm text-gray-700">{penalty.reason}</p>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
-        </Tabs>
+          )}
+
+          {/* Recent Bonuses */}
+          {bonuses.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-green-600">
+                  <Gift className="w-5 h-5" />
+                  Бонусы за месяц
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {bonuses.slice(0, 5).map((bonus) => (
+                    <div key={bonus.id} className="p-3 bg-green-50 rounded-lg border border-green-200">
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <span className="font-semibold text-green-600">+{formatNumber(bonus.amount)} ₸</span>
+                          <span className="text-sm text-gray-600 ml-2">{getManagerName(bonus.manager_id)}</span>
+                        </div>
+                        <span className="text-xs text-gray-500">{formatDate(bonus.created_at)}</span>
+                      </div>
+                      <p className="text-sm text-gray-700">{bonus.reason}</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </div>
     </div>
   );
