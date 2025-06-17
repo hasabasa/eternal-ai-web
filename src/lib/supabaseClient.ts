@@ -1,21 +1,43 @@
+
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 // Check if environment variables are properly configured
-if (!supabaseUrl || !supabaseAnonKey || 
-    supabaseUrl === 'your_supabase_project_url_here' || 
-    supabaseAnonKey === 'your_supabase_anon_key_here') {
-  throw new Error('Please configure your Supabase environment variables. Click "Connect to Supabase" in the top right to set up your project.')
+const isSupabaseConfigured = supabaseUrl && 
+    supabaseAnonKey && 
+    supabaseUrl !== 'your_supabase_project_url_here' && 
+    supabaseAnonKey !== 'your_supabase_anon_key_here'
+
+if (!isSupabaseConfigured) {
+  console.warn('⚠️ Supabase not configured. Some features will be disabled.')
+  console.log('To enable authentication and database features, click "Connect to Supabase" in the top right.')
 }
 
-// Добавляем отладочную информацию
-console.log('🔧 Supabase Configuration Debug:')
-console.log('URL:', supabaseUrl)
-console.log('Anon Key (first 20 chars):', supabaseAnonKey?.substring(0, 20) + '...')
+// Create a mock client if Supabase is not configured
+const createMockClient = () => ({
+  auth: {
+    signInWithPassword: async () => ({ data: null, error: { message: 'Supabase not configured' } }),
+    signUp: async () => ({ data: null, error: { message: 'Supabase not configured' } }),
+    signOut: async () => ({ error: null }),
+    getUser: async () => ({ data: { user: null } }),
+    getSession: async () => ({ data: { session: null } })
+  },
+  from: () => ({
+    select: () => ({
+      eq: () => ({
+        single: async () => ({ data: null, error: { message: 'Supabase not configured' } })
+      }),
+      limit: () => ({ data: null, error: { message: 'Supabase not configured' } })
+    }),
+    insert: async () => ({ error: { message: 'Supabase not configured' } })
+  })
+})
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = isSupabaseConfigured 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : createMockClient()
 
 // Helper function to convert username to email format for Supabase Auth
 export const usernameToEmail = (username: string) => {
@@ -37,6 +59,11 @@ export const emailToUsername = (email: string) => {
 
 // Custom login function using username and password
 export const loginWithUsername = async (username: string, password: string) => {
+  if (!isSupabaseConfigured) {
+    console.warn('⚠️ Supabase not configured, login disabled')
+    return { data: null, error: { message: 'Supabase not configured. Please set up your project.' } }
+  }
+
   console.log('🔐 Starting login process...')
   console.log('Username:', username)
   console.log('Password length:', password.length)
@@ -73,6 +100,11 @@ export const loginWithUsername = async (username: string, password: string) => {
 
 // Custom signup function using username and password
 export const signUpWithUsername = async (username: string, password: string) => {
+  if (!isSupabaseConfigured) {
+    console.warn('⚠️ Supabase not configured, signup disabled')
+    return { data: null, error: { message: 'Supabase not configured. Please set up your project.' } }
+  }
+
   console.log('📝 Starting signup process...')
   console.log('Username:', username)
   
@@ -98,6 +130,11 @@ export const signUpWithUsername = async (username: string, password: string) => 
 
 // Helper function to get current user
 export const getCurrentUser = async () => {
+  if (!isSupabaseConfigured) {
+    console.warn('⚠️ Supabase not configured, no user available')
+    return null
+  }
+
   console.log('👤 Getting current user...')
   const { data: { user } } = await supabase.auth.getUser()
   console.log('Current user:', user)
@@ -106,6 +143,11 @@ export const getCurrentUser = async () => {
 
 // Helper function to get user profile
 export const getUserProfile = async (userId: string) => {
+  if (!isSupabaseConfigured) {
+    console.warn('⚠️ Supabase not configured, no profile available')
+    return null
+  }
+
   console.log('📋 Getting user profile for ID:', userId)
   
   const { data, error } = await supabase
@@ -136,6 +178,11 @@ export const isAdmin = async (userId: string) => {
 
 // Helper function to create user with username
 export const createUserWithUsername = async (username: string, password: string, profileData: any) => {
+  if (!isSupabaseConfigured) {
+    console.warn('⚠️ Supabase not configured, user creation disabled')
+    return { data: null, error: { message: 'Supabase not configured. Please set up your project.' } }
+  }
+
   console.log('🆕 Creating new user with username:', username)
   
   try {
@@ -179,6 +226,11 @@ export const createUserWithUsername = async (username: string, password: string,
 
 // Функция для проверки подключения к Supabase
 export const testSupabaseConnection = async () => {
+  if (!isSupabaseConfigured) {
+    console.log('⚠️ Supabase not configured')
+    return { success: false, error: 'Supabase environment variables not configured' }
+  }
+
   console.log('🔍 Testing Supabase connection...')
   
   try {
@@ -205,3 +257,6 @@ export const testSupabaseConnection = async () => {
     return { success: false, error: error.message }
   }
 }
+
+// Export configuration status
+export const isSupabaseReady = isSupabaseConfigured
