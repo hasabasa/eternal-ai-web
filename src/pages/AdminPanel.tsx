@@ -383,10 +383,9 @@ const AdminPanel = () => {
         .from('sales_plans')
         .select('id')
         .eq('manager_id', newSalesPlan.manager_id)
-        .eq('month_year', newSalesPlan.month_year)
-        .single();
+        .eq('month_year', newSalesPlan.month_year);
 
-      if (existingPlan) {
+      if (existingPlan && existingPlan.length > 0) {
         setError('План продаж для этого менеджера на указанный месяц уже существует');
         return;
       }
