@@ -185,7 +185,7 @@ export const testSupabaseConnection = async () => {
     // Проверяем подключение к базе данных
     const { data, error } = await supabase
       .from('manager_profiles')
-      .select('count(*)')
+      .select('count')
       .limit(1)
     
     if (error) {
