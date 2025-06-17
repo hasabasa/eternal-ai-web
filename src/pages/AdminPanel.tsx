@@ -18,7 +18,12 @@ import {
   Eye, 
   EyeOff,
   Save,
-  X
+  X,
+  User,
+  Lock,
+  DollarSign,
+  Target,
+  Percent
 } from 'lucide-react';
 
 interface ManagerProfile {
@@ -273,31 +278,53 @@ const AdminPanel = () => {
               Добавить менеджера
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Добавить нового менеджера</DialogTitle>
-              <DialogDescription>
-                Создайте логин и пароль для нового менеджера
-              </DialogDescription>
+          <DialogContent className="sm:max-w-lg bg-white/95 backdrop-blur-xl border border-white/20 shadow-2xl">
+            {/* Glassmorphism overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-white/60 to-white/40 backdrop-blur-xl rounded-lg -z-10"></div>
+            
+            <DialogHeader className="relative z-10">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 bg-gradient-to-br from-brand-orange to-brand-orange/80 rounded-full flex items-center justify-center shadow-lg">
+                  <UserPlus className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <DialogTitle className="text-xl font-bold text-brand-darkBlue">
+                    Добавить нового менеджера
+                  </DialogTitle>
+                  <DialogDescription className="text-gray-600">
+                    Создайте учетную запись для нового сотрудника
+                  </DialogDescription>
+                </div>
+              </div>
             </DialogHeader>
-            <form onSubmit={handleAddManager} className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-gray-700">Логин</label>
+            
+            <form onSubmit={handleAddManager} className="space-y-6 relative z-10">
+              {/* Username Field */}
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-sm font-semibold text-brand-darkBlue">
+                  <User className="w-4 h-4 text-brand-orange" />
+                  Логин пользователя
+                </label>
                 <Input
                   value={newManager.username}
                   onChange={(e) => setNewManager({...newManager, username: e.target.value})}
-                  placeholder="Только буквы, цифры и _"
+                  placeholder="manager1, sales_user, admin_user"
                   required
                   pattern="[a-zA-Z0-9_]+"
                   title="Только буквы, цифры и символ подчеркивания"
+                  className="h-12 bg-white/80 border-white/30 backdrop-blur-sm focus:bg-white/90 focus:border-brand-orange/50 transition-all"
                 />
-                <p className="text-xs text-gray-500 mt-1">
-                  Пример: manager1, sales_manager, admin_user
+                <p className="text-xs text-gray-500 bg-gray-50/80 p-2 rounded-md">
+                  💡 Используйте только латинские буквы, цифры и символ подчеркивания
                 </p>
               </div>
               
-              <div>
-                <label className="text-sm font-medium text-gray-700">Пароль</label>
+              {/* Password Field */}
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-sm font-semibold text-brand-darkBlue">
+                  <Lock className="w-4 h-4 text-brand-orange" />
+                  Пароль
+                </label>
                 <div className="relative">
                   <Input
                     type={showPassword ? 'text' : 'password'}
@@ -306,57 +333,100 @@ const AdminPanel = () => {
                     placeholder="Минимум 6 символов"
                     required
                     minLength={6}
+                    className="h-12 bg-white/80 border-white/30 backdrop-blur-sm focus:bg-white/90 focus:border-brand-orange/50 transition-all pr-12"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-brand-orange transition-colors"
                   >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
               </div>
               
-              <div>
-                <label className="text-sm font-medium text-gray-700">Базовая зарплата (₸)</label>
-                <Input
-                  type="number"
-                  value={newManager.base_salary}
-                  onChange={(e) => setNewManager({...newManager, base_salary: e.target.value})}
-                  placeholder="250000"
-                  min="0"
-                />
+              {/* Salary Fields Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Base Salary */}
+                <div className="space-y-2">
+                  <label className="flex items-center gap-2 text-sm font-semibold text-brand-darkBlue">
+                    <DollarSign className="w-4 h-4 text-brand-orange" />
+                    Базовая зарплата
+                  </label>
+                  <Input
+                    type="number"
+                    value={newManager.base_salary}
+                    onChange={(e) => setNewManager({...newManager, base_salary: e.target.value})}
+                    placeholder="250000"
+                    min="0"
+                    className="h-12 bg-white/80 border-white/30 backdrop-blur-sm focus:bg-white/90 focus:border-brand-orange/50 transition-all"
+                  />
+                  <p className="text-xs text-gray-500">₸ в месяц</p>
+                </div>
+                
+                {/* Sales Percentage */}
+                <div className="space-y-2">
+                  <label className="flex items-center gap-2 text-sm font-semibold text-brand-darkBlue">
+                    <Percent className="w-4 h-4 text-brand-orange" />
+                    Процент от продаж
+                  </label>
+                  <Input
+                    type="number"
+                    value={newManager.sales_percentage}
+                    onChange={(e) => setNewManager({...newManager, sales_percentage: e.target.value})}
+                    placeholder="5"
+                    min="0"
+                    max="100"
+                    step="0.1"
+                    className="h-12 bg-white/80 border-white/30 backdrop-blur-sm focus:bg-white/90 focus:border-brand-orange/50 transition-all"
+                  />
+                  <p className="text-xs text-gray-500">% от продаж</p>
+                </div>
               </div>
               
-              <div>
-                <label className="text-sm font-medium text-gray-700">Процент от продаж (%)</label>
-                <Input
-                  type="number"
-                  value={newManager.sales_percentage}
-                  onChange={(e) => setNewManager({...newManager, sales_percentage: e.target.value})}
-                  placeholder="5"
-                  min="0"
-                  max="100"
-                  step="0.1"
-                />
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium text-gray-700">KPI цель (₸)</label>
+              {/* KPI Target */}
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-sm font-semibold text-brand-darkBlue">
+                  <Target className="w-4 h-4 text-brand-orange" />
+                  KPI цель
+                </label>
                 <Input
                   type="number"
                   value={newManager.kpi_target}
                   onChange={(e) => setNewManager({...newManager, kpi_target: e.target.value})}
                   placeholder="500000"
                   min="0"
+                  className="h-12 bg-white/80 border-white/30 backdrop-blur-sm focus:bg-white/90 focus:border-brand-orange/50 transition-all"
                 />
+                <p className="text-xs text-gray-500">₸ цель продаж в месяц</p>
               </div>
               
-              <div className="flex gap-2 pt-4">
-                <Button type="submit" className="flex-1 bg-brand-orange hover:bg-brand-orange/90" disabled={loading}>
-                  {loading ? 'Создание...' : 'Создать'}
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-4 border-t border-white/30">
+                <Button 
+                  type="submit" 
+                  className="flex-1 h-12 bg-gradient-to-r from-brand-orange to-brand-orange/90 hover:from-brand-orange/90 hover:to-brand-orange text-white font-semibold shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02]" 
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Создание...
+                    </>
+                  ) : (
+                    <>
+                      <UserPlus className="w-4 h-4 mr-2" />
+                      Создать менеджера
+                    </>
+                  )}
                 </Button>
-                <Button type="button" variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => setIsAddDialogOpen(false)}
+                  className="h-12 bg-white/80 border-white/30 hover:bg-white/90 backdrop-blur-sm transition-all"
+                >
+                  <X className="w-4 h-4 mr-2" />
                   Отмена
                 </Button>
               </div>
