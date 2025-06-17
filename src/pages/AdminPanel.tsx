@@ -316,6 +316,12 @@ const AdminPanel = () => {
     setError('');
 
     try {
+      // Validate manager selection
+      if (!newPenalty.manager_id || newPenalty.manager_id.trim() === '') {
+        setError('Пожалуйста, выберите менеджера');
+        return;
+      }
+
       const { error } = await supabase
         .from('penalties')
         .insert({
@@ -347,6 +353,12 @@ const AdminPanel = () => {
     setError('');
 
     try {
+      // Validate manager selection
+      if (!newBonus.manager_id || newBonus.manager_id.trim() === '') {
+        setError('Пожалуйста, выберите менеджера');
+        return;
+      }
+
       const { error } = await supabase
         .from('bonuses')
         .insert({
@@ -378,6 +390,12 @@ const AdminPanel = () => {
     setError('');
 
     try {
+      // Validate manager selection
+      if (!newSalesPlan.manager_id || newSalesPlan.manager_id.trim() === '') {
+        setError('Пожалуйста, выберите менеджера');
+        return;
+      }
+
       // Check if plan already exists for this manager and month
       const { data: existingPlan } = await supabase
         .from('sales_plans')
@@ -421,6 +439,12 @@ const AdminPanel = () => {
     setError('');
 
     try {
+      // Validate manager selection
+      if (!newSalesAchievement.manager_id || newSalesAchievement.manager_id.trim() === '') {
+        setError('Пожалуйста, выберите менеджера');
+        return;
+      }
+
       const { error } = await supabase
         .from('sales_achievements')
         .insert({
