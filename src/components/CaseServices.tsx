@@ -70,12 +70,9 @@ const CaseServices: React.FC = () => (
     {/* Отзыв */}
     <div className="bg-brand-purple/10 rounded-xl p-4 border-l-4 border-brand-purple">
       <div className="text-center">
-        <p className="text-brand-darkBlue italic mb-3 leading-relaxed text-sm sm:text-base">
-          "ИИ стал моей правой рукой. Теперь я занимаюсь стратегией, а не рутиной."
-        </p>
-        <div className="text-sm text-brand-purple font-semibold">
-          — Руководитель компании
-        </div>
+        <a className="text-brand-darkBlue italic mb-3 leading-relaxed text-sm sm:text-base" href="https://web.telegram.org/a/#7903642087">
+          Запустить ИИ-ассистента для личного управления
+        </a>
       </div>
     </div>
   </div>

@@ -14,7 +14,7 @@ const CaseHoreca: React.FC = () => (
         Сеть кафе
       </h2>
       <p className="text-sm sm:text-base text-gray-600">
-        Автоматизация бронирований и экономия 180 000₽ в месяц
+        Автоматизация бронирований и экономия 180 000₸ в месяц
       </p>
     </div>
     
@@ -56,7 +56,7 @@ const CaseHoreca: React.FC = () => (
         </div>
         <div className="space-y-2">
           <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">180К₽</div>
+            <div className="text-2xl font-bold text-green-600">180К₸</div>
             <div className="text-sm text-gray-600">Экономия/мес</div>
           </div>
           <div className="text-center">
@@ -70,12 +70,9 @@ const CaseHoreca: React.FC = () => (
     {/* Отзыв */}
     <div className="bg-brand-purple/10 rounded-xl p-4 border-l-4 border-brand-purple">
       <div className="text-center">
-        <p className="text-brand-darkBlue italic mb-3 leading-relaxed text-sm sm:text-base">
-          "Забыли про потерянные брони. ИИ точнее людей и работает без выходных."
-        </p>
-        <div className="text-sm text-brand-purple font-semibold">
-          — Управляющий сети кафе
-        </div>
+        <a className="text-brand-darkBlue italic mb-3 leading-relaxed text-sm sm:text-base" href="https://wa.me/77767769597">
+          Запустить ИИ-ассистента для сети кафе
+        </a>
       </div>
     </div>
   </div>

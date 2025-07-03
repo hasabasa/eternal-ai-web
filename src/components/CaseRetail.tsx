@@ -70,12 +70,9 @@ const CaseRetail: React.FC = () => (
     {/* Отзыв */}
     <div className="bg-brand-purple/10 rounded-xl p-4 border-l-4 border-brand-purple">
       <div className="text-center">
-        <p className="text-brand-darkBlue italic mb-3 leading-relaxed text-sm sm:text-base">
-          "ИИ работает лучше менеджера. Клиенты довольны скоростью и точностью."
-        </p>
-        <div className="text-sm text-brand-purple font-semibold">
-          — Владелец цветочного магазина
-        </div>
+        <a className="text-brand-darkBlue italic mb-3 leading-relaxed text-sm sm:text-base" href="https://wa.me/77753215207">
+          Запустить чат-бота для цветочного бизнеса
+        </a>
       </div>
     </div>
   </div>
